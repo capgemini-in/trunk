@@ -38,15 +38,12 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 
 	public User findBySSO(String sso) {
 		logger.info("SSO : {}", sso);
-		//Criteria crit = createEntityCriteria();
-		//crit.add(Restrictions.eq("ssoId", sso));
-		
-		User user= mapper.retrieveUserBySSOID(sso);
-		
-		//   System.out.println("User Retrieved :"+user);
-		//User user = (User)crit.uniqueResult();
+		Criteria crit = createEntityCriteria();
+		crit.add(Restrictions.eq("ssoId", sso));
+		User user = (User)crit.uniqueResult();
+		//User user= mapper.retrieveUserBySSOID(sso);
+		//user.setUserProfiles(mapper.getUserProfile(user.getId()));
 		if(user!=null){
-			user.setUserProfiles(mapper.getUserProfile(user.getId()));
 			Hibernate.initialize(user.getUserProfiles());
 		}
 		return user;
