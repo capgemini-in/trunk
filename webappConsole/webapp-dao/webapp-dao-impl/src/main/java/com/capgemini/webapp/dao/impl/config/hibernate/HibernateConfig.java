@@ -32,7 +32,7 @@ import com.capgemini.webapp.dao.api.constants.IDaoConstants;;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan({ "com.capgemini.webapp.dao.impl.config.hibernate" })
+@ComponentScan({ "com.capgemini.webapp.dao.api.entity" })
 @PropertySource(value = {"classpath:/config/database/myappdb_${config}.properties"}, ignoreResourceNotFound=true)
 public class HibernateConfig {
 
@@ -43,8 +43,8 @@ public class HibernateConfig {
     public LocalSessionFactoryBean getSessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setHibernateProperties(getHibernateProperties());
-        //sessionFactory.setDataSource(getDataSource());
-        sessionFactory.setPackagesToScan(new String[] { "com.capgemini.webapp.dao.entity" });
+        sessionFactory.setDataSource(getDataSource());
+        sessionFactory.setPackagesToScan(new String[] { "com.capgemini.webapp.dao.api.entity" });
         
         return sessionFactory;
      }
@@ -63,10 +63,10 @@ public class HibernateConfig {
     	Properties props = new Properties();
 
 		// Setting JDBC properties
-		props.put(DRIVER, env.getProperty("jdbc.driverClassName"));
+		/*props.put(DRIVER, env.getProperty("jdbc.driverClassName"));
 		props.put(URL, env.getProperty("jdbc.url"));
 		props.put(USER, env.getProperty("jdbc.username"));
-		props.put(PASS, env.getProperty("jdbc.password"));
+		props.put(PASS, env.getProperty("jdbc.password"));*/
 
 		// Setting Hibernate properties
 		props.put(SHOW_SQL, env.getProperty("hibernate.show_sql"));
