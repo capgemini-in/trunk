@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.capgemini</groupId>
+		<artifactId>webappConsole</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<groupId>com.capgemini.webapp.dao</groupId>
+	<artifactId>webapp-dao</artifactId>
+	<packaging>pom</packaging>
+	<name>webapp-dao</name>
+	<url>http://www.capgemini.com</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<main.basedir>${project.basedir}</main.basedir>
+	</properties>
+	<dependencies>
+			<!-- Hibernate -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate.validator.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-jcache -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jcache</artifactId>
+			<version>5.3.0.CR1</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<modules>
+		<module>webapp-dao-api</module>
+		<module>webapp-dao-impl</module>
+	</modules>
+
+	<organization>
+		<name>Capgemini</name>
+		<url>http://www.capgemini.com</url>
+	</organization>
+</project>

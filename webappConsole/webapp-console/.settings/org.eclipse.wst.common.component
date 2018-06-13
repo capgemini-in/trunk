@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+                                    
+    
+    
+    
+    
+    
+    
+    
+    <wb-module deploy-name="webapp-console">
+                                                                        
+        
+        
+        
+        
+        
+        
+        
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
+                                                                        
+        
+        
+        
+        
+        
+        
+        
+        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
+                                                                        
+        
+        
+        
+        
+        
+        
+        
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+                                                                        
+        
+        
+        
+        
+        
+        
+        
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+                                                        
+        
+        
+        
+        
+        
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/java"/>
+        <dependent-module archiveName="webapp-common-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/webapp-common/webapp-common">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="webapp-dao-api-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/webapp-dao-api/webapp-dao-api">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="webapp-service-api-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/webapp-service-api/webapp-service-api">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="webapp-service-impl-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/webapp-service-impl/webapp-service-impl">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="webapp-security-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/webapp-security/webapp-security">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+                                                                        
+        
+        
+        
+        
+        
+        
+        
+        <property name="java-output-path" value="/webapp-console/target/classes"/>
+                                
+        
+        
+        <property name="context-root" value="webapp-console"/>
+                                                                    
+    
+    
+    
+    
+    
+    
+    
+    </wb-module>
+                                
+
+
+
+
+
+
+
+</project-modules>
