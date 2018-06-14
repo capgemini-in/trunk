@@ -2,23 +2,26 @@ package com.capgemini.webapp.service.api;
 
 import java.util.List;
 
-import com.capgemini.webapp.dao.api.entity.User;
+import com.capgemini.webapp.service.api.model.UserModel;
 
-
+/**
+ * @author awarhoka
+ *
+ */
 public interface UserService {
-	
-	User findById(int id);
-	
-	User findBySSO(String sso);
-	
-	void saveUser(User user);
-	
-	void updateUser(User user);
-	
+
+	UserModel findById(int id);
+
+	UserModel findBySSO(String sso);
+
+	void saveUser(UserModel userModel);
+
+	void updateUser(UserModel userModel);
+
 	void deleteUserBySSO(String sso);
 
-	List<User> findAllUsers(); 
-	
+	List<UserModel> findAllUsers();
+
 	boolean isUserSSOUnique(Integer id, String sso);
 
 }

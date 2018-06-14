@@ -1,4 +1,4 @@
-package com.capgemini.webapp.spring.controller;
+package com.capgemini.webapp.spring.controller.user;
 
 import java.util.List;
 import java.util.Locale;
@@ -6,7 +6,6 @@ import java.util.Locale;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import com.capgemini.webapp.dao.api.entity.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -17,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.capgemini.webapp.dao.api.entity.UserProfile;
 import com.capgemini.webapp.service.api.UserProfileService;
 import com.capgemini.webapp.service.api.UserService;
+import com.capgemini.webapp.service.api.model.UserModel;
+import com.capgemini.webapp.service.api.model.UserProfileModel;
+import com.capgemini.webapp.spring.controller.BaseController;
 
 
 
@@ -40,7 +41,7 @@ public class UserController extends BaseController{
 	@RequestMapping(value = { "/", "/list" }, method = RequestMethod.GET)
 	public String listUsers(ModelMap model) {
 
-		List<User> users = userService.findAllUsers();
+		List<UserModel> users = userService.findAllUsers();
 		model.addAttribute("users", users);
 		model.addAttribute("loggedinuser", super.getPrincipal());
 		return "userslist";
@@ -51,7 +52,7 @@ public class UserController extends BaseController{
 	 */
 	@RequestMapping(value = { "/newuser" }, method = RequestMethod.GET)
 	public String newUser(ModelMap model) {
-		User user = new User();
+		UserModel user = new UserModel();
 		model.addAttribute("user", user);
 		model.addAttribute("edit", false);
 		model.addAttribute("loggedinuser", super.getPrincipal());
@@ -63,18 +64,18 @@ public class UserController extends BaseController{
 	 * saving user in database. It also validates the user input
 	 */
 	@RequestMapping(value = { "/newuser" }, method = RequestMethod.POST)
-	public String saveUser(@Valid User user, BindingResult result,
+	public String saveUser(@Valid UserModel user, BindingResult result,
 			ModelMap model) {
 
 		if (result.hasErrors()) {
-			List<User> users = userService.findAllUsers();
+			List<UserModel> users = userService.findAllUsers();
 			 model.addAttribute("users",users);
 			return "registration";
 		}
 
 		/*
 		 * Preferred way to achieve uniqueness of field [sso] should be implementing custom @Unique annotation 
-		 * and applying it on field [sso] of Model class [User].
+		 * and applying it on field [sso] of Model class [UserModel].
 		 * 
 		 * Below mentioned peace of code [if block] is to demonstrate that you can fill custom errors outside the validation
 		 * framework as well while still using internationalized messages.
@@ -88,7 +89,7 @@ public class UserController extends BaseController{
 		
 		userService.saveUser(user);
 
-		model.addAttribute("success", "User " + user.getFirstName() + " "+ user.getLastName() + " registered successfully");
+		model.addAttribute("success", "UserModel " + user.getFirstName() + " "+ user.getLastName() + " registered successfully");
 		model.addAttribute("loggedinuser", super.getPrincipal());
 		//return "success";
 		return "registrationsuccess";
@@ -100,7 +101,7 @@ public class UserController extends BaseController{
 	 */
 	@RequestMapping(value = { "/edit-user-{ssoId}" }, method = RequestMethod.GET)
 	public String editUser(@PathVariable String ssoId, ModelMap model) {
-		User user = userService.findBySSO(ssoId);
+		UserModel user = userService.findBySSO(ssoId);
 		model.addAttribute("user", user);
 		model.addAttribute("edit", true);
 		model.addAttribute("loggedinuser", super.getPrincipal());
@@ -113,7 +114,7 @@ public class UserController extends BaseController{
 	 */
 	
 	@RequestMapping(value = { "/edit-user-{ssoId}" }, method = RequestMethod.POST)
-	public String updateUser(@ModelAttribute("user") User user, BindingResult result,
+	public String updateUser(@ModelAttribute("user") UserModel user, BindingResult result,
 			ModelMap model, @PathVariable String ssoId) {
 
 		if (result.hasErrors()) {
@@ -122,7 +123,7 @@ public class UserController extends BaseController{
 
 		userService.updateUser(user);
 
-		model.addAttribute("success", "User " + user.getFirstName() + " "+ user.getLastName() + " updated successfully");
+		model.addAttribute("success", "UserModel " + user.getFirstName() + " "+ user.getLastName() + " updated successfully");
 		model.addAttribute("loggedinuser", super.getPrincipal());
 		return "registrationsuccess";
 	}
@@ -139,10 +140,10 @@ public class UserController extends BaseController{
 	
 
 	/**
-	 * This method will provide UserProfile list to views
+	 * This method will provide UserProfileModel list to views
 	 */
 	@ModelAttribute("roles")
-	public List<UserProfile> initializeProfiles() {
+	public List<UserProfileModel> initializeProfiles() {
 		return userProfileService.findAll();
 	}
 

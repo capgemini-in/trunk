@@ -1,8 +1,11 @@
 package com.capgemini.webapp.spring.initialize;
 
+import javax.servlet.Filter;
+
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import com.capgemini.webapp.spring.config.web.WebMvcConfig;
+import com.capgemini.webapp.spring.config.web.CORSFilter;
 /**
  * @author awarhoka
  */
@@ -22,5 +25,11 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 	protected String[] getServletMappings() {
 		return new String[] { "/" };
 	}
+	
+	@Override
+    protected Filter[] getServletFilters() {
+    	Filter [] singleton = { new CORSFilter() };
+    	return singleton;
+	}
 
-}
+}  

@@ -2,15 +2,19 @@ package com.capgemini.webapp.service.api;
 
 import java.util.List;
 
-import com.capgemini.webapp.dao.api.entity.UserProfile;
+import com.capgemini.webapp.service.api.model.UserProfileModel;
 
 
+/**
+ * @author awarhoka
+ *
+ */
 public interface UserProfileService {
 
-	UserProfile findById(int id);
+	UserProfileModel findById(int id);
 
-	UserProfile findByType(String type);
+	UserProfileModel findByType(String type);
 	
-	List<UserProfile> findAll();
+	List<UserProfileModel> findAll();
 	
 }

@@ -14,9 +14,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.capgemini.webapp.dao.api.entity.User;
-import com.capgemini.webapp.dao.api.entity.UserProfile;
 import com.capgemini.webapp.service.api.UserService;
+import com.capgemini.webapp.service.api.model.UserModel;
+import com.capgemini.webapp.service.api.model.UserProfileModel;
 
 
 @Service("customUserDetailsService")
@@ -31,10 +31,10 @@ public class CustomUserDetailsService implements UserDetailsService{
 	public UserDetails loadUserByUsername(String ssoId)
 			throws UsernameNotFoundException {
 		System.out.println("Came Here for USER ");
-		User user = userService.findBySSO(ssoId);
-		logger.info("User : {}", user);
+		UserModel user = userService.findBySSO(ssoId);
+		logger.info("UserModel : {}", user);
 		if(user==null){
-			logger.info("User not found");
+			logger.info("UserModel not found");
 			throw new UsernameNotFoundException("Username not found");
 		}
 			return new org.springframework.security.core.userdetails.User(user.getSsoId(), user.getPassword(), 
@@ -42,11 +42,11 @@ public class CustomUserDetailsService implements UserDetailsService{
 	}
 
 	
-	private List<GrantedAuthority> getGrantedAuthorities(User user){
+	private List<GrantedAuthority> getGrantedAuthorities(UserModel user){
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		
-		for(UserProfile userProfile : user.getUserProfiles()){
-			logger.info("UserProfile : {}", userProfile);
+		for(UserProfileModel userProfile : user.getUserProfiles()){
+			logger.info("UserProfileModel : {}", userProfile);
 			authorities.add(new SimpleGrantedAuthority("ROLE_"+userProfile.getType()));
 		}
 		logger.info("authorities : {}", authorities);
