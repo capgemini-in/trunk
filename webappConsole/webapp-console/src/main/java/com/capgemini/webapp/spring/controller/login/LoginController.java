@@ -24,7 +24,6 @@ public class LoginController extends BaseController{
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String loginPage() {
-		System.out.println("Came Here For Login");
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
 	    } else {
