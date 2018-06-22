@@ -53,7 +53,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 	@Autowired
 	RoleToUserProfileConverter roleToUserProfileConverter;
-	
+
 	@Autowired
 	private RequestMappingHandlerAdapter requestMappingHandlerAdapter;
 
@@ -66,15 +66,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	public void configureViewResolvers(ViewResolverRegistry registry) {
 		registry.jsp().prefix("/WEB-INF/views/").suffix(".jsp");
 	}
-    /**
-     * Configure Converter to be used.
-     * In our example, we need a converter to convert string values[Roles] to UserProfiles in newUser.jsp
-     */
-    @Override
-    public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(roleToUserProfileConverter);
-    }
-    
+
+	/**
+	 * Configure Converter to be used. In our example, we need a converter to
+	 * convert string values[Roles] to UserProfiles in newUser.jsp
+	 */
+	@Override
+	public void addFormatters(FormatterRegistry registry) {
+		registry.addConverter(roleToUserProfileConverter);
+	}
+
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
 		registry.addRedirectViewController("/test", "https://www.capgemini.com");
@@ -151,13 +152,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		registry.addResourceHandler("/static/**").addResourceLocations("/static/").setCacheControl(cacheControl)
 				.resourceChain(true).addResolver(versionResourceResolver)
 				.addTransformer(new CssLinkResourceTransformer());
+		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+		registry.addResourceHandler("/images/**").addResourceLocations("/images/");
+		registry.addResourceHandler("/img/**").addResourceLocations("/img/**");
+		registry.addResourceHandler("/js/**").addResourceLocations("/js/**");
 	}
 
-	/*@Bean(name = "multipartResolver")
+	@Bean(name = "multipartResolver")
 	public CommonsMultipartResolver multiPartResolver() {
 		CommonsMultipartResolver resolver = new CommonsMultipartResolver();
 		return resolver;
-	}*/
+	}
 
 	@Override
 	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
@@ -177,12 +182,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		converters.add(stringConverter);
 		converters.add(new MappingJackson2HttpMessageConverter());
 	}
-	/**Optional. It's only required when handling '.' in @PathVariables which otherwise ignore everything after last '.' in @PathVaidables argument.
-     * It's a known bug in Spring [https://jira.spring.io/browse/SPR-6164], still present in Spring 4.1.7.
-     * This is a workaround for this issue.
-     */
-    @Override
-    public void configurePathMatch(PathMatchConfigurer matcher) {
-        matcher.setUseRegisteredSuffixPatternMatch(true);
-    }
+
+	/**
+	 * Optional. It's only required when handling '.' in @PathVariables which
+	 * otherwise ignore everything after last '.' in @PathVaidables argument. It's a
+	 * known bug in Spring [https://jira.spring.io/browse/SPR-6164], still present
+	 * in Spring 4.1.7. This is a workaround for this issue.
+	 */
+	@Override
+	public void configurePathMatch(PathMatchConfigurer matcher) {
+		matcher.setUseRegisteredSuffixPatternMatch(true);
+	}
 }

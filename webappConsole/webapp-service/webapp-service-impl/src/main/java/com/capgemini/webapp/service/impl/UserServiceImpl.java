@@ -1,19 +1,21 @@
 package com.capgemini.webapp.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.capgemini.webapp.dao.api.UserDao;
-import com.capgemini.webapp.service.api.UserService;
-import com.capgemini.webapp.service.api.model.UserModel;
 import com.capgemini.webapp.dao.api.entity.User;
+import com.capgemini.webapp.dao.api.entity.UserInfo;
+import com.capgemini.webapp.service.api.UserService;
+import com.capgemini.webapp.service.api.model.UserInfoModel;
+import com.capgemini.webapp.service.api.model.UserModel;
 
 
 /**
@@ -24,6 +26,9 @@ import com.capgemini.webapp.dao.api.entity.User;
 @Transactional
 public class UserServiceImpl implements UserService{
 
+	@Autowired
+	private Environment env;
+	
 	@Autowired
 	private UserDao dao;
 	
@@ -36,7 +41,11 @@ public class UserServiceImpl implements UserService{
 	}
 
 	public UserModel findBySSO(String sso) {
-		UserModel usermodel =new DozerBeanMapper().map(dao.findBySSO(sso),UserModel.class); 
+		User user = dao.findBySSO(sso);
+		UserModel usermodel = null;
+		if(user != null) {			
+			usermodel =new DozerBeanMapper().map(dao.findBySSO(sso),UserModel.class); 
+		}
 		return usermodel;
 	}
 	@Transactional
@@ -89,4 +98,29 @@ public class UserServiceImpl implements UserService{
 		return ( userModel == null || ((id != null) && (userModel.getId() == id)));
 	}
 	
+	@Override
+	public List<UserModel> getallProfile() {
+		List<UserModel> userlist =this.mapList(dao.UserProfileType(), UserModel.class);
+		return userlist;
+		/*String authentication = env.getRequiredProperty(AuthenticationConstants.AUTHENTICATION);
+		if (authentication.equalsIgnoreCase(AuthenticationConstants.LDAP_AUTH)) {
+			return dao.findLdapUserGroup();
+		} else {
+			return dao.UserProfileType();
+		}*/
+	}
+
+	@Override
+	@Transactional
+	public void updateList(List<UserInfoModel> p) throws Exception {
+		List<UserInfo> userlist =this.mapuserInfoList(p, UserInfo.class);
+		dao.updateUserInfos(userlist);		
+	}
+	
+	  private List<UserInfo> mapuserInfoList(List<UserInfoModel> fromList, final Class<UserInfo> toClass) {
+		    return fromList
+		            .stream()
+		            .map(from -> new DozerBeanMapper().map(from, toClass))
+		            .collect(Collectors.toList());
+		}
 }

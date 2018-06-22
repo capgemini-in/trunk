@@ -1,13 +1,20 @@
 package com.capgemini.webapp.dao.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import javax.naming.Name;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
@@ -17,6 +24,8 @@ import org.springframework.stereotype.Repository;
 
 import com.capgemini.webapp.dao.api.UserDao;
 import com.capgemini.webapp.dao.api.entity.User;
+import com.capgemini.webapp.dao.api.entity.UserInfo;
+import com.capgemini.webapp.dao.api.entity.UserProfile;
 import com.capgemini.webapp.dao.impl.config.mybatis.mapper.usermapper.UserMapper;
 
 
@@ -89,5 +98,72 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 		User user = (User)crit.uniqueResult();
 		delete(user);
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> UserProfileType() {
+		org.hibernate.Session session = getSession();
+		SQLQuery query = session.createSQLQuery(
+				"SELECT s.sso_id , hp.user_profile_id, h.type FROM app_user s INNER JOIN app_user_user_profile hp on s.id = hp.user_id INNER JOIN user_profile h on hp.user_profile_id = h.id");
+		List<Object[]> rows = query.list();
+		List<User> userList = getListOfUsersWithRoles(rows);
+		return userList;
+	}
+	
+	/**
+	 * 
+	 * @param rows
+	 * @return
+	 */
+	private List<User> getListOfUsersWithRoles(List<Object[]> rows) {
 
+		Map<String, User> userRoleMap = new HashMap();
+		List<User> userList = new ArrayList();
+		for (Object[] row : rows) {
+			String name = String.valueOf(row[0]);
+			String roleId = String.valueOf(row[1]);
+			String roleName = String.valueOf(row[2]);
+			if (userRoleMap.containsKey(name)) {
+				User user = userRoleMap.get(name);
+				UserProfile up = new UserProfile();
+				up.setId(Integer.parseInt(roleId));
+				up.setType(roleName);
+				user.getUserProfiles().add(up);
+			} else {
+				User user = new User();
+				user.setFirstName(name);
+				UserProfile up = new UserProfile();
+				up.setId(Integer.parseInt(roleId));
+				up.setType(roleName);
+				user.getUserProfiles().add(up);
+				userRoleMap.put(name, user);
+			}
+		}
+		return getListOfUsersFromMap(userRoleMap, userList);
+	}
+	
+	/**
+	 * 
+	 * @param userRoleMap
+	 * @param userList
+	 * @return
+	 */
+	private List<User> getListOfUsersFromMap(Map<String, User> userRoleMap, List<User> userList) {
+		for (Map.Entry<String, User> entry : userRoleMap.entrySet()) {
+			// System.out.println(entry.getKey() + "/" + entry.getValue());
+			userList.add(entry.getValue());
+		}
+		return userList;
+	}
+	
+
+	@Override
+	public void updateUserInfos(List<UserInfo>  plstUserInfo) {
+		org.hibernate.Session session = getSession();
+        if (plstUserInfo != null && plstUserInfo.size() > 0) {
+            for (UserInfo entity: plstUserInfo) {                
+                session.persist(entity);
+            }
+        }
+	}
 }

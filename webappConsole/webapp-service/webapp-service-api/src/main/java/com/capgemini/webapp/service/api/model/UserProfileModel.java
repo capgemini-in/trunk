@@ -62,7 +62,8 @@ public class UserProfileModel implements Serializable {
 
 	@Override
 	public String toString() {
-		return "UserProfileModel [id=" + id + ", type=" + type + "]";
+		//return "UserProfileModel [id=" + id + ", type=" + type + "]";
+		return  type;
 	}
 
 }
