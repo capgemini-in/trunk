@@ -115,7 +115,7 @@ public class UserController extends BaseController {
 	public String saveUser(@Valid UserModel user, BindingResult result, ModelMap model) {
 
 		
-		try {
+		/*try {
 			URI uri = new URI(REST_SERVICE_URI+"/api/user/");
 			RestTemplate restTemplate = new RestTemplate(); 
 
@@ -124,13 +124,13 @@ public class UserController extends BaseController {
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
-		/*if (result.hasErrors()) {
+		if (result.hasErrors()) {
 			List<UserModel> users = userService.findAllUsers();
 			model.addAttribute("users", users);
 			return "registration";
-		}*/
+		}
 
 		/*
 		 * Preferred way to achieve uniqueness of field [sso] should be implementing
@@ -142,14 +142,14 @@ public class UserController extends BaseController {
 		 * internationalized messages.
 		 * 
 		 */
-		/*if (!userService.isUserSSOUnique(user.getId(), user.getSsoId())) {
+		if (!userService.isUserSSOUnique(user.getId(), user.getSsoId())) {
 			FieldError ssoError = new FieldError("user", "ssoId", messageSource.getMessage("non.unique.ssoId",
 					new String[] { user.getSsoId() }, Locale.getDefault()));
 			result.addError(ssoError);
 			return "registration";
 		}
 
-		userService.saveUser(user);*/
+		userService.saveUser(user);
 
 		model.addAttribute("success",
 				"UserModel " + user.getFirstName() + " " + user.getLastName() + " registered successfully");
