@@ -39,7 +39,7 @@ public class MasterController extends BaseController{
 	@Autowired
 	MasterDataService dataService;
 	
-	public static final String REST_SERVICE_URI = "http://localhost:8091/pocwebapp" ;
+	public static final String REST_SERVICE_URI = "http://localhost:8083/pocwebapp" ;
 	
 	
 	
