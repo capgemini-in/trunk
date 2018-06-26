@@ -56,7 +56,7 @@ public class UserController extends BaseController {
 	private static String UPLOAD_LOCATION = "D:\\log";
 
 	//public static final String REST_SERVICE_URI = "http://10.76.132.95:8280/UserManagement/1.0.0" ;
-	public static final String REST_SERVICE_URI = "http://localhost:8083/pocwebapp" ;
+	public static final String REST_SERVICE_URI = "http://localhost:9999/UserManagement/1.0.0" ;
 
 	/**
 	 * This method will list all existing users.
