@@ -33,7 +33,7 @@ import com.capgemini.webapp.dao.api.constants.IDaoConstants;;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan({ "com.capgemini.webapp.dao.api.entity" })
-@PropertySource(value = {"classpath:/config/database/myappdb_${config}.properties"}, ignoreResourceNotFound=true)
+@PropertySource(value = {"classpath:/config/database/myappdb_dev.properties"}, ignoreResourceNotFound=true)
 public class HibernateConfig {
 
 	@Autowired

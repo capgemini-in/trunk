@@ -6,9 +6,47 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Asset Management</title>
-<script>
+
+<script>https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js</script>
+<link href="cs/jquery.dataTables.min.css" rel="stylesheet"
+	type="text/css" />
+<script src="js/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="js/jquery.dataTables.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+
 	document.getElementById('id01').style.display = 'block';
+        $(document).ready(function () {
+            $("#userTable").dataTable({
+                "pagingType": "full_numbers"
+            });
+        });
 </script>
+<!--  <script>
+	document.getElementById('id01').style.display = 'block';
+	
+	/*------------    Ajax call   -----------*/
+    $(document).ready(function () {	
+	$.ajax({
+		url: '/list',
+		data: {
+			format: 'json'
+		},
+		error: function() {
+			alert("Error");
+		},
+		success: function(data) {
+			var userListData = JSON.parse(data);
+			console.log(userListData);
+			 $.each(userListData, function(i, ele) {
+		     		$("#content_view").append("<tr><td>" + ele.firstName + "</td><td>" + ele.lastName + "</td><td>" + ele.emailt + "</td><td>" + ele.ssoId + "</td></tr>");
+		     });
+			$('#userTable').DataTable();
+		},
+		type: 'GET'
+	});			
+ });
+</script>-->
 </head>
 <body class="w3-light-grey w3-content" style="max-width: 1600px"
 	ng-app="myApp" ng-Controller="myCtrl">
@@ -31,7 +69,8 @@
 
 		<div class="w3-row-padding w3-border w3-border-cyan" id="myMain">
 			<br /> <b><h2 style="margin-left: 50dp">User List</h2></b> <br /> <br />
-			<table class="table table-hover">
+			
+			<table id="userTable" class="table table-hover">
 				<thead>
 					<tr>
 						<th>Firstname</th>
@@ -47,6 +86,8 @@
 
 					</tr>
 				</thead>
+				<!-- <tbody id="content_view" style="font-size: 14px">
+				</tbody>-->
 				<tbody>
 					<c:forEach items="${users}" var="user">
 						<tr>

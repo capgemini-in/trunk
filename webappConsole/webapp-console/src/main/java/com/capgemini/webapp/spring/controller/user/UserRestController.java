@@ -43,7 +43,7 @@ public class UserRestController {
 		
 		//-------------------Create a UserModel--------------------------------------------------------
 	     
-	   /* @RequestMapping(value = "/userPost/", method = RequestMethod.POST)
+	    @RequestMapping(value = "/userPost/", method = RequestMethod.POST)
 	    public ResponseEntity<String> createUser(@RequestBody UserModel userModel,    UriComponentsBuilder ucBuilder) {
 	        System.out.println("Creating UserModel " + userModel.getSsoId());
 	 
@@ -59,7 +59,7 @@ public class UserRestController {
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(userModel.getId()).toUri());
 	        return new ResponseEntity<String>("registrationsuccess", HttpStatus.CREATED);
-	    }*/
+	    }
 /*	
     
     //-------------------Retrieve All Users--------------------------------------------------------

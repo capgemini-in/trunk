@@ -97,8 +97,8 @@
 						</div>
 					</div>
 				</div>
-			</div>
-	
+			</div>	
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 			<div class="row">
 				<div class="form-actions floatRight">
 					<c:choose>
