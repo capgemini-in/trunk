@@ -20,13 +20,13 @@ public class SelinumTest {
 			System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
 			driver = new ChromeDriver();
 			System.out.println("Welcome To Jenkins Selinum Test");
-			driver.get("http://localhost:8083/pocwebapp/");
+			driver.get("http://localhost:8091/pocwebapp/");
 			// to hold the screen so that user can see what is happening
 			Thread.sleep(5000);
 			WebElement usernameBox = driver.findElement(By.name("ssoId"));
-			usernameBox.sendKeys("divvyas");
+			usernameBox.sendKeys("pallavi");
 			WebElement passwordBox = driver.findElement(By.name("password"));
-			passwordBox.sendKeys("divyam");
+			passwordBox.sendKeys("admin");
 			WebElement loginButton = driver.findElement(By.name("login"));
 			loginButton.click();
 			WebElement userMan = driver.findElement(By.linkText("User Management"));
