@@ -10,10 +10,9 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 
 import javax.validation.Valid;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -25,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,16 +35,12 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.capgemini.webapp.dao.api.entity.FileBucket;
-import com.capgemini.webapp.dao.api.entity.User;
 import com.capgemini.webapp.service.api.UserProfileService;
 import com.capgemini.webapp.service.api.UserService;
 import com.capgemini.webapp.service.api.model.UserInfoModel;
 import com.capgemini.webapp.service.api.model.UserModel;
 import com.capgemini.webapp.service.api.model.UserProfileModel;
 import com.capgemini.webapp.spring.controller.BaseController;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 
 @Controller
 @RequestMapping("/")
@@ -60,7 +56,7 @@ public class UserController extends BaseController {
 	private static String UPLOAD_LOCATION = "D:\\log";
 
 	//public static final String REST_SERVICE_URI = "http://10.76.132.95:8280/UserManagement/1.0.0" ;
-	public static final String REST_SERVICE_URI = "http://localhost:8082/pocwebapp" ;
+	public static final String REST_SERVICE_URI = "http://localhost:8083/pocwebapp" ;
 
 	/**
 	 * This method will list all existing users.
@@ -129,7 +125,7 @@ public class UserController extends BaseController {
 	public String saveUser(@Valid UserModel user, BindingResult result, ModelMap model) {
 
 		
-		try {
+		/*try {
 			URI uri = new URI(REST_SERVICE_URI+"/api/user/");
 			RestTemplate restTemplate = new RestTemplate(); 
 
@@ -138,13 +134,13 @@ public class UserController extends BaseController {
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
-		/*if (result.hasErrors()) {
+		if (result.hasErrors()) {
 			List<UserModel> users = userService.findAllUsers();
 			model.addAttribute("users", users);
 			return "registration";
-		}*/
+		}
 
 		/*
 		 * Preferred way to achieve uniqueness of field [sso] should be implementing
@@ -156,14 +152,14 @@ public class UserController extends BaseController {
 		 * internationalized messages.
 		 * 
 		 */
-		/*if (!userService.isUserSSOUnique(user.getId(), user.getSsoId())) {
+		if (!userService.isUserSSOUnique(user.getId(), user.getSsoId())) {
 			FieldError ssoError = new FieldError("user", "ssoId", messageSource.getMessage("non.unique.ssoId",
 					new String[] { user.getSsoId() }, Locale.getDefault()));
 			result.addError(ssoError);
 			return "registration";
 		}
 
-		userService.saveUser(user);*/
+		userService.saveUser(user);
 
 		model.addAttribute("success",
 				"UserModel " + user.getFirstName() + " " + user.getLastName() + " registered successfully");
