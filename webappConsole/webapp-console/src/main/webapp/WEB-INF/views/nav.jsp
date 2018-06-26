@@ -40,7 +40,7 @@
 				<a href="/Gionee/POC/listCustomer" onclick="w3_close()"
 				class="w3-padding w3-border w3-round-xxlarge" id="2"><i
 				class="fa fa-street-view fa-fw w3-margin-right"></i>Customer</a> <a
-				href="/Gionee/POC/listProduct" onclick="w3_close()"
+				href="<c:url value='/products'/>" onclick="w3_close()"
 				class="w3-padding w3-border w3-round-xxlarge" id="3"><i
 				class="fa fa-suitcase fa-fw w3-margin-right"></i>Product</a> <a
 				href="/Gionee/POC/listservice" onclick="w3_close()"
