@@ -24,7 +24,7 @@ public class SelinumTest {
 			// to hold the screen so that user can see what is happening
 			Thread.sleep(5000);
 			WebElement usernameBox = driver.findElement(By.name("ssoId"));
-			usernameBox.sendKeys("pallavi");
+			usernameBox.sendKeys("pallapat");
 			WebElement passwordBox = driver.findElement(By.name("password"));
 			passwordBox.sendKeys("admin");
 			WebElement loginButton = driver.findElement(By.name("login"));
