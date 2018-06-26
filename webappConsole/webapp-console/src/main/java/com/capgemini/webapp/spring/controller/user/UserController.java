@@ -82,7 +82,7 @@ public class UserController extends BaseController {
 					users.add(user);
 				}
 			}else{
-				System.out.println("No user exist----------");
+				//System.out.println("No user exist----------");
 			}
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
