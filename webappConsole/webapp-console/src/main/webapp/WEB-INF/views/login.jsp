@@ -44,7 +44,7 @@
 							<input type="hidden" name="${_csrf.parameterName}"  value="${_csrf.token}" />
 								
 							<div class="form-actions">
-								<input type="submit"
+								<input type="submit" name="login"
 									class="btn btn-block btn-primary btn-default" value="Log in">
 							</div>
 						</form>
