@@ -29,14 +29,14 @@ public class SelinumTest {
 			passwordBox.sendKeys("admin");
 			WebElement loginButton = driver.findElement(By.name("login"));
 			loginButton.click();
-			/*WebElement userMan = driver.findElement(By.linkText("User Management"));
+			WebElement userMan = driver.findElement(By.linkText("Master"));
 			Actions action = new Actions(driver);
 			action.moveToElement(userMan).build().perform();
-			WebElement userButton = driver.findElement(By.linkText("User"));
+			WebElement userButton = driver.findElement(By.linkText("Product"));
 			System.out.println("Clicked on User ");
 			userButton.click();
 			Thread.sleep(5000);
-*/			
+
 			System.out.println(driver.getTitle());
 			driver.close();
 
