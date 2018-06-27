@@ -63,7 +63,6 @@ public class UserController extends BaseController {
 	private static String UPLOAD_LOCATION = "D:\\log";
 
 	//public static final String REST_SERVICE_URI = "http://10.76.132.95:8280/UserManagement/1.0.0" ;
-	//public static final String REST_SERVICE_URI = "http://10.220.28.100:8280/UserManagement/1.0.0";
 
 	/**
 	 * This method will list all existing users.
@@ -75,6 +74,7 @@ public class UserController extends BaseController {
 		List<UserModel> users = new ArrayList();
 		try {
 			URI uri = new URI("http://10.76.132.120:8280/UserManagement/1.0.0"+"/api/user/");
+			//URI uri = new URI("http://localhost:8082/pocwebapp"+"/api/user/");
 			RestTemplate restTemplate = new RestTemplate(); 
 			List<LinkedHashMap<String, Object>> usersMap = restTemplate.getForObject(uri, List.class);
 			if(usersMap!=null){
@@ -85,7 +85,8 @@ public class UserController extends BaseController {
 					user.setFirstName(map.get("firstName").toString());
 					user.setLastName(map.get("lastName").toString());
 					user.setEmail(map.get("email").toString());
-					user.setId(Integer.valueOf(map.get("id").toString()));
+					if(map.get("id") != null && map.get("id") != "") {						
+						user.setId(Integer.valueOf(map.get("id").toString()));					}
 					users.add(user);
 				}
 			}else{

@@ -14,7 +14,6 @@ import javax.persistence.TypedQuery;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.SQLQuery;
-import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
@@ -27,6 +26,10 @@ import com.capgemini.webapp.dao.api.entity.User;
 import com.capgemini.webapp.dao.api.entity.UserInfo;
 import com.capgemini.webapp.dao.api.entity.UserProfile;
 import com.capgemini.webapp.dao.impl.config.mybatis.mapper.usermapper.UserMapper;
+import com.capgemini.webapp.ldap.repository.GroupRepository;
+import com.capgemini.webapp.ldap.repository.UserRepository;
+import com.capgemini.webapp.security.config.LdapGroup;
+import com.capgemini.webapp.security.config.LdapUser;
 
 
 
@@ -36,6 +39,12 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 	static final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
 	@Autowired
 	UserMapper mapper;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private GroupRepository groupRepository;
 	
 	public User findById(int id) {
 		User user = getByKey(id);
@@ -165,5 +174,54 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
                 session.persist(entity);
             }
         }
+	}
+	
+	@Override
+	public List<User> findAllLdapUsers() {
+		List<LdapUser> ldapUserList = userRepository.findAll();
+		List<User> userList = new ArrayList();
+		for(LdapUser ldapUser: ldapUserList) {
+			User user = new User();
+			user.setFirstName(ldapUser.getFullName());
+			user.setLastName(ldapUser.getLastName());
+			user.setSsoId(ldapUser.getUid());
+			user.setEmail(ldapUser.getEmail());
+			userList.add(user);
+		}
+		return userList;
+	}
+	@Override
+	public List<User> findLdapUserGroup() {
+		/*List<LdapGroup> ldapGroups = ldapTemplate.search(query().where("objectClass").is("groupOfUniqueNames"),
+				new GroupContextMapper());*/
+		List<LdapGroup> ldapGroups = groupRepository.findAll();
+		Map<String, User> userRoleMap = new HashMap();
+		List<User> userList = new ArrayList();
+		for (LdapGroup group : ldapGroups) {
+			String roleName = group.getName();
+			Set<Name> memberSet = group.getMembers();
+			for (Name userName : memberSet) {
+				String uid = userName.toString();
+				String[] splittedString = uid.split(",");
+                System.out.println(" Splitted String "+splittedString[0]);
+                String uidKey = splittedString[0];
+                String[] uidSplit = uidKey.split("=");
+                System.out.println(" uidSplit[1] "+uidSplit[1]);
+				if (userRoleMap.containsKey(uidSplit[1])) {
+					User user = userRoleMap.get(uidSplit[1]);
+					UserProfile up = new UserProfile();
+					up.setType(roleName);
+					user.getUserProfiles().add(up);
+				} else {
+					User user = new User();
+					user.setFirstName(uidSplit[1]);
+					UserProfile up = new UserProfile();
+					up.setType(roleName);
+					user.getUserProfiles().add(up);
+					userRoleMap.put(uidSplit[1], user);
+				}
+			}
+		}
+		return getListOfUsersFromMap(userRoleMap, userList);
 	}
 }

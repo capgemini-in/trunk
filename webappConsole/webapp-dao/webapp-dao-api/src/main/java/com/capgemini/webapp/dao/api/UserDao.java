@@ -19,6 +19,10 @@ public interface UserDao {
 	
 	List<User> UserProfileType();
 	
+	List<User> findAllLdapUsers();
+	
+	List<User> findLdapUserGroup();
+	
 	void updateUserInfos(List<UserInfo> p);
 	
 }

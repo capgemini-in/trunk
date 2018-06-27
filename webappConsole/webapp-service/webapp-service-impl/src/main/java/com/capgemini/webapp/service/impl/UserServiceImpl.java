@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import com.capgemini.webapp.service.api.model.UserProfileModel;
  */
 @Service("userService")
 @Transactional
+@PropertySource("classpath:/config/ldap/ldap_details.properties")
 public class UserServiceImpl implements UserService{
 
 	@Autowired
@@ -100,7 +102,17 @@ public class UserServiceImpl implements UserService{
 	}
 	@Transactional(readOnly = true)
 	public List<UserModel> findAllUsers() {
-		List<UserModel> userlist =this.mapList(dao.findAllUsers(), UserModel.class);
+		//List<UserModel> userlist =this.mapList(dao.findAllUsers(), UserModel.class);
+		//return userlist;
+		List<UserModel> userlist = null;
+		String authentication = env.getRequiredProperty("authentication");
+		if (authentication.equalsIgnoreCase("LDAP")) {
+			//return dao.findAllLdapUsers();
+			userlist = this.mapList(dao.findAllLdapUsers(), UserModel.class);
+		} else {
+			//dao.findAllUsers();
+			userlist = this.mapList(dao.findAllUsers(), UserModel.class);
+		}
 		return userlist;
 	}
 	/*this is Mapper for List*/
@@ -118,14 +130,16 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public List<UserModel> getallProfile() {
-		List<UserModel> userlist =this.mapList(dao.UserProfileType(), UserModel.class);
-		return userlist;
-		/*String authentication = env.getRequiredProperty(AuthenticationConstants.AUTHENTICATION);
-		if (authentication.equalsIgnoreCase(AuthenticationConstants.LDAP_AUTH)) {
-			return dao.findLdapUserGroup();
+		List<UserModel> userlist = null;
+		String authentication = env.getRequiredProperty("authentication");
+		if (authentication.equalsIgnoreCase("LDAP")) {
+			//return dao.findLdapUserGroup();
+			userlist = this.mapList(dao.findLdapUserGroup(), UserModel.class);
 		} else {
-			return dao.UserProfileType();
-		}*/
+			//return dao.UserProfileType();
+			userlist = this.mapList(dao.UserProfileType(), UserModel.class);
+		}
+		return userlist;
 	}
 
 	@Override

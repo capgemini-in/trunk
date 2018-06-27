@@ -19,6 +19,11 @@
 			<artifactId>webapp-dao-api</artifactId>
 			<version>${webapp.dao.api.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.capgemini.webapp.security</groupId>
+			<artifactId>webapp-security</artifactId>
+			<version>${webapp.security.version}</version>
+		</dependency>
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
