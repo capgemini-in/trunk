@@ -207,8 +207,10 @@
         
      </div> -->
 	</div>
- 
-<sec:authorize   access="hasRole('ADMIN')" >		 	
+	
+	
+	
+	<sec:authorize   access="hasRole('ADMIN')" >		 	
 	<div class="w3-dropdown-hover">
 		<a href="/pocwebapp/list" onclick="w3_close()"
 			class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="33"><i
@@ -217,6 +219,7 @@
 			class="w3-dropdown-content w3-cyan  w3-animate-zoom w3-right w3-padding w3-medium">
 	<a href ="<c:url value='/list' />" class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="34"><i
 				class="fa fa-user-circle-o fa-fw w3-margin-right"></i>User</a>
+
 				<a href ="<c:url value='/userpermission' />"
 				class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="35"><i
 				class="fa fa-tree fa-fw w3-margin-right"></i>User Hierarchy</a>
