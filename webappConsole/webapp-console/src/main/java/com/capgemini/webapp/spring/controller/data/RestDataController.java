@@ -31,8 +31,6 @@ public class RestDataController {
 	@Autowired
 	MasterDataService dataService;
 
-	public static final String REST_SERVICE_URI = "http://localhost:8091/pocwebapp";
-
 	// -------------------Retrieve All
 	// Users---------------------------------------------
 

@@ -19,6 +19,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -45,6 +47,7 @@ import com.capgemini.webapp.spring.controller.BaseController;
 @Controller
 @RequestMapping("/")
 @SessionAttributes("roles")
+
 public class UserController extends BaseController {
 
 	@Autowired
@@ -53,10 +56,14 @@ public class UserController extends BaseController {
 	@Autowired
 	UserProfileService userProfileService;
 	
+
+	public  final String REST_SERVICE_URI ="http://10.76.132.120:8280/UserManagement/1.0.0";
+	
+	
 	private static String UPLOAD_LOCATION = "D:\\log";
 
 	//public static final String REST_SERVICE_URI = "http://10.76.132.95:8280/UserManagement/1.0.0" ;
-	public static final String REST_SERVICE_URI = "http://10.220.28.100:8280/UserManagement/1.0.0";
+	//public static final String REST_SERVICE_URI = "http://10.220.28.100:8280/UserManagement/1.0.0";
 
 	/**
 	 * This method will list all existing users.

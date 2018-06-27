@@ -9,6 +9,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -29,6 +31,7 @@ import com.capgemini.webapp.spring.controller.BaseController;
 @Controller
 @RequestMapping("/")
 @SessionAttributes("categories")
+
 /**
  * MasterController to handles all data related requests
  * @author pallapat
@@ -39,7 +42,8 @@ public class MasterController extends BaseController{
 	@Autowired
 	MasterDataService dataService;
 	
-	public static final String REST_SERVICE_URI = "http://localhost:8083/pocwebapp" ;
+	public  final String REST_SERVICE_URI ="http://10.76.132.120:8280/UserManagement/1.0.0";
+		
 	
 	
 	
