@@ -1,8 +1,6 @@
 <!-- Sidenav/menu -->
-<%@ taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
-<%@ taglib uri="http://www.springframework.org/security/tags"
-	prefix="security"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="security" %>
 
 <nav
 	class="w3-sidenav w3-text-white w3-collapse w3-blue w3-animate-left"
@@ -15,8 +13,12 @@
 		<a href="#" onclick="w3_close()"
 			class="w3-hide-large w3-right w3-jumbo w3-padding" title="close menu">
 			<i class="fa fa-remove"></i>
-		</a><img src="<c:url value="/images/logo.jpg" />"
-			style="width: 100%; height: 15%" class="w3-round"> <br> <br>
+		</a><img src="<c:url value="/images/logo.jpg" />" style="width: 100%; height: 15%" class="w3-round"> 
+ 
+		
+		
+		<br>
+		<br>
 
 
 		<hr style="width: 100%; border: 3px solid white" class="w3-round">
@@ -26,50 +28,53 @@
 		</h3>
 		<p class=""></p>
 	</div>
+	<sec:authorize access="hasRole('ADMIN')">
 	<div class="w3-dropdown-hover">
-		<a href="<c:url value='/products'/>"
+		<a href ="<c:url value='/products'/>" 
 			class="w3-padding w3-text-white w3-border w3-round-xxlarge" id="0"><i
 			class="fa fa-diamond fa-fw w3-margin-right"></i>Master</a>
-		<div id="myAdmin" style="margin-left: 10%; width: 80%"
+		<div id="myAdmin" style="margin-left:10%;width:80%"
 			class="w3-dropdown-content w3-cyan w3-animate-zoom w3-right w3-padding w3-medium">
-			<a href="<c:url value='/products'/>" onclick="w3_close()"
+				<a
+				href="<c:url value='/products'/>" onclick="w3_close()"
 				class="w3-padding w3-border w3-round-xxlarge" id="3"><i
-				class="fa fa-suitcase fa-fw w3-margin-right"></i>Product</a> <a
-				onclick="w3_close()" class="w3-padding w3-border w3-round-xxlarge"
-				id="2"><i class="fa fa-street-view fa-fw w3-margin-right"></i>Customer</a>
-			<a onclick="w3_close()" class="w3-padding w3-border w3-round-xxlarge"
-				id="4"><i class="fa fa-rss fa-fw w3-margin-right"></i>Services</a>
+				class="fa fa-suitcase fa-fw w3-margin-right"></i>Product</a>
+				<a  onclick="w3_close()"
+				class="w3-padding w3-border w3-round-xxlarge" id="2"><i
+				class="fa fa-street-view fa-fw w3-margin-right"></i>Customer</a> 
+				<a
+			 onclick="w3_close()"
+				class="w3-padding w3-border w3-round-xxlarge" id="4"><i
+				class="fa fa-rss fa-fw w3-margin-right"></i>Services</a>
 		</div>
 	</div>
+</sec:authorize>
 
+	<sec:authorize   access="hasRole('ADMIN')" >		 	
+	<div class="w3-dropdown-hover">
+		<a href="/pocwebapp/list" onclick="w3_close()"
+			class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="33"><i
+			class="fa fa-users fa-fw w3-margin-right"></i>User Management</a>
+		<div style="margin-left:10%;width:80%"
+			class="w3-dropdown-content w3-cyan  w3-animate-zoom w3-right w3-padding w3-medium">
+	<a href ="<c:url value='/list' />" class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="34"><i
+				class="fa fa-user-circle-o fa-fw w3-margin-right"></i>User</a>
 
-	<sec:authorize access="hasRole('ADMIN')">
-		<div class="w3-dropdown-hover">
-			<a href="/pocwebapp/list" onclick="w3_close()"
-				class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="33"><i
-				class="fa fa-users fa-fw w3-margin-right"></i>User Management</a>
-			<div style="margin-left: 10%; width: 80%"
-				class="w3-dropdown-content w3-cyan  w3-animate-zoom w3-right w3-padding w3-medium">
-				<a href="<c:url value='/list' />"
-					class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="34"><i
-					class="fa fa-user-circle-o fa-fw w3-margin-right"></i>User</a> <a
-					href="<c:url value='/userpermission' />"
-					class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="35"><i
-					class="fa fa-tree fa-fw w3-margin-right"></i>User Hierarchy</a> <a
-					href="<c:url value='/userpermission' />"
-					class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="36"><i
-					class="fa fa-user-secret fa-fw w3-margin-right"></i>Role</a> <a
-					href="<c:url value='/usermenuright' />"
-					class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="37"><i
-					class="fa fa-tv fa-fw w3-margin-right"></i>Screen Permission</a> <a
-					href="<c:url value='/singleUpload' />"
-					class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="41"><i
-					class="fa fa-user-circle-o fa-fw w3-margin-right"></i> Master Data
-					Upload</a>
-			</div>
+				<a href ="<c:url value='/userpermission' />"
+				class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="35"><i
+				class="fa fa-tree fa-fw w3-margin-right"></i>User Hierarchy</a>
+				 <a href ="<c:url value='/userpermission' />"
+				 class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="36"><i
+				class="fa fa-user-secret fa-fw w3-margin-right"></i>Role</a> 
+				<a href ="<c:url value='/usermenuright' />"
+				class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="37"><i
+				class="fa fa-tv fa-fw w3-margin-right"></i>Screen Permission</a>
+				<a href ="<c:url value='/singleUpload' />" class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="41"><i
+				class="fa fa-user-circle-o fa-fw w3-margin-right"></i> Master Data Upload</a>
 		</div>
-	</sec:authorize>
-
+	</div>
+		 	</sec:authorize>
+	
 
 	<!--  <div class="w3-dropdown-hover">
    <a href="#search"  class="w3-padding w3-border w3-round-xxlarge" id="6"><i class="fa fa-user fa-fw w3-margin-right"></i>IT admin</a>
@@ -95,9 +100,9 @@
 		class="fa fa-male fa-fw w3-margin-right"></i>ABOUT</a> <a href="#contact"
 		onclick="w3_close()"
 		class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="42"><i
-		class="fa fa-envelope fa-fw w3-margin-right"></i>CONTACT</a> <a
-		href="<c:url value='/logout' />"
-		class="w3-text-white w3-padding w3-border w3-round-xxlarge"><i
+		class="fa fa-envelope fa-fw w3-margin-right"></i>CONTACT</a> 
+		<a href ="<c:url value='/logout' />" 
+		class="w3-text-white w3-padding w3-border w3-round-xxlarge" ><i
 		class="fa fa-sign-out fa-fw w3-margin-right"></i>Log Out</a>
 
 </nav>
@@ -139,8 +144,7 @@
 <%request.getSession().setAttribute("sessionVar", 1);%>
 	$('#qnimate').addClass('popup-box-on');
 		document.getElementById("confirmPopup").style.display = "block";
-		$.ajax({
-			url : "/LAPP_Rest_App/rest/lappChat/setChatStatus/${UserId}",
+		$.ajax({url : "/LAPP_Rest_App/rest/lappChat/setChatStatus/${UserId}",
 			success : function() {
 
 			}
