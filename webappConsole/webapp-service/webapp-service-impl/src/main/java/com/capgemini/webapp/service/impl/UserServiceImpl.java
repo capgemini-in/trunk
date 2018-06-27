@@ -1,6 +1,7 @@
 package com.capgemini.webapp.service.impl;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.dozer.DozerBeanMapper;
@@ -13,9 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.capgemini.webapp.dao.api.UserDao;
 import com.capgemini.webapp.dao.api.entity.User;
 import com.capgemini.webapp.dao.api.entity.UserInfo;
+import com.capgemini.webapp.dao.api.entity.UserProfile;
 import com.capgemini.webapp.service.api.UserService;
 import com.capgemini.webapp.service.api.model.UserInfoModel;
 import com.capgemini.webapp.service.api.model.UserModel;
+import com.capgemini.webapp.service.api.model.UserProfileModel;
 
 
 /**
@@ -71,12 +74,27 @@ public class UserServiceImpl implements UserService{
 			}
 			entity.setFirstName(userModel.getFirstName());
 			entity.setLastName(userModel.getLastName());
-			entity.setEmail(userModel.getEmail());
-			entity.setUserProfiles(entity.getUserProfiles());
+			entity.setEmail(userModel.getEmail());		
+			
+			//Set<UserProfile> userProfileEntity =new DozerBeanMapper().map(userModel.getUserProfiles(),Set.class);
+			Set<UserProfile> userProfileEntity = getUpdatedUserProfiles(userModel.getUserProfiles(), UserProfile.class);
+			entity.setUserProfiles(userProfileEntity);
 		}
 	}
 
-	
+	/**
+	 * 
+	 * @param userProfiles
+	 * @param toClass
+	 * @return
+	 */
+	private Set<UserProfile> getUpdatedUserProfiles(Set<UserProfileModel> userProfiles, Class<UserProfile> toClass) {
+		 return userProfiles
+		            .stream()
+		            .map(from -> new DozerBeanMapper().map(from, toClass))
+		            .collect(Collectors.toSet());
+	}
+
 	public void deleteUserBySSO(String sso) {
 		dao.deleteBySSO(sso);
 	}
