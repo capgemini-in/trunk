@@ -57,7 +57,7 @@ public class UserController extends BaseController {
 	UserProfileService userProfileService;
 	
 
-	public  final String REST_SERVICE_URI ="http://10.76.132.120:8083/pocwebapp";
+	public static final String REST_SERVICE_URI ="http://LIN17000289:8083/pocwebapp";
 	
 	
 	private static String UPLOAD_LOCATION = "D:\\log";
