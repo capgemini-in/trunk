@@ -214,7 +214,7 @@
 	<div class="w3-dropdown-hover">
 		<a href="/pocwebapp/list" onclick="w3_close()"
 			class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="33"><i
-			class="fa fa-users fa-fw w3-margin-right"></i>User Management </a>
+			class="fa fa-users fa-fw w3-margin-right"></i>User Management</a>
 		<div style="margin-left:10%;width:80%"
 			class="w3-dropdown-content w3-cyan  w3-animate-zoom w3-right w3-padding w3-medium">
 	<a href ="<c:url value='/list' />" class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="34"><i
