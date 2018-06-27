@@ -20,7 +20,7 @@ public class SelinumTest {
 			System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
 			driver = new ChromeDriver();
 			System.out.println("Welcome To Jenkins Selinum Test");
-			driver.get("http://localhost:8091/pocwebapp/");
+			driver.get("http://localhost:8083/pocwebapp/");
 			// to hold the screen so that user can see what is happening
 			Thread.sleep(5000);
 			WebElement usernameBox = driver.findElement(By.name("ssoId"));
