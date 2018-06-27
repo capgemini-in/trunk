@@ -42,7 +42,9 @@ public class MasterController extends BaseController{
 	@Autowired
 	MasterDataService dataService;
 	
-	public  final String REST_SERVICE_URI ="http://10.76.132.120:8280/UserManagement/1.0.0";
+	//public  final String REST_SERVICE_URI ="http://10.76.132.120:8280/UserManagement/1.0.0";
+	
+	public  final String REST_SERVICE_URI ="http://10.76.132.120:8083/pocwebapp";
 		
 	
 	
@@ -55,7 +57,7 @@ public class MasterController extends BaseController{
 		try {
 			
 		
-			URI uri = new URI(REST_SERVICE_URI+"/data/products/");
+			URI uri = new URI("http://10.76.132.120:8280/UserManagement/1.0.0"+"/data/products/");
 			RestTemplate restTemplate = new RestTemplate(); 
 			List<LinkedHashMap<String, Object>> productMap = restTemplate.getForObject(uri, List.class);
 			if(productMap!=null){	

@@ -57,7 +57,7 @@ public class UserController extends BaseController {
 	UserProfileService userProfileService;
 	
 
-	public  final String REST_SERVICE_URI ="http://10.76.132.120:8280/UserManagement/1.0.0";
+	public  final String REST_SERVICE_URI ="http://10.76.132.120:8083/pocwebapp";
 	
 	
 	private static String UPLOAD_LOCATION = "D:\\log";
@@ -74,7 +74,7 @@ public class UserController extends BaseController {
 		
 		List<UserModel> users = new ArrayList();
 		try {
-			URI uri = new URI(REST_SERVICE_URI+"/api/user/");
+			URI uri = new URI("http://10.76.132.120:8280/UserManagement/1.0.0"+"/api/user/");
 			RestTemplate restTemplate = new RestTemplate(); 
 			List<LinkedHashMap<String, Object>> usersMap = restTemplate.getForObject(uri, List.class);
 			if(usersMap!=null){
