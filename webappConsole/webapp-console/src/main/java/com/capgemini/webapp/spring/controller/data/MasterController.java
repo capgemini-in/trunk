@@ -234,6 +234,7 @@ public class MasterController extends BaseController{
 	
 	@RequestMapping(value = { "/newproduct" }, method = RequestMethod.POST)
 	public String newProduct(@Valid ProductModel productBean, BindingResult result, ModelMap model) {
+		System.out.println("Entering method:newProduct");
 		if (result.hasErrors()) {
 			return "updateProduct";
 		}
