@@ -16,6 +16,7 @@ public class SelinumTest {
 
 		try {
 
+			
 			// Needed a chrome Driver to run the application on the Chrome
 			System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
 			driver = new ChromeDriver();
