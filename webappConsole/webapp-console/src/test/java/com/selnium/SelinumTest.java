@@ -29,7 +29,9 @@ public class SelinumTest {
 			passwordBox.sendKeys("admin");
 			WebElement loginButton = driver.findElement(By.name("login"));
 			loginButton.click();
-			WebElement userMan = driver.findElement(By.linkText("Master"));
+			System.out.println("Login done");
+			System.out.println(driver.getTitle());
+			/*WebElement userMan = driver.findElement(By.linkText("Master"));
 			Actions action = new Actions(driver);
 			action.moveToElement(userMan).build().perform();
 			WebElement userButton = driver.findElement(By.linkText("Product"));
@@ -37,7 +39,7 @@ public class SelinumTest {
 			userButton.click();
 			Thread.sleep(5000);
 
-			System.out.println(driver.getTitle());
+			System.out.println(driver.getTitle());*/
 			driver.close();
 
 		}
