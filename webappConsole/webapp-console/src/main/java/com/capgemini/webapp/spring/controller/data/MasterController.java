@@ -226,7 +226,7 @@ public class MasterController extends BaseController{
 		if(prod!=null) {
 			
 			model.addAttribute("productBean", prod);
-			model.addAttribute("catList", cateogryList);
+			model.addAttribute("categories", cateogryList);
 			model.addAttribute("edit", false);
 			model.addAttribute("loggedinuser", super.getPrincipal());
 			

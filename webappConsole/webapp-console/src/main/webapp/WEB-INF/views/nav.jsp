@@ -1,7 +1,7 @@
 <!-- Sidenav/menu -->
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="security" %>
-
+<title>Navigation page</title>
 <nav
 	class="w3-sidenav w3-text-white w3-collapse w3-blue w3-animate-left"
 	style="z-index: 3; width: 300px;" id="mySidenav">
