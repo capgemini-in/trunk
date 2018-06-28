@@ -29,6 +29,6 @@ public interface UserService {
 	
 	void updateList(List<UserInfoModel> lstUser) throws Exception; 
 	
-	//void uploadUser(List<User> lstUser) throws Exception; 
+	void uploadUser(List<UserModel> lstUser) throws Exception; 
 
 }

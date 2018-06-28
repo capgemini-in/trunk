@@ -13,7 +13,7 @@
  
     <div class="form-container">
         
-        <form:form method="POST" action="./singleUpload?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data" modelAttribute="fileBucket">
+        <form:form method="POST" action="./uploadUsers?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data" modelAttribute="fileBucket">
         
        <%--  <form:form method="POST" modelAttribute="fileBucket" enctype="multipart/form-data" class="form-horizontal"> --%>
          

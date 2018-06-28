@@ -156,4 +156,14 @@ public class UserServiceImpl implements UserService {
 	private List<UserInfo> mapuserInfoList(List<UserInfoModel> fromList, final Class<UserInfo> toClass) {
 		return fromList.stream().map(from -> new DozerBeanMapper().map(from, toClass)).collect(Collectors.toList());
 	}
+	
+	@Override
+	public void uploadUser(List<UserModel> lstUser) throws Exception {
+		List<User> userlist = this.mapUploadUserToList(lstUser, User.class);
+		dao.uploadUsers(userlist);		
+	}
+
+	private List<User> mapUploadUserToList(List<UserModel> fromList, Class<User> toClass) {
+		return fromList.stream().map(from -> new DozerBeanMapper().map(from, toClass)).collect(Collectors.toList());
+	} 
 }

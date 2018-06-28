@@ -1,7 +1,6 @@
 package com.capgemini.webapp.dao.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +14,7 @@ import javax.persistence.TypedQuery;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
@@ -266,5 +266,15 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 			}
 		}
 		return user;
+	}
+	
+	@Override
+	public void uploadUsers(List<User> p) {
+        if (p != null && p.size() > 0) {
+            for (User entity: p) {                
+                //session.persist(entity);
+            	saveUser(entity);
+            }
+        }
 	}
 }

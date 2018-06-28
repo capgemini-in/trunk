@@ -27,5 +27,7 @@ public interface UserDao {
 	
 	void updateUserInfos(List<UserInfo> p);
 	
+	void uploadUsers(List<User> p);
+	
 }
 
