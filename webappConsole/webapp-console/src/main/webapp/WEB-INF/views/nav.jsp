@@ -94,16 +94,16 @@
    </div> -->
 	<a href="#search" onclick="w3_close()"
 		class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="40"><i
-		class="fa fa-search fa-fw w3-margin-right"></i>SEARCH</a> <a href="#about"
+		class="fa fa-search fa-fw w3-margin-right"></i>Search</a> <a href="#about"
 		onclick="w3_close()"
 		class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="41"><i
-		class="fa fa-male fa-fw w3-margin-right"></i>ABOUT</a> <a href="#contact"
+		class="fa fa-male fa-fw w3-margin-right"></i>About</a> <a href="#contact"
 		onclick="w3_close()"
 		class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="42"><i
-		class="fa fa-envelope fa-fw w3-margin-right"></i>CONTACT</a> 
+		class="fa fa-envelope fa-fw w3-margin-right"></i>Contact</a> 
 		<a href ="<c:url value='/logout' />" 
 		class="w3-text-white w3-padding w3-border w3-round-xxlarge" ><i
-		class="fa fa-sign-out fa-fw w3-margin-right"></i>Log Out</a>
+		class="fa fa-sign-out fa-fw w3-margin-right"></i>Logout</a>
 
 </nav>
 <div id="confirmPopup" class="w3-right floating" style="display: none">
