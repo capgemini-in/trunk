@@ -23,6 +23,8 @@ public interface UserDao {
 	
 	List<User> findLdapUserGroup();
 	
+	User findLdapUserBySSO(String sso);
+	
 	void updateUserInfos(List<UserInfo> p);
 	
 }
