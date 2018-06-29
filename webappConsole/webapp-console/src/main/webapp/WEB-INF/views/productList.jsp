@@ -5,9 +5,39 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gionee</title>
-<script>
+<title>Asset Management</title>
+<!-- <script>
 	document.getElementById('id01').style.display = 'block';
+</script>-->
+
+<link
+	href="<c:url value='/static/pagination/media/dataTables/demo_page.css' />"
+	rel="stylesheet"></link>
+<link
+	href="<c:url value='/static/pagination/media/dataTables/demo_table.css' />"
+	rel="stylesheet"></link>
+<link
+	href="<c:url value='/static/pagination/media/dataTables/demo_table_jui.css' />"
+	rel="stylesheet"></link>
+<link
+	href="<c:url value='/static/pagination/media/themes/base/jquery-ui.css' />"
+	rel="stylesheet" media="all"></link>
+<link
+	href="<c:url value='/static/pagination/media/themes/smoothness/jquery-ui-1.7.2.custom.css' />"
+	rel="stylesheet"></link>
+<script src="<c:url value='/static/pagination/scripts/jquery.js' />"
+	type="text/javascript"></script>
+<script
+	src="<c:url value='/static/pagination/scripts/jquery.dataTables.min.js'/>"
+	type="text/javascript"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#productTable").dataTable({
+			"sPaginationType" : "full_numbers",
+			"bJQueryUI" : true
+		});
+	});
 </script>
 </head>
 <body class="w3-light-grey w3-content" style="max-width: 1600px"
@@ -30,7 +60,7 @@
 
 		<div class="w3-row-padding w3-border w3-border-cyan" id="myMain">
 			<br /> <b><h2 style="margin-left: 50dp">Product List</h2></b> <br /> <br />
-<table class="table table-hover">
+<table id="productTable" class="table table-hover">
 	    		<thead>
 		      		<tr>
 				        <th>ProductId</th>
