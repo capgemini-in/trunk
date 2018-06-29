@@ -31,7 +31,7 @@
  		<div class="w3-row-padding w3-border w3-border-cyan" id="myMain">
 			<br /> <b><h2 style="margin-left: 50dp"></h2></b> <br /> <br />
         
-        <form:form method="POST" action="./singleUpload?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data" modelAttribute="fileBucket">
+        <form:form method="POST" action="./uploadUsers?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data" modelAttribute="fileBucket">
         
        <%--  <form:form method="POST" modelAttribute="fileBucket" enctype="multipart/form-data" class="form-horizontal"> --%>
          
