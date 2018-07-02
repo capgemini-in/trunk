@@ -76,8 +76,8 @@ public class UserController extends BaseController {
 		List<UserModel> users = new ArrayList();
 		try {
 			
-			 URI uri = new URI("http://10.48.124.58:8280/UserManagement/1.0.0"+"/api/user/");
-			//URI uri = new URI("http://localhost:8082/pocwebapp" + "/api/user/");
+			 //URI uri = new URI("http://10.48.124.58:8280/UserManagement/1.0.0"+"/api/user/");
+			URI uri = new URI("http://localhost:8082/pocwebapp" + "/api/user/");
 			RestTemplate restTemplate = new RestTemplate();
 			List<LinkedHashMap<String, Object>> usersMap = restTemplate.getForObject(uri, List.class);
 			if (usersMap != null) {
@@ -454,7 +454,7 @@ public class UserController extends BaseController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			return "home";
+			return listUsers(model);
 		}
 	}
 
