@@ -57,7 +57,7 @@ public class MasterController extends BaseController{
 		try {
 			
 		
-			URI uri = new URI("http://10.48.124.100:8280/UserManagement/1.0.0"+"/data/products/");
+			URI uri = new URI("http://10.48.124.58:8280/UserManagement/1.0.0"+"/data/products/");
 			RestTemplate restTemplate = new RestTemplate(); 
 			List<LinkedHashMap<String, Object>> productMap = restTemplate.getForObject(uri, List.class);
 			if(productMap!=null){	
