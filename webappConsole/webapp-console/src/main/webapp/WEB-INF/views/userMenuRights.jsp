@@ -120,19 +120,20 @@ a.morelink {
 				id="table">
 
 				<tr class="w3-light-grey">
-					<th>User Name</th>
+					<th>Role Name</th>
 					<th>Role Description</th>
 					<!-- <th>is Active</th> -->
-					<th>Permission to Screens</th>
+					<th>Access Control</th>
 					<th>Action</th>
 				</tr>
 				
 					<tr class="">
-						<td>Palavi</td>
-						<td>USER</td>
+						<td>ADMIN</td>
+						<td>Admin User</td>
 						<!-- <td>Yes</td> -->
 						<td class="comment more">User Group
 User Management,
+Master,
 Define Role,
 User,
 User Role Mapping,
@@ -154,8 +155,8 @@ Define Announcements</td>
 					
 					
 					<tr class="">
-						<td>divvyas</td>
 						<td>DBA</td>
+						<td>Database User</td>
 					<!-- 	<td>Yes</td> -->
 						<td class="comment more">User Group
 
@@ -180,8 +181,8 @@ Publish Survey,
 					
 
 <tr class="">
-						<td>vipul</td>
 						<td>USER</td>
+						<td>Normal User</td>
 <!-- 						<td>Yes</td> -->
 						<td class="comment more">
 Generate Alerts,
