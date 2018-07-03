@@ -38,10 +38,10 @@ public class SelinumTest {
 			action.moveToElement(userMan).build().perform();
 			WebElement userButton = driver.findElement(By.linkText("Product"));
 			System.out.println("Clicked on User ");
-			userButton.click();
+			userButton.click();*/
 			Thread.sleep(5000);
 
-			System.out.println(driver.getTitle());*/
+			System.out.println(driver.getTitle());
 			driver.close();
 
 		}
