@@ -81,10 +81,10 @@ public class RestDataController {
 
 	@RequestMapping(value = "/editProduct/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	//@ResponseBody()
-	public ResponseEntity<String> updateProduct( @RequestBody  ProductModel product) {
+	public ResponseEntity<String> updateProduct( @RequestBody  ProductModel productBean) {
 
-		System.out.println("Fetch Data for :");
-		//dataService.updateProduct(product, prodId);
+		System.out.println("Fetch Data for :");		
+		dataService.updateProduct(productBean, productBean.getProdId());
 		/*HttpHeaders hea
 	        headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri());
 	        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);

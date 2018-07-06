@@ -163,7 +163,7 @@ public class MasterController extends BaseController{
 	@RequestMapping(value = { "/editProduct{prodId}" }, method = RequestMethod.POST)
 	
 	
-	public String updateProduct(@Valid ProductModel productBean, BindingResult result,		
+	public String updateProduct( @ModelAttribute("user") @Valid ProductModel productBean, BindingResult result,		
 			ModelMap model, @PathVariable String prodId) {
 		
 		
@@ -173,11 +173,11 @@ public class MasterController extends BaseController{
 	
 			
 			///URI uri = new URI(REST_SERVICE_URI+"/data/updateProduct/");
-			//RestTemplate restTemplate = new  RestTemplate();
-			//URI uri =restTemplate.postForLocation(REST_SERVICE_URI+"/data/editProduct/", productBean.getProd(), Product.class);
+			RestTemplate restTemplate = new  RestTemplate();
+			URI uri =restTemplate.postForLocation(REST_SERVICE_URI+"/data/editProduct/", productBean, ProductModel.class);
 						
 		
-			dataService.updateProduct(productBean, prodId);
+			//dataService.updateProduct(productBean, prodId);
 
 		model.addAttribute("success", "Product updated successfully");
 		model.addAttribute("loggedinuser", super.getPrincipal());
@@ -235,7 +235,7 @@ public class MasterController extends BaseController{
 	}
 	
 	@RequestMapping(value = { "/newproduct" }, method = RequestMethod.POST)
-	public String newProduct(@Valid ProductModel productBean, BindingResult result, ModelMap model) {
+	public String newProduct( @ModelAttribute("productBean") @Valid ProductModel productBean, BindingResult result, ModelMap model) {
 		System.out.println("Entering method:newProduct");
 		if (result.hasErrors()) {
 			return "updateProduct";
@@ -255,8 +255,8 @@ public class MasterController extends BaseController{
 			
 			
 			model.addAttribute("productBean", productBean);
-			/*FieldError ssoError = new FieldError("productBean", "prod.prodId", "Product already exist");
-			result.addError(ssoError);*/
+			FieldError ssoError = new FieldError("productBean", "prodId", "Product already exist");
+			result.addError(ssoError);
 			return "updateProduct";
 		
 			//return "redirect:/newproduct";

@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
 		String authentication = env.getRequiredProperty(AuthenticationConstants.AUTHENTICATION);
 		if (authentication.equalsIgnoreCase(AuthenticationConstants.LDAP_AUTH)) {
 			LdapUserModel p = new LdapUserModel();
-			p.setFullName(userModel.getFirstName());
+			p.setFirstName(userModel.getFirstName());
 			p.setLastName(userModel.getLastName());
 			p.setUid(userModel.getSsoId());
 			p.setEmail(userModel.getEmail());

@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class LdapUser {
+public class LdapUser extends BaseUser {
 	
 	private String uid;
-    private String fullName;
-    private String lastName;
-    private String email;
-    private String password;
+    //private String firstName;
+    //private String lastName;
+    //private String email;
+    //private String password;
     private Set<UserProfile> userProfile = new HashSet<>();
     
     
@@ -21,13 +21,13 @@ public class LdapUser {
     }
 
     public LdapUser(String fullName, String lastName) {
-        this.fullName = fullName;
+        this.firstName = fullName;
         this.lastName = lastName;
     }
 
     public LdapUser(String uid, String fullName, String lastName) {
         this.uid = uid;
-        this.fullName = fullName;
+        this.firstName = fullName;
         this.lastName = lastName;
     }
 
@@ -39,11 +39,11 @@ public class LdapUser {
 	public void setUid(String uid) {
 		this.uid = uid;
 	}
-	public String getFullName() {
-		return fullName;
+	public String getFirstName() {
+		return firstName;
 	}
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 	public String getLastName() {
 		return lastName;
@@ -80,7 +80,7 @@ public class LdapUser {
 	@Override
 	    public String toString() {
 	        return "LdapUser{" +
-	                "fullName='" + fullName + '\'' +
+	                "fullName='" + firstName + '\'' +
 	                ", lastName='" + lastName + '\'' +
 	                ", Email ='" + email + '\'' +
 	                '}';

@@ -135,7 +135,7 @@ public class UserController extends BaseController {
 	 * saving user in database. It also validates the user input
 	 */
 	@RequestMapping(value = { "/newuser" }, method = RequestMethod.POST)
-	public String saveUser(@Valid UserModel user, BindingResult result, ModelMap model) {
+	public String saveUser( @ModelAttribute("user") @Valid UserModel user, BindingResult result, ModelMap model) {
 
 		/*
 		 * try { URI uri = new URI(REST_SERVICE_URI+"/api/user/"); RestTemplate
@@ -168,6 +168,7 @@ public class UserController extends BaseController {
 			FieldError ssoError = new FieldError("user", "ssoId", messageSource.getMessage("non.unique.ssoId",
 					new String[] { user.getSsoId() }, Locale.getDefault()));
 			result.addError(ssoError);
+			model.addAttribute("user", user);
 			return "registration";
 		}
 

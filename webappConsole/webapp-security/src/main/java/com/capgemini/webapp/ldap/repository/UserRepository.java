@@ -216,7 +216,7 @@ public class UserRepository implements BaseLdapNameAware {
 		attrs.put(ocAttr);
 		attrs.put("ou", "People");
 		attrs.put("uid", p.getUid());
-		attrs.put("cn", p.getFullName());
+		attrs.put("cn", p.getFirstName());
 		attrs.put("sn", p.getLastName());
 		attrs.put("mail", p.getEmail());
 		attrs.put("userPassword", "admin");
@@ -229,7 +229,7 @@ public class UserRepository implements BaseLdapNameAware {
 	private static class PersonContextMapper extends AbstractContextMapper<LdapUserModel> {
 		public LdapUserModel doMapFromContext(DirContextOperations context) {
 			LdapUserModel person = new LdapUserModel();
-			person.setFullName(context.getStringAttribute("cn"));
+			person.setFirstName(context.getStringAttribute("cn"));
 			person.setLastName(context.getStringAttribute("sn"));
 			person.setUid(context.getStringAttribute("uid"));
 			person.setEmail(context.getStringAttribute("mail"));

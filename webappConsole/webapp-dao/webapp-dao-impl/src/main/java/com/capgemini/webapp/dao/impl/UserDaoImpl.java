@@ -33,7 +33,6 @@ import com.capgemini.webapp.ldap.repository.GroupRepository;
 import com.capgemini.webapp.ldap.repository.UserRepository;
 import com.capgemini.webapp.security.config.LdapGroup;
 import com.capgemini.webapp.security.config.LdapUserModel;
-
 @Repository("userDao")
 public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 
@@ -184,7 +183,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 		List<User> userList = new ArrayList();
 		for (LdapUserModel ldapUser : ldapUserList) {
 			User user = new User();
-			user.setFirstName(ldapUser.getFullName());
+			user.setFirstName(ldapUser.getFirstName());
 			user.setLastName(ldapUser.getLastName());
 			user.setSsoId(ldapUser.getUid());
 			user.setEmail(ldapUser.getEmail());
@@ -240,7 +239,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 
 			if (ldapUser.getUid().equalsIgnoreCase(sso)) {
 				user = new User();
-				user.setFirstName(ldapUser.getFullName());
+				user.setFirstName(ldapUser.getFirstName());
 				user.setLastName(ldapUser.getLastName());
 				user.setSsoId(ldapUser.getUid());
 				user.setEmail(ldapUser.getEmail());

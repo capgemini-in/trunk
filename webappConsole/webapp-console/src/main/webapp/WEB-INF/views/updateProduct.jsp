@@ -18,7 +18,7 @@
 
 		<div class="well lead">Add New Product</div>
 	 	<form:form method="POST" modelAttribute="productBean" class="form-horizontal">
-			
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 			<div class="row">
 				<div class="form-group col-md-12">
 					<label class="col-md-3 control-lable" for="prodId">Product ID</label>

@@ -30,7 +30,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 		})
 
 @Cache(region = "UserCache", usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class User implements Serializable {
+public class User extends BaseUser implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static final String QUERY_TOTAL_USERS = "CountUsers";
@@ -44,23 +44,7 @@ public class User implements Serializable {
 	@NotEmpty
 	@Column(name = "SSO_ID", unique = true, nullable = false)
 	private String ssoId;
-
-	@NotEmpty
-	@Column(name = "PASSWORD", nullable = false)
-	private String password;
-
-	@NotEmpty
-	@Column(name = "FIRST_NAME", nullable = false)
-	private String firstName;
-
-	@NotEmpty
-	@Column(name = "LAST_NAME", nullable = false)
-	private String lastName;
-
-	@NotEmpty
-	@Column(name = "EMAIL", nullable = false)
-	private String email;
-
+		
 	@NotEmpty
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "APP_USER_USER_PROFILE", joinColumns = { @JoinColumn(name = "USER_ID") }, inverseJoinColumns = {

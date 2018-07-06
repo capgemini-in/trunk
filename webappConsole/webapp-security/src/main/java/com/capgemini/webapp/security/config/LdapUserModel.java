@@ -11,7 +11,7 @@ import com.capgemini.webapp.service.api.model.UserProfileModel;
 public class LdapUserModel {
 	
 	private String uid;
-    private String fullName;
+    private String firstName;
     private String lastName;
     private String email;
     private String password;
@@ -21,14 +21,14 @@ public class LdapUserModel {
     public LdapUserModel() {
     }
 
-    public LdapUserModel(String fullName, String lastName) {
-        this.fullName = fullName;
+    public LdapUserModel(String firstName, String lastName) {
+        this.firstName = firstName;
         this.lastName = lastName;
     }
 
     public LdapUserModel(String uid, String fullName, String lastName) {
         this.uid = uid;
-        this.fullName = fullName;
+        this.firstName = fullName;
         this.lastName = lastName;
     }
 
@@ -40,11 +40,11 @@ public class LdapUserModel {
 	public void setUid(String uid) {
 		this.uid = uid;
 	}
-	public String getFullName() {
-		return fullName;
+	public String getFirstName() {
+		return firstName;
 	}
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 	public String getLastName() {
 		return lastName;
@@ -80,7 +80,7 @@ public class LdapUserModel {
 	@Override
 	    public String toString() {
 	        return "LdapUser{" +
-	                "fullName='" + fullName + '\'' +
+	                "fullName='" + firstName + '\'' +
 	                ", lastName='" + lastName + '\'' +
 	                ", Email ='" + email + '\'' +
 	                '}';
