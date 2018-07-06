@@ -77,7 +77,7 @@ public class UserController extends BaseController {
 		try {
 			
 			URI uri = new URI("http://10.48.124.69:8280/UserManagement/1.0.0"+"/api/user/");
-			//URI uri = new URI("http://localhost:8082/pocwebapp" + "/api/user/");
+			//URI uri = new URI("http://localhost:8083/pocwebapp" + "/api/user/");
 			RestTemplate restTemplate = new RestTemplate();
 			List<LinkedHashMap<String, Object>> usersMap = restTemplate.getForObject(uri, List.class);
 			if (usersMap != null) {
