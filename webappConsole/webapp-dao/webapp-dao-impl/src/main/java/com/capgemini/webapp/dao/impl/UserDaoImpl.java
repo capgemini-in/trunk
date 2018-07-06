@@ -14,7 +14,6 @@ import javax.persistence.TypedQuery;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.SQLQuery;
-import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
@@ -25,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.capgemini.webapp.dao.api.UserDao;
+import com.capgemini.webapp.dao.api.entity.LdapUser;
 import com.capgemini.webapp.dao.api.entity.User;
 import com.capgemini.webapp.dao.api.entity.UserInfo;
 import com.capgemini.webapp.dao.api.entity.UserProfile;
@@ -32,7 +32,7 @@ import com.capgemini.webapp.dao.impl.config.mybatis.mapper.usermapper.UserMapper
 import com.capgemini.webapp.ldap.repository.GroupRepository;
 import com.capgemini.webapp.ldap.repository.UserRepository;
 import com.capgemini.webapp.security.config.LdapGroup;
-import com.capgemini.webapp.security.config.LdapUser;
+import com.capgemini.webapp.security.config.LdapUserModel;
 
 @Repository("userDao")
 public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
@@ -180,9 +180,9 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 
 	@Override
 	public List<User> findAllLdapUsers() {
-		List<LdapUser> ldapUserList = userRepository.findAll();
+		List<LdapUserModel> ldapUserList = userRepository.findAll();
 		List<User> userList = new ArrayList();
-		for (LdapUser ldapUser : ldapUserList) {
+		for (LdapUserModel ldapUser : ldapUserList) {
 			User user = new User();
 			user.setFirstName(ldapUser.getFullName());
 			user.setLastName(ldapUser.getLastName());
@@ -235,8 +235,8 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 	public User findLdapUserBySSO(String sso) {
 
 		User user = null;
-		List<LdapUser> ldapUserList = userRepository.findAll();
-		for (LdapUser ldapUser : ldapUserList) {
+		List<LdapUserModel> ldapUserList = userRepository.findAll();
+		for (LdapUserModel ldapUser : ldapUserList) {
 
 			if (ldapUser.getUid().equalsIgnoreCase(sso)) {
 				user = new User();
@@ -276,5 +276,15 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
             	saveUser(entity);
             }
         }
+	}
+
+	@Override
+	public void saveLdapUser(LdapUser p) {
+		
+		userRepository.create(p);
+		/*for(UserProfile profile : p.getUserProfile()) {			
+			
+			groupRepository.addMemberToGroup(profile.getType(), p);
+		}*/
 	}
 }

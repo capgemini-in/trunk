@@ -1,9 +1,10 @@
 package com.capgemini.webapp.dao.api;
 
 import java.util.List;
+
+import com.capgemini.webapp.dao.api.entity.LdapUser;
 import com.capgemini.webapp.dao.api.entity.User;
 import com.capgemini.webapp.dao.api.entity.UserInfo;
-
 
 public interface UserDao {
 
@@ -28,6 +29,8 @@ public interface UserDao {
 	void updateUserInfos(List<UserInfo> p);
 	
 	void uploadUsers(List<User> p);
+	
+	void saveLdapUser(LdapUser p);
 	
 }
 

@@ -13,9 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.capgemini.webapp.dao.api.UserDao;
+import com.capgemini.webapp.dao.api.entity.LdapUser;
 import com.capgemini.webapp.dao.api.entity.User;
 import com.capgemini.webapp.dao.api.entity.UserInfo;
 import com.capgemini.webapp.dao.api.entity.UserProfile;
+import com.capgemini.webapp.ldap.repository.UserRepository;
+import com.capgemini.webapp.security.config.LdapUserModel;
+import com.capgemini.webapp.security.constants.AuthenticationConstants;
 import com.capgemini.webapp.service.api.UserService;
 import com.capgemini.webapp.service.api.model.UserInfoModel;
 import com.capgemini.webapp.service.api.model.UserModel;
@@ -62,9 +66,28 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional
 	public void saveUser(UserModel userModel) {
+		/*userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
+		User userEntity = new DozerBeanMapper().map(userModel, User.class);
+		dao.save(userEntity);*/
+		
 		userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
 		User userEntity = new DozerBeanMapper().map(userModel, User.class);
-		dao.save(userEntity);
+		String authentication = env.getRequiredProperty(AuthenticationConstants.AUTHENTICATION);
+		if (authentication.equalsIgnoreCase(AuthenticationConstants.LDAP_AUTH)) {
+			LdapUserModel p = new LdapUserModel();
+			p.setFullName(userModel.getFirstName());
+			p.setLastName(userModel.getLastName());
+			p.setUid(userModel.getSsoId());
+			p.setEmail(userModel.getEmail());
+			p.setPassword(userModel.getPassword());			
+			p.setUserProfile(userModel.getUserProfiles());
+			LdapUser ldapUser = new DozerBeanMapper().map(p, LdapUser.class);
+			//new UserRepository().create(p);
+			dao.saveLdapUser(ldapUser);
+		}
+		else {			
+			dao.save(userEntity);
+		}
 	}
 
 	/*

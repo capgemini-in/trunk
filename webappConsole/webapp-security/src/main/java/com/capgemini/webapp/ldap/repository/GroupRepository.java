@@ -13,10 +13,11 @@ import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.AbstractContextMapper;
 import org.springframework.ldap.core.support.BaseLdapNameAware;
 import org.springframework.ldap.support.LdapNameBuilder;
+import org.springframework.ldap.support.LdapUtils;
 import org.springframework.stereotype.Service;
 
+import com.capgemini.webapp.dao.api.entity.LdapUser;
 import com.capgemini.webapp.security.config.LdapGroup;
-import com.capgemini.webapp.security.config.LdapUser;
 
 
 @Service
@@ -63,6 +64,7 @@ public class GroupRepository implements BaseLdapNameAware {
     }
 
     public void addMemberToGroup(String groupName, LdapUser p) {
+    	baseLdapPath = LdapUtils.newLdapName("dc=maxcrc,dc=com");
         Name groupDn = buildGroupDn(groupName);
         Name personDn = buildPersonDn(p);
 
@@ -84,7 +86,7 @@ public class GroupRepository implements BaseLdapNameAware {
 
     private Name buildGroupDn(String groupName) {
         return LdapNameBuilder.newInstance(baseLdapPath)
-                .add("ou", "groups")
+                .add("ou", "People")
                 .add("cn", groupName)
                 .build();
     }

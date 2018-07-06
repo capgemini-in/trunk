@@ -1,6 +1,10 @@
-package com.capgemini.webapp.security.config;
+package com.capgemini.webapp.dao.api.entity;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
+
 
 @Component
 public class LdapUser {
@@ -9,6 +13,9 @@ public class LdapUser {
     private String fullName;
     private String lastName;
     private String email;
+    private String password;
+    private Set<UserProfile> userProfile = new HashSet<>();
+    
     
     public LdapUser() {
     }
@@ -51,6 +58,23 @@ public class LdapUser {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}	
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+
+	public Set<UserProfile> getUserProfile() {
+		return userProfile;
+	}
+
+	public void setUserProfile(Set<UserProfile> userProfile) {
+		this.userProfile = userProfile;
 	}
 
 	@Override

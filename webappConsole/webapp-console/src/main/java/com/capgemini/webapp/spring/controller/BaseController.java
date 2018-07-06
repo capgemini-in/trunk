@@ -51,10 +51,8 @@ public abstract class BaseController {
 		if (principal instanceof UserDetails) {
 			
 			userName = ((UserDetails)principal).getUsername();
-			System.out.println("HERE 1:"+userName);
 		} else {
 			userName = principal.toString();
-			System.out.println("HERE 2:"+userName);
 		}
 		return userName;
 	}
