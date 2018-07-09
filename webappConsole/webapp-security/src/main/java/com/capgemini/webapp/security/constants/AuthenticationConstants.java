@@ -9,7 +9,7 @@ public class AuthenticationConstants {
 	public static final String LDAP_LOGIN_MODULE = "LdapLoginModule";
 	public static final String APP_CONFIG_ENTRY_KEY = "SPRINGSECURITY";
 	public static final String AUTHENTICATION = "authentication";
-	public static final String LDAP_AUTH = "LDAP";
-	public static final String DB_AUTH = "DAO";
+	public static final String LDAP_AUTH = "ldap";
+	public static final String DB_AUTH = "dao";
 
 }

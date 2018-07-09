@@ -60,12 +60,12 @@ public class UserController extends BaseController {
 	@Autowired
 	UserProfileService userProfileService;
 
+	@Autowired
+	private Environment env;
+
 	public static final String REST_SERVICE_URI = "http://LIN17000289:8083/pocwebapp";
 
 	private static String UPLOAD_LOCATION = "D:\\log";
-
-	// public static final String REST_SERVICE_URI =
-	// "http://10.76.132.95:8280/UserManagement/1.0.0" ;
 
 	/**
 	 * This method will list all existing users.
@@ -73,11 +73,14 @@ public class UserController extends BaseController {
 	@RequestMapping(value = { "/list" }, method = RequestMethod.GET)
 	public String listUsers(ModelMap model) {
 
+
+		String restPath = env.getRequiredProperty("authentication");
 		List<UserModel> users = new ArrayList();
 		try {
-			
+
 			URI uri = new URI("http://10.48.124.69:8280/UserManagement/1.0.0"+"/api/user/");
-			//URI uri = new URI("http://localhost:8083/pocwebapp" + "/api/user/");
+			//URI uri = new URI("http://localhost:8083/pocwebapp/" + "/api/user/");
+			//URI uri = new URI("http://localhost:8082/pocwebapp/" + restPath + "/api/user/");
 			RestTemplate restTemplate = new RestTemplate();
 			List<LinkedHashMap<String, Object>> usersMap = restTemplate.getForObject(uri, List.class);
 			if (usersMap != null) {
@@ -102,17 +105,6 @@ public class UserController extends BaseController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// List<UserModel> users = userService.findAllUsers();
-		// return Response.ok(new
-		// Gson().toJson(users)).type(MediaType.APPLICATION_JSON).build();
-		/*
-		 * ObjectMapper mapperObj = new ObjectMapper(); String jsonData = null; try {
-		 * jsonData = mapperObj.writeValueAsString(users); } catch
-		 * (JsonProcessingException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); }
-		 */
-
 		model.addAttribute("users", users);
 		model.addAttribute("loggedinuser", super.getPrincipal());
 		return "userslist";
@@ -135,26 +127,23 @@ public class UserController extends BaseController {
 	 * saving user in database. It also validates the user input
 	 */
 	@RequestMapping(value = { "/newuser" }, method = RequestMethod.POST)
-	public String saveUser( @ModelAttribute("user") @Valid UserModel user, BindingResult result, ModelMap model) {
+	public String saveUser(@ModelAttribute("user") @Valid UserModel user, BindingResult result, ModelMap model) {
 
-		/*
-		 * try { URI uri = new URI(REST_SERVICE_URI+"/api/user/"); RestTemplate
-		 * restTemplate = new RestTemplate();
-		 * 
-		 * restTemplate.postForLocation("http://localhost:8082/pocwebapp/api/userPost/",
-		 * user, UserModel.class);
-		 * 
-		 * } catch (URISyntaxException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); }
-		 */
+		try{	
+			String restPath = env.getRequiredProperty("authentication");
+			String url = "http://localhost:8082/pocwebapp/" + restPath+"/api/user/";
+			RestTemplate restTemplate = new RestTemplate();
+			restTemplate.postForLocation(url, user, UserModel.class);
 
-		if (result.hasErrors()) {
-			List<UserModel> users = userService.findAllUsers();
-			model.addAttribute("users", users);
-			return "registration";
+		} catch (Exception e) { // TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		/*
+		 * if (result.hasErrors()) { List<UserModel> users = userService.findAllUsers();
+		 * model.addAttribute("users", users); return "registration"; }
+		 * 
+		 * 
 		 * Preferred way to achieve uniqueness of field [sso] should be implementing
 		 * custom @Unique annotation and applying it on field [sso] of Model class
 		 * [UserModel].
@@ -163,16 +152,15 @@ public class UserController extends BaseController {
 		 * custom errors outside the validation framework as well while still using
 		 * internationalized messages.
 		 * 
+		 * 
+		 * if (!userService.isUserSSOUnique(user.getId(), user.getSsoId())) { FieldError
+		 * ssoError = new FieldError("user", "ssoId",
+		 * messageSource.getMessage("non.unique.ssoId", new String[] { user.getSsoId()
+		 * }, Locale.getDefault())); result.addError(ssoError);
+		 * model.addAttribute("user", user); return "registration"; }
+		 * 
+		 * userService.saveUser(user);
 		 */
-		if (!userService.isUserSSOUnique(user.getId(), user.getSsoId())) {
-			FieldError ssoError = new FieldError("user", "ssoId", messageSource.getMessage("non.unique.ssoId",
-					new String[] { user.getSsoId() }, Locale.getDefault()));
-			result.addError(ssoError);
-			model.addAttribute("user", user);
-			return "registration";
-		}
-
-		userService.saveUser(user);
 
 		model.addAttribute("success",
 				"UserModel " + user.getFirstName() + " " + user.getLastName() + " registered successfully");
@@ -432,13 +420,13 @@ public class UserController extends BaseController {
 					user.setEmail(row.getCell(4).getStringCellValue());
 					UserProfileModel profile = new UserProfileModel();
 					String role = row.getCell(5).getStringCellValue();
-					if("USER".equalsIgnoreCase(role)) {
+					if ("USER".equalsIgnoreCase(role)) {
 						profile.setId(1);
 					}
-					if("ADMIN".equalsIgnoreCase(role)) {						
+					if ("ADMIN".equalsIgnoreCase(role)) {
 						profile.setId(2);
 					}
-					if("DBA".equalsIgnoreCase(role)) {
+					if ("DBA".equalsIgnoreCase(role)) {
 						profile.setId(3);
 					}
 					profile.setType(row.getCell(5).getStringCellValue());

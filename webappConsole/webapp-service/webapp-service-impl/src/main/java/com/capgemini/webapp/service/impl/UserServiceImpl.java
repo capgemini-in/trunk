@@ -17,7 +17,6 @@ import com.capgemini.webapp.dao.api.entity.LdapUser;
 import com.capgemini.webapp.dao.api.entity.User;
 import com.capgemini.webapp.dao.api.entity.UserInfo;
 import com.capgemini.webapp.dao.api.entity.UserProfile;
-import com.capgemini.webapp.ldap.repository.UserRepository;
 import com.capgemini.webapp.security.config.LdapUserModel;
 import com.capgemini.webapp.security.constants.AuthenticationConstants;
 import com.capgemini.webapp.service.api.UserService;
@@ -52,7 +51,7 @@ public class UserServiceImpl implements UserService {
 		UserModel usermodel = null;
 		User user = null;
 		String authentication = env.getRequiredProperty("authentication");
-		if (authentication.equalsIgnoreCase("LDAP")) {
+		if (authentication.equalsIgnoreCase(AuthenticationConstants.LDAP_AUTH)) {
 			user = dao.findLdapUserBySSO(sso);
 		} else {
 			user = dao.findBySSO(sso);

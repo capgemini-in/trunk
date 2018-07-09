@@ -18,7 +18,7 @@ import com.capgemini.webapp.service.api.model.UserModel;
 
  
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/dao/api")
 public class UserRestController {
  
 	
@@ -43,7 +43,7 @@ public class UserRestController {
 		
 		//-------------------Create a UserModel--------------------------------------------------------
 	     
-	    @RequestMapping(value = "/userPost/", method = RequestMethod.POST)
+	    @RequestMapping(value = "/user/", method = RequestMethod.POST)
 	    public ResponseEntity<String> createUser(@RequestBody UserModel userModel,    UriComponentsBuilder ucBuilder) {
 	        System.out.println("Creating UserModel " + userModel.getSsoId());
 	 
