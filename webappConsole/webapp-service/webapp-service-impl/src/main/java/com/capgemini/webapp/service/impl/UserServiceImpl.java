@@ -13,11 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.capgemini.webapp.dao.api.UserDao;
-import com.capgemini.webapp.dao.api.entity.LdapUser;
 import com.capgemini.webapp.dao.api.entity.User;
 import com.capgemini.webapp.dao.api.entity.UserInfo;
 import com.capgemini.webapp.dao.api.entity.UserProfile;
-import com.capgemini.webapp.security.config.LdapUserModel;
 import com.capgemini.webapp.security.constants.AuthenticationConstants;
 import com.capgemini.webapp.service.api.UserService;
 import com.capgemini.webapp.service.api.model.UserInfoModel;
@@ -28,7 +26,7 @@ import com.capgemini.webapp.service.api.model.UserProfileModel;
  * @author awarhoka
  *
  */
-@Service("userService")
+@Service
 @Transactional
 @PropertySource("classpath:/config/ldap/ldap_details.properties")
 public class UserServiceImpl implements UserService {
@@ -43,20 +41,24 @@ public class UserServiceImpl implements UserService {
 	private PasswordEncoder passwordEncoder;
 
 	public UserModel findById(int id) {
-		UserModel usermodel = new DozerBeanMapper().map(dao.findById(id), UserModel.class);
+		UserModel usermodel = null;
+		User user = null;
+		String authentication = env.getRequiredProperty(AuthenticationConstants.AUTHENTICATION);
+		if (authentication.equalsIgnoreCase(AuthenticationConstants.LDAP_AUTH)) {
+			user = dao.findLdapUserBySSO(String.valueOf(id));
+		} else {
+			user = dao.findById(id);
+		}
+		if (user != null) {
+			usermodel = new DozerBeanMapper().map(user, UserModel.class);
+		}
 		return usermodel;
 	}
 
 	public UserModel findBySSO(String sso) {
 		UserModel usermodel = null;
 		User user = null;
-		String authentication = env.getRequiredProperty("authentication");
-		if (authentication.equalsIgnoreCase(AuthenticationConstants.LDAP_AUTH)) {
-			user = dao.findLdapUserBySSO(sso);
-		} else {
-			user = dao.findBySSO(sso);
-		}
-
+		user = dao.findBySSO(sso);
 		if (user != null) {
 			usermodel = new DozerBeanMapper().map(user, UserModel.class);
 		}
@@ -71,7 +73,8 @@ public class UserServiceImpl implements UserService {
 		
 		userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
 		User userEntity = new DozerBeanMapper().map(userModel, User.class);
-		String authentication = env.getRequiredProperty(AuthenticationConstants.AUTHENTICATION);
+		dao.save(userEntity);
+		/*String authentication = env.getRequiredProperty(AuthenticationConstants.AUTHENTICATION);
 		if (authentication.equalsIgnoreCase(AuthenticationConstants.LDAP_AUTH)) {
 			LdapUserModel p = new LdapUserModel();
 			p.setFirstName(userModel.getFirstName());
@@ -86,7 +89,7 @@ public class UserServiceImpl implements UserService {
 		}
 		else {			
 			dao.save(userEntity);
-		}
+		}*/
 	}
 
 	/*
@@ -97,7 +100,14 @@ public class UserServiceImpl implements UserService {
 	public void updateUser(UserModel userModel) {
 		User userEntity = new DozerBeanMapper().map(userModel, User.class);
 		User entity = dao.findById(userEntity.getId());
-
+		/*String authentication = env.getRequiredProperty(AuthenticationConstants.AUTHENTICATION);
+		
+		if(authentication.equalsIgnoreCase(AuthenticationConstants.LDAP_AUTH)) {
+			entity = dao.findBySSO(userEntity.getSsoId());
+		}
+		else {			
+			entity = dao.findById(userEntity.getId());
+		}*/
 		if (entity != null) {
 			entity.setSsoId(userModel.getSsoId());
 			if (!userModel.getPassword().equals(entity.getPassword())) {
@@ -106,9 +116,7 @@ public class UserServiceImpl implements UserService {
 			entity.setFirstName(userModel.getFirstName());
 			entity.setLastName(userModel.getLastName());
 			entity.setEmail(userModel.getEmail());
-
-			// Set<UserProfile> userProfileEntity =new
-			// DozerBeanMapper().map(userModel.getUserProfiles(),Set.class);
+			
 			Set<UserProfile> userProfileEntity = getUpdatedUserProfiles(userModel.getUserProfiles(), UserProfile.class);
 			entity.setUserProfiles(userProfileEntity);
 		}
@@ -130,18 +138,14 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional(readOnly = true)
 	public List<UserModel> findAllUsers() {
-		// List<UserModel> userlist =this.mapList(dao.findAllUsers(), UserModel.class);
-		// return userlist;
-		List<UserModel> userlist = null;
-		String authentication = env.getRequiredProperty("authentication");
-		if (authentication.equalsIgnoreCase("LDAP")) {
-			// return dao.findAllLdapUsers();
+	/*	List<UserModel> userlist = null;
+		String authentication = env.getRequiredProperty(AuthenticationConstants.AUTHENTICATION);
+		if (authentication.equalsIgnoreCase(AuthenticationConstants.LDAP_AUTH)) {
 			userlist = this.mapList(dao.findAllLdapUsers(), UserModel.class);
 		} else {
-			// dao.findAllUsers();
 			userlist = this.mapList(dao.findAllUsers(), UserModel.class);
-		}
-		return userlist;
+		}*/
+		return this.mapList(dao.findAllUsers(), UserModel.class);
 	}
 
 	/* this is Mapper for List */
@@ -156,16 +160,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<UserModel> getallProfile() {
-		List<UserModel> userlist = null;
-		String authentication = env.getRequiredProperty("authentication");
-		if (authentication.equalsIgnoreCase("LDAP")) {
-			// return dao.findLdapUserGroup();
+		/*List<UserModel> userlist = null;
+		String authentication = env.getRequiredProperty(AuthenticationConstants.AUTHENTICATION);
+		if (authentication.equalsIgnoreCase(AuthenticationConstants.LDAP_AUTH)) {
 			userlist = this.mapList(dao.findLdapUserGroup(), UserModel.class);
 		} else {
-			// return dao.UserProfileType();
 			userlist = this.mapList(dao.UserProfileType(), UserModel.class);
-		}
-		return userlist;
+		}*/
+		return this.mapList(dao.UserProfileType(), UserModel.class);
 	}
 
 	@Override

@@ -18,13 +18,13 @@ import com.capgemini.webapp.service.api.model.UserModel;
 
  
 @RestController
-@RequestMapping("/dao/api")
+@RequestMapping("/api")
 public class UserRestController {
  
 	
 	@Autowired
 	UserService userService;
-	
+		
 	@Autowired
 	UserProfileService userProfileService;
 	
@@ -48,7 +48,7 @@ public class UserRestController {
 	        System.out.println("Creating UserModel " + userModel.getSsoId());
 	 
 	        //if (userService.isUserExist(userModel)) {
-	        if(userService.isUserSSOUnique(userModel.getId(), userModel.getSsoId()))
+	        if(!userService.isUserSSOUnique(userModel.getId(), userModel.getSsoId()))
 	        {
 	            System.out.println("A UserModel with name " + userModel.getSsoId() + " already exist");
 	            return new ResponseEntity<String>("registration",HttpStatus.CONFLICT);
