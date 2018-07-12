@@ -265,6 +265,11 @@ public class UserController extends BaseController {
 		return "newRole";
 	}
 
+	//to open the CarModel page
+		@RequestMapping(value = { "/carModel" }, method = RequestMethod.GET)
+		public String carModel(ModelMap model) {
+			return "carModel";
+		}
 	// to open upload page
 
 	@RequestMapping(value = "/singleUpload", method = RequestMethod.GET)

@@ -46,6 +46,11 @@
 			 onclick="w3_close()"
 				class="w3-padding w3-border w3-round-xxlarge" id="4"><i
 				class="fa fa-rss fa-fw w3-margin-right"></i>Services</a>
+				
+				<a	href="<c:url value='/carModel'/>" onclick="w3_close()"
+				class="w3-padding w3-border w3-round-xxlarge" id="3"><i
+				class="fa fa-suitcase fa-fw w3-margin-right"></i>View Model</a>
+		
 		</div>
 	</div>
 </sec:authorize>
