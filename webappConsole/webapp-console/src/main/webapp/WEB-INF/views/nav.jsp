@@ -55,6 +55,21 @@
 	</div>
 </sec:authorize>
 
+
+
+<sec:authorize   access="hasRole('ADMIN')" >		 	
+	<div class="w3-dropdown-hover">
+		<a href="#" onclick="w3_close()"
+			class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="33"><i
+			class="fa fa-users fa-fw w3-margin-right"></i>Configuration</a>
+		<div style="margin-left:10%;width:80%"
+			class="w3-dropdown-content w3-cyan  w3-animate-zoom w3-right w3-padding w3-medium">
+	<a href ="<c:url value='/gateway' />" class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="34"><i
+				class="fa fa-user-circle-o fa-fw w3-margin-right"></i>Gateway</a>
+
+</div>
+</div>
+</sec:authorize>
 	<sec:authorize   access="hasRole('ADMIN')" >		 	
 	<div class="w3-dropdown-hover">
 		<a href="/pocwebapp/list" onclick="w3_close()"
@@ -114,45 +129,3 @@
 <div id="confirmPopup" class="w3-right floating" style="display: none">
 	<%-- <%@ include file="chatWindow.jsp"%> --%>
 </div>
-<script>
-	var sesAttr =
-<%=request.getSession().getAttribute("sessionVar")%>
-	if (sesAttr == 1 & '${userName}' != "admin") {
-		var x = document.getElementById("myChatLogo");
-		if (x.className.indexOf("w3-show") == -1) {
-			x.className += " w3-show";
-		} else {
-			x.className = x.className.replace(" w3-show", "");
-		}
-
-	}
-
-	if ('${userName}' == "admin") {
-		var x = document.getElementById("myAdminLogo");
-		if (x.className.indexOf("w3-show") == -1) {
-			x.className += " w3-show";
-		} else {
-			x.className = x.className.replace(" w3-show", "");
-		}
-
-	} else {
-		var x = document.getElementById("myOtherLogo");
-		if (x.className.indexOf("w3-show") == -1) {
-			x.className += " w3-show";
-		} else {
-			x.className = x.className.replace(" w3-show", "");
-		}
-
-	}
-
-	function openchat() {
-<%request.getSession().setAttribute("sessionVar", 1);%>
-	$('#qnimate').addClass('popup-box-on');
-		document.getElementById("confirmPopup").style.display = "block";
-		$.ajax({url : "/LAPP_Rest_App/rest/lappChat/setChatStatus/${UserId}",
-			success : function() {
-
-			}
-		});
-	}
-</script>

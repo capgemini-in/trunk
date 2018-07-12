@@ -270,6 +270,12 @@ public class UserController extends BaseController {
 		public String carModel(ModelMap model) {
 			return "carModel";
 		}
+		
+	/* Gateway page*/
+		@RequestMapping(value = { "/gateway" }, method = RequestMethod.GET)
+		public String gateway(ModelMap model) {
+			return "gateway";
+		}
 	// to open upload page
 
 	@RequestMapping(value = "/singleUpload", method = RequestMethod.GET)
@@ -286,6 +292,8 @@ public class UserController extends BaseController {
 		return "singleFileUploader";
 	}
 
+	
+	
 	@SuppressWarnings("resource")
 	@RequestMapping(value = "/singleUpload", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
