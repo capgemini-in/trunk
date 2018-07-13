@@ -12,10 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.core.env.Environment;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
@@ -39,10 +37,6 @@ import org.springframework.web.servlet.resource.ContentVersionStrategy;
 import org.springframework.web.servlet.resource.CssLinkResourceTransformer;
 import org.springframework.web.servlet.resource.VersionResourceResolver;
 
-import com.capgemini.webapp.security.constants.AuthenticationConstants;
-import com.capgemini.webapp.service.api.UserService;
-import com.capgemini.webapp.service.impl.LdapUserServiceImpl;
-import com.capgemini.webapp.service.impl.UserServiceImpl;
 import com.capgemini.webapp.spring.config.web.filter.AuthorizationInterceptor;
 import com.capgemini.webapp.spring.config.web.filter.PasswordHandlerInterceptor;
 import com.capgemini.webapp.spring.config.web.filter.RoleHandlerInterceptor;
@@ -55,7 +49,6 @@ import com.capgemini.webapp.spring.converter.RoleToUserProfileConverter;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = { "com.capgemini.webapp" })
-@PropertySource("classpath:/config/ldap/ldap_details.properties")
 public class WebMvcConfig implements WebMvcConfigurer {
 
 	@Autowired
@@ -63,9 +56,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 	@Autowired
 	private RequestMappingHandlerAdapter requestMappingHandlerAdapter;
-	
-	@Autowired
-    Environment env;
 
 	@PostConstruct
 	public void init() {
@@ -173,19 +163,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		CommonsMultipartResolver resolver = new CommonsMultipartResolver();
 		return resolver;
 	}
-	
-	@Bean(name = "userService")
-    public UserService userService () {
-    	String authentication = env.getRequiredProperty(AuthenticationConstants.AUTHENTICATION);
-    	UserService userService = null;
-    	if(AuthenticationConstants.LDAP_AUTH.equalsIgnoreCase(authentication)) {
-    		userService = new LdapUserServiceImpl();
-    	}
-    	else {
-    		userService = new UserServiceImpl();
-    	}
-		return userService;    	
-    }
 
 	@Override
 	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {

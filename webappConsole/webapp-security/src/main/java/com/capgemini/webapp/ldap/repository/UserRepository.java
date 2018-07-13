@@ -179,7 +179,7 @@ public class UserRepository implements BaseLdapNameAware {
 	}
 
 	public LdapUserModel findOne(String uid) {
-		Name dn = LdapNameBuilder.newInstance().add("ou", "People").add("objectclass", "inetOrgPerson").add("uid", uid).build();
+		Name dn = LdapNameBuilder.newInstance(baseLdapPath).add("ou", "people").add("uid", uid).build();
 		return ldapTemplate.lookup(dn, new PersonContextMapper());
 	}
 

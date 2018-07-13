@@ -6,11 +6,15 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+
+import org.slf4j.LoggerFactory;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.capgemini.webapp.service.api.MasterDataService;
 import com.capgemini.webapp.service.api.model.ProductCategoryModel;
@@ -33,7 +38,7 @@ import com.capgemini.webapp.spring.controller.BaseController;
 @SessionAttributes("categories")
 
 /**
- * MasterController to handles all data related requests
+ * MasterController to handles all CRUD requests related to Master data
  * @author pallapat
  *
  */
@@ -42,28 +47,25 @@ public class MasterController extends BaseController{
 	@Autowired
 	MasterDataService dataService;
 	
-	//public  final String REST_SERVICE_URI ="http://10.76.132.120:8280/UserManagement/1.0.0";
+	//public static final String REST_SERVICE_URI ="http://10.76.132.120:8280/UserManagement/1.0.0";
+	public static final String REST_SERVICE_URI ="http://localhost:8082/pocwebapp";
 	
-	public static final String REST_SERVICE_URI ="http://LIN17000289:8083/pocwebapp";
-		
-	
-	
-	
+	public static final Logger logger = LoggerFactory.getLogger(MasterController.class);
+			
 	@RequestMapping(value = { "/products" }, method = RequestMethod.GET)
 	public String listProduct(ModelMap model) {
 
-		 
+		logger.info("MasterController::listProduct::Retrieving Product List");
 		List<ProductModel> prodList = new ArrayList();
 		try {
 			
-		
-			URI uri = new URI("http://10.48.124.35:8280/UserManagement/1.0.0"+"/data/products/");
+			URI uri = new URI(REST_SERVICE_URI+"/data/products/");
 			RestTemplate restTemplate = new RestTemplate(); 
 			List<LinkedHashMap<String, Object>> productMap = restTemplate.getForObject(uri, List.class);
 			if(productMap!=null){	
 				
 				for(LinkedHashMap<String, Object> prodEntity : productMap){
-					System.out.println("Product : id="+prodEntity.get("id")+", prodId="+prodEntity.get("prod_id")+", name="+prodEntity.get("name")+", description="+prodEntity.get("description"));;
+					
 					ProductModel prod = new ProductModel();
 					prod.setProdId(prodEntity.get("prodId").toString());
 					prod.setName(prodEntity.get("name").toString());
@@ -83,11 +85,11 @@ public class MasterController extends BaseController{
 					prodList.add(prod);
 				}
 			}else{
-				System.out.println("No user exist----------");
+
+				logger.info("MasterController::listProduct::No user exist----------");
 			}
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("MasterController::listProduct::"+e.getMessage());
 		}
 		model.addAttribute("productList", prodList);
 		model.addAttribute("loggedinuser", super.getPrincipal());
@@ -105,19 +107,29 @@ public class MasterController extends BaseController{
 	@RequestMapping(value = { "/editProduct{prodId}" }, method = RequestMethod.GET)
 	public String editProduct(@PathVariable("prodId") String prodId, ModelMap model) {
 		
-		System.out.println("Edit Product prodId:"+ prodId);
+		logger.info("MasterController::editProduct::Update Product::"+prodId);
 		URI uri;
 		ProductModel product=null;
 		ProductCategoryModel prodCats=null;
-		//EditProductBean prodBean=new EditProductBean();
 		try {
 			
-			uri = new URI(REST_SERVICE_URI+"/data/updateProduct/"+prodId);			
-			RestTemplate restTemplate = new RestTemplate(); 			
-			product = restTemplate.getForObject(uri, ProductModel.class);	
-			//prodBean.setProd(product);
-			List<ProductCategoryModel> cateogryList=new ArrayList<ProductCategoryModel>();
-						
+			uri = new URI(REST_SERVICE_URI+"/data/editProduct/");			
+			RestTemplate restTemplate = new RestTemplate(); 
+			
+			//HttpHeaders headers = new HttpHeaders();
+			//headers.setContentType(MediaType.TEXT_PLAIN);
+			//headers.set("Authorization", "Bearer "+accessToken);
+			//headers.set("prodId", prodId);
+			//HttpEntity<String> entity = new HttpEntity<String>(null,headers);
+			//product = restTemplate.exchange(uri, entity, ProductModel.class);
+			
+			
+			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(REST_SERVICE_URI+"/data/getProduct/")
+			       .queryParam("prodId", prodId);
+			
+			product = restTemplate.getForObject(builder.toUriString(), ProductModel.class);	
+			
+			List<ProductCategoryModel> cateogryList=new ArrayList<ProductCategoryModel>();				
 		
 			List<LinkedHashMap<String, Object>> categoryMap = restTemplate.getForObject(REST_SERVICE_URI+"/data/categories/", List.class);
 			
@@ -132,7 +144,6 @@ public class MasterController extends BaseController{
 					cateogryList.add(catObj);
 					
 				}
-				//prodBean.setListCat(cateogryList);
 				
 			}
 				
@@ -144,43 +155,39 @@ public class MasterController extends BaseController{
 				
 			}else{
 				
-				System.out.println("No Product exist----------");
+				logger.info("MasterController::editProduct::No Product exist");
+				
 			}
 			
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error("MasterController::editProduct:"+e.getMessage());
+			
 		}		
-		
+		logger.info("MasterController::editProduct::Updated Product-"+prodId);
 		return "updateProduct";
 	}
 	
+	
 	/**
-	 * This method will be called on form submission, handling POST request for
-	 * updating user in database. It also validates the user input
+	 * This method will be called on form submission.Handles POST request for updating user in database. 
+	 * It also validates the user input
 	 */
 	
-	@RequestMapping(value = { "/editProduct{prodId}" }, method = RequestMethod.POST)
-	
-	
+	@RequestMapping(value = { "/editProduct{prodId}" }, method = RequestMethod.POST)	
 	public String updateProduct( @ModelAttribute("user") @Valid ProductModel productBean, BindingResult result,		
 			ModelMap model, @PathVariable String prodId) {
 		
-		
+		logger.info("MasterController::editProduct::Update Product-"+prodId);
 		if (result.hasErrors()) {
 			return "updateProduct";
 		}
-	
-			
-			///URI uri = new URI(REST_SERVICE_URI+"/data/updateProduct/");
-			RestTemplate restTemplate = new  RestTemplate();
-			URI uri =restTemplate.postForLocation(REST_SERVICE_URI+"/data/editProduct/", productBean, ProductModel.class);
-						
 		
-			//dataService.updateProduct(productBean, prodId);
-
+		RestTemplate restTemplate = new  RestTemplate();
+		URI uri =restTemplate.postForLocation(REST_SERVICE_URI+ "/data/editProduct/", productBean, ProductModel.class);
+	
 		model.addAttribute("success", "Product updated successfully");
 		model.addAttribute("loggedinuser", super.getPrincipal());
+		logger.info("MasterController::updateProduct::Updated Product-"+prodId);
 		return "productsuccess";
 	}
 	
@@ -191,7 +198,9 @@ public class MasterController extends BaseController{
 	@RequestMapping(value = { "/deleteProduct-{prodId}" }, method = RequestMethod.GET)
 	public String deleteProduct(@PathVariable String prodId) {
 		
+		logger.info("MasterController::deleteProduct::delete Product-"+prodId);
 		dataService.deleteProductByProdId(prodId);
+		logger.info("MasterController::deleteProduct::deleted Product-"+prodId);
 		return "redirect:/products";
 	}
 	

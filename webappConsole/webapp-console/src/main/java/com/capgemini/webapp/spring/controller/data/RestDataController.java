@@ -11,8 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.capgemini.webapp.dao.api.entity.Product;
@@ -63,10 +66,29 @@ public class RestDataController {
 	 * @param prodId
 	 * @return Product
 	 */
-	@RequestMapping(value = { "/updateProduct/{prodId}" }, method = RequestMethod.GET)
+	//@RequestMapping(value = { "/editProduct/{prodId}" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/getProduct/" }, method = RequestMethod.GET)
 	
-	public ResponseEntity<ProductModel> searchProduct(@PathVariable("prodId") String prodId) {
+	//public ResponseEntity<ProductModel> searchProduct(@PathVariable("prodId") String prodId) {
+	public ResponseEntity<ProductModel> searchProduct(@RequestParam("prodId") String prodId) {
 		
+		System.out.println("Search Product Data for :" + prodId);
+
+		ProductModel prod = dataService.findProductByID(prodId);
+		if (prod == null) {
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+			// You many decide to return HttpStatus.NOT_FOUND
+		}
+
+		return new ResponseEntity<ProductModel>(prod, HttpStatus.OK);
+
+	}
+
+@RequestMapping(value = { "/searchProduct/" }, method = RequestMethod.GET)
+@CrossOrigin(origins = "*")
+public ResponseEntity<ProductModel> getProduct(@RequestHeader(value="prodId") String prodId) {
+	//@RequestHeader(value="prodId") 
+		//String prodId="P01";
 		System.out.println("Search Product Data for :" + prodId);
 
 		ProductModel prod = dataService.findProductByID(prodId);

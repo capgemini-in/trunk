@@ -233,17 +233,15 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 	@Override
 	public User findLdapUserBySSO(String sso) {
 
-		User user = null;
-		/*LdapUserModel ldapUserModel = userRepository.findOne(sso);
-		if (ldapUserModel != null) {			
-			user = new User();
-			user.setFirstName(ldapUserModel.getFirstName());
-			user.setLastName(ldapUserModel.getLastName());
-			user.setSsoId(ldapUserModel.getUid());
-			user.setEmail(ldapUserModel.getEmail());
-			PasswordEncoder encoder = new BCryptPasswordEncoder();
-			user.setPassword(encoder.encode("admin"));
-		}*/
+		User user = null;/*
+		LdapUserModel ldapUserModel = userRepository.findOne(sso);
+		user = new User();
+		user.setFirstName(ldapUserModel.getFirstName());
+		user.setLastName(ldapUserModel.getLastName());
+		user.setSsoId(ldapUserModel.getUid());
+		user.setEmail(ldapUserModel.getEmail());
+		PasswordEncoder encoder = new BCryptPasswordEncoder();
+		user.setPassword(encoder.encode("admin"));*/
 		List<LdapUserModel> ldapUserList = userRepository.findAll();
 		for (LdapUserModel ldapUser : ldapUserList) {
 
