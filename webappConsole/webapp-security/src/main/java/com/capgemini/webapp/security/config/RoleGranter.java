@@ -70,7 +70,8 @@ public class RoleGranter implements AuthorityGranter {
 			for(UserProfileModel profile : userRoles.getUserProfiles() ) {
 				
 				System.out.println(" Role :"+profile.getType());
-				return Collections.singleton("ROLE_"+profile.getType());
+				Set<String> groupSet =  Collections.singleton("ROLE_"+profile.getType());
+				roles.addAll(groupSet);
 			}
 			
 			/*if (principal.getName().equals("vipsatpu")) {

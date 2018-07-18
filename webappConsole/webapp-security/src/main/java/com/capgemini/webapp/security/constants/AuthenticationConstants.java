@@ -11,5 +11,9 @@ public class AuthenticationConstants {
 	public static final String AUTHENTICATION = "authentication";
 	public static final String LDAP_AUTH = "ldap";
 	public static final String DB_AUTH = "dao";
+	public static final String LDAP_BASE = "ldap.base";
+	public static final String  LDAP_USER = "ldap.user";
+	public static final String  LDAP_PASSWORD = "ldap.password";
+	public static final String  LDAP_URL = "ldap.url";
 
 }

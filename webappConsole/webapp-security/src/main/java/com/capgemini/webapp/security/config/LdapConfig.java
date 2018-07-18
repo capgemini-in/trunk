@@ -8,35 +8,38 @@ import org.springframework.core.env.Environment;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 
+import com.capgemini.webapp.security.constants.AuthenticationConstants;
+
 @Configuration
 @PropertySource("classpath:/config/ldap/ldap_details.properties")
 public class LdapConfig {
 
-    /*@Value("dc=maxcrc,dc=com")
-    private String baseDn;
+	/*
+	 * @Value("dc=maxcrc,dc=com") private String baseDn;
+	 * 
+	 * @Bean public BaseLdapPathBeanPostProcessor ldapPathBeanPostProcessor(){
+	 * BaseLdapPathBeanPostProcessor baseLdapPathBeanPostProcessor = new
+	 * BaseLdapPathBeanPostProcessor();
+	 * baseLdapPathBeanPostProcessor.setBasePath(baseDn); return
+	 * baseLdapPathBeanPostProcessor; }
+	 */
 
-    @Bean
-    public BaseLdapPathBeanPostProcessor ldapPathBeanPostProcessor(){
-        BaseLdapPathBeanPostProcessor baseLdapPathBeanPostProcessor = new BaseLdapPathBeanPostProcessor();
-        baseLdapPathBeanPostProcessor.setBasePath(baseDn);
-        return baseLdapPathBeanPostProcessor;
-    }*/
-	
 	@Autowired
-    Environment env;
+	Environment env;
 
-    @Bean
-    public LdapContextSource contextSource () {
-        LdapContextSource contextSource= new LdapContextSource();
-        contextSource.setUrl(env.getRequiredProperty("ldap.url"));
-        contextSource.setBase(env.getRequiredProperty("ldap.base"));
-        contextSource.setUserDn(env.getRequiredProperty("ldap.user"));
-        contextSource.setPassword(env.getRequiredProperty("ldap.password"));
-        return contextSource;
-    }
+	@Bean
+	public LdapContextSource contextSource() {
+		LdapContextSource contextSource = new LdapContextSource();
+		contextSource.setUrl(env.getRequiredProperty(AuthenticationConstants.LDAP_URL));
+		contextSource.setBase(env.getRequiredProperty(AuthenticationConstants.LDAP_BASE));
+		contextSource.setUserDn(env.getRequiredProperty(AuthenticationConstants.LDAP_USER));
+		contextSource.setPassword(env.getRequiredProperty(AuthenticationConstants.LDAP_PASSWORD));
+		return contextSource;
+	}
 
-    @Bean
-    public LdapTemplate ldapTemplate() {
-        return new LdapTemplate(contextSource());        
-    }
+	@Bean
+	public LdapTemplate ldapTemplate() {
+		return new LdapTemplate(contextSource());
+	}
+	
 }

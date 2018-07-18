@@ -2,11 +2,9 @@ package com.capgemini.webapp.service.api.model;
 
 import java.io.Serializable;
 
+
 public class EmailModel implements Serializable{
 	
-	EmailModel(){
-		
-	}
 		
 	private String toEmail;
 	

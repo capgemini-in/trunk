@@ -26,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.capgemini.webapp.service.api.MasterDataService;
+import com.capgemini.webapp.service.api.model.EmailModel;
 import com.capgemini.webapp.service.api.model.MessageModel;
 import com.capgemini.webapp.service.api.model.ProductCategoryModel;
 import com.capgemini.webapp.service.api.model.ProductModel;
@@ -323,8 +324,30 @@ public class MasterController extends BaseController{
 		return "smsgateway";
 		
 	}
-		
 	
+	@RequestMapping(value = { "/sendemail" }, method = RequestMethod.GET)
+    public String sendEmail( ModelMap model) {
+          
+          EmailModel emailBean=new EmailModel();
+          model.addAttribute("emailBean",emailBean);                                          
+          return "emailgateway";
+    }
+	
+	
+	    @RequestMapping(value = { "/sendemail" }, method = RequestMethod.POST)
+	    public String sendEmail( @ModelAttribute("emailBean") @Valid EmailModel emailBean, BindingResult result, ModelMap model) {
+	    	
+	            // System.out.println("newProduct:"+emailModel);
+	           if(emailBean!=null) {
+	               
+	               RestTemplate restTemplate = new  RestTemplate();
+	               URI uri =restTemplate.postForLocation(REST_SERVICE_URI+ "/util/email/", emailBean, EmailModel.class);
+	                      
+	          }
+	           
+	          return "emailgateway";
+	          
+	    }	
 	
 	}
 
