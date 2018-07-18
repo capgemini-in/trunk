@@ -3,18 +3,16 @@ package com.capgemini.webapp.spring.controller.data;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.slf4j.Logger;
-
-import org.slf4j.LoggerFactory;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -28,8 +26,11 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.capgemini.webapp.service.api.MasterDataService;
+import com.capgemini.webapp.service.api.model.MessageModel;
 import com.capgemini.webapp.service.api.model.ProductCategoryModel;
 import com.capgemini.webapp.service.api.model.ProductModel;
+import com.capgemini.webapp.service.api.model.SMSMessageModel;
+import com.capgemini.webapp.service.api.model.SMSModel;
 import com.capgemini.webapp.spring.controller.BaseController;
 
 
@@ -177,7 +178,7 @@ public class MasterController extends BaseController{
 	public String updateProduct( @ModelAttribute("user") @Valid ProductModel productBean, BindingResult result,		
 			ModelMap model, @PathVariable String prodId) {
 		
-		logger.info("MasterController::editProduct::Update Product-"+prodId);
+		logger.info("MasterController::editProduct::Post::Update Product-"+prodId);
 		if (result.hasErrors()) {
 			return "updateProduct";
 		}
@@ -210,10 +211,9 @@ public class MasterController extends BaseController{
 	@RequestMapping(value = { "/newproduct" }, method = RequestMethod.GET)
 	public String newProduct(ModelMap model) {
 		
-
+		logger.info("MasterController::newProduct::Creating new Product::");
+		
 		ProductModel prod = new ProductModel();
-		//EditProductBean productBean =new EditProductBean();
-		//productBean.setProd(prod);
 		List<ProductCategoryModel> cateogryList=new ArrayList<ProductCategoryModel>();
 		RestTemplate restTemplate=new RestTemplate();
 		List<LinkedHashMap<String, Object>> categoryMap = restTemplate.getForObject(REST_SERVICE_URI+"/data/categories/", List.class);
@@ -229,7 +229,6 @@ public class MasterController extends BaseController{
 				cateogryList.add(catObj);
 				
 			}
-			//productBean.setListCat(cateogryList);
 			
 		}
 		if(prod!=null) {
@@ -240,40 +239,93 @@ public class MasterController extends BaseController{
 			model.addAttribute("loggedinuser", super.getPrincipal());
 			
 		}
+		logger.info("MasterController::newProduct::Get::Creating new Product::");
+			
 		return "updateProduct";
 	}
 	
 	@RequestMapping(value = { "/newproduct" }, method = RequestMethod.POST)
 	public String newProduct( @ModelAttribute("productBean") @Valid ProductModel productBean, BindingResult result, ModelMap model) {
-		System.out.println("Entering method:newProduct");
+
+		logger.info("MasterController::newProduct::POST::Creating new Product::");
+		
 		if (result.hasErrors()) {
 			return "updateProduct";
 		}
 		boolean addedProd=false;
-		System.out.println("Creating new Product");
 		if(productBean!=null) {
-			System.out.println("newProduct:"+productBean);
+			
 			addedProd=  dataService.addProduct(productBean);
 		}
 		if(addedProd) {
 		model.addAttribute("success",
 				"Product " +productBean.getName() +" added  successfully");
 		model.addAttribute("loggedinuser", super.getPrincipal());
+		logger.info("MasterController::newProduct::Executed method successfully");
 		return "productsuccess";
+		
 		}else {
 			
 			
 			model.addAttribute("productBean", productBean);
 			FieldError ssoError = new FieldError("productBean", "prodId", "Product already exist");
 			result.addError(ssoError);
+
+			logger.info("MasterController::newProduct::Executed method");
+			
 			return "updateProduct";
 		
-			//return "redirect:/newproduct";
 			
 		}
-		// return "success";
+	}
+
+	@RequestMapping(value = { "/sendSMS" }, method = RequestMethod.GET)
+	public String sendSMSNotification( ModelMap model) {
 		
-
+		logger.info("MasterController::sendSMSNotification::GET");
+		MessageModel smsMsgBean=new MessageModel();
+		smsMsgBean.setMessage("Enter Text Message");
+		smsMsgBean.setReciepents("9987074418");		
+		model.addAttribute("smsMsgBean",smsMsgBean);		
+		logger.info("MasterController::sendSMSNotification::GET method executed");
+		return "smsgateway";
 	}
 
+	@RequestMapping(value = { "/sendSMS" }, method = RequestMethod.POST)
+	public String sendSMSNotification( @ModelAttribute("smsMsgBean") @Valid MessageModel smsMsgBean, BindingResult result, ModelMap model) {
+	
+		logger.info("MasterController::sendSMS::POST::Sending SMS");
+		
+		SMSMessageModel msg=new SMSMessageModel();
+		String recipients="";
+		if(smsMsgBean!=null) {
+			
+			msg.setMessage(smsMsgBean.getMessage());
+			recipients=smsMsgBean.getReciepents();
+			if(recipients!=null && recipients.length()>0) {
+			
+			ArrayList<String> recipientsList = new ArrayList<String>(Arrays.asList(recipients.split("\\s*,\\s*")));
+			msg.setTo(recipientsList);
+		}
+			
+		}
+		SMSModel  sms=new SMSModel();
+		List<SMSMessageModel> lstSMS=new ArrayList<SMSMessageModel>();
+		lstSMS.add(msg);
+		sms.setSmsmessage(lstSMS);
+		
+		RestTemplate restTemplate = new  RestTemplate();
+		ResponseEntity<String> response=restTemplate.postForEntity(REST_SERVICE_URI+ "/util/sms/", sms, String.class);
+	
+		String status=response.getBody();
+		
+		logger.info("MasterController::sendSMSNotification::POST method executed");
+		return "smsgateway";
+		
 	}
+		
+	
+	
+	}
+
+

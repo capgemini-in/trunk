@@ -18,6 +18,7 @@
 
 		<div class="well lead">Add New Product</div>
 	 	<form:form method="POST" modelAttribute="productBean" class="form-horizontal">
+	 	
 			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 			<div class="row">
 				<div class="form-group col-md-12">
@@ -28,7 +29,7 @@
 								<form:input type="text" path= "prodId"  value="${productBean.prodId}" id="prodId" class="form-control input-sm" disabled="true"/>
 							</c:when>
 							<c:otherwise>
-							<form:input type="text" path= "prodId"  value="${productBean.prodId}" id="prodId" class="form-control input-sm" />
+							<form:input type="text" path= "prodId"  value="${productBean.prodId}" id="prodId"  />
 								<div class="has-error">
 									<form:errors path="prodId" class="help-inline"/>
 								</div>

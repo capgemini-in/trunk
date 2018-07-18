@@ -54,8 +54,8 @@ public class GatewayController {
 		status=smsService.sendSMS(smsBean);
 		
 		logger.info("GatewayController::sendSMS::Executed");
-		
-		return new ResponseEntity<String>(HttpStatus.OK);
+			
+		return new ResponseEntity<String>(status,HttpStatus.OK);
 	}
 	
 	

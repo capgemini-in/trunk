@@ -18,6 +18,11 @@
 	</properties>
 	<dependencies>
 		<dependency>
+			<groupId>com.capgemini.webapp.common</groupId>
+			<artifactId>webapp-common</artifactId>
+			<version>${webapp.common.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.capgemini.webapp.service.api</groupId>
 			<artifactId>webapp-service-api</artifactId>
 			<version>${webapp.service.api.version}</version>
@@ -32,6 +37,16 @@
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+    		<groupId>com.sendgrid</groupId>
+    		<artifactId>sendgrid-java</artifactId>
+    		<version>4.2.1</version>
+		</dependency>
+		<dependency>
+    		<groupId>com.googlecode.json-simple</groupId>
+    		<artifactId>json-simple</artifactId>
+    		<version>1.1</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -66,6 +66,9 @@
 			class="w3-dropdown-content w3-cyan  w3-animate-zoom w3-right w3-padding w3-medium">
 	<a href ="<c:url value='/gateway' />" class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="34"><i
 				class="fa fa-user-circle-o fa-fw w3-margin-right"></i>Gateway</a>
+				
+	<a href ="<c:url value='/sendSMS' />" class="w3-text-white w3-padding w3-border w3-round-xxlarge" id="34"><i
+				class="fa fa-user-circle-o fa-fw w3-margin-right"></i>SMS Notification</a>
 
 </div>
 </div>
