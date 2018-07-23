@@ -34,9 +34,10 @@ public class RestDataController {
 	@Autowired
 	MasterDataService dataService;
 
-	// -------------------Retrieve All
-	// Users---------------------------------------------
-
+	/**
+	 * Retrieve list of all products
+	 * @return
+	 */
 	@RequestMapping(value = "/products/", method = RequestMethod.GET)
 
 	public ResponseEntity<List<ProductModel>> listAllProducts() {
@@ -48,7 +49,10 @@ public class RestDataController {
 		return new ResponseEntity<List<ProductModel>>(prodList, HttpStatus.OK);
 	}
 
-	
+	/**
+	 * Retrieve list of product category
+	 * @return
+	 */
 	@RequestMapping(value = "/categories/", method = RequestMethod.GET)
 
 	public ResponseEntity<List<ProductCategoryModel>> listAllProductCategory() {
@@ -113,4 +117,25 @@ public ResponseEntity<ProductModel> getProduct(@RequestHeader(value="prodId") St
 		*///
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
+	
+	/**
+	 * Creates new product
+	 * @param productBean
+	 * @return
+	 */
+	@RequestMapping(value = "/createProduct/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> createProduct( @RequestBody  ProductModel productBean) {
+
+		boolean isCreated=false;
+		if(productBean!=null) {
+			
+			isCreated =  dataService.addProduct(productBean);
+		} 
+		if (isCreated)
+			return new ResponseEntity<String>("success",HttpStatus.OK);
+		else
+			return new ResponseEntity<String>("error", HttpStatus.OK);
+	}
+	
+	
 }

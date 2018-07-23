@@ -21,7 +21,12 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -36,10 +41,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.capgemini.webapp.dao.api.entity.FileBucket;
 import com.capgemini.webapp.service.api.UserProfileService;
 import com.capgemini.webapp.service.api.UserService;
+import com.capgemini.webapp.service.api.model.ProductModel;
 import com.capgemini.webapp.service.api.model.UserInfoModel;
 import com.capgemini.webapp.service.api.model.UserModel;
 import com.capgemini.webapp.service.api.model.UserProfileModel;
@@ -63,18 +70,18 @@ public class UserController extends BaseController {
 	@Autowired
 	private Environment env;
 
-	public static final String REST_SERVICE_URI = "http://LIN17000289:8083/pocwebapp";
+	public static final String REST_SERVICE_URI = "http://localhost:8082/pocwebapp";
 
 	private static String UPLOAD_LOCATION = "D:\\log";
 
+	
 	/**
 	 * This method will list all existing users.
 	 */
 	@RequestMapping(value = { "/list" }, method = RequestMethod.GET)
 	public String listUsers(ModelMap model) {
 
-
-		String restPath = env.getRequiredProperty("authentication");
+		String restPath = env.getRequiredProperty("authentication");		
 		List<UserModel> users = new ArrayList();
 		try {
 
@@ -82,6 +89,7 @@ public class UserController extends BaseController {
 			//URI uri = new URI("http://localhost:8083/pocwebapp" + "/api/user/");
 			URI uri = new URI("http://localhost:8082/pocwebapp" + "/api/user/");
 			RestTemplate restTemplate = new RestTemplate();
+			
 			List<LinkedHashMap<String, Object>> usersMap = restTemplate.getForObject(uri, List.class);
 			if (usersMap != null) {
 				for (LinkedHashMap<String, Object> map : usersMap) {
@@ -122,92 +130,137 @@ public class UserController extends BaseController {
 		return "registration";
 	}
 
-	/**
-	 * This method will be called on form submission, handling POST request for
-	 * saving user in database. It also validates the user input
-	 */
+	
+	
 	@RequestMapping(value = { "/newuser" }, method = RequestMethod.POST)
-	public String saveUser(@ModelAttribute("user") @Valid UserModel user, BindingResult result, ModelMap model) {
+	public String newUser( @ModelAttribute("user") @Valid UserModel user, BindingResult result, ModelMap model) 
+	{
 
-		try{	
-			//String restPath = env.getRequiredProperty("authentication");
-			String url = "http://localhost:8082/pocwebapp" + "/api/user/";
-			RestTemplate restTemplate = new RestTemplate();
-			restTemplate.postForLocation(url, user, UserModel.class);
-
-		} catch (Exception e) { // TODO Auto-generated catch block
-			e.printStackTrace();
+		//logger.info("newProduct::POST::Creating new Product::");
+		
+		RestTemplate restTemplate=new RestTemplate();
+		
+		if (result.hasErrors()) {
+			
+			return "registration";
 		}
-
-		/*
-		 * if (result.hasErrors()) { List<UserModel> users = userService.findAllUsers();
-		 * model.addAttribute("users", users); return "registration"; }
-		 * 
-		 * 
-		 * Preferred way to achieve uniqueness of field [sso] should be implementing
-		 * custom @Unique annotation and applying it on field [sso] of Model class
-		 * [UserModel].
-		 * 
-		 * Below mentioned peace of code [if block] is to demonstrate that you can fill
-		 * custom errors outside the validation framework as well while still using
-		 * internationalized messages.
-		 * 
-		 * 
-		 * if (!userService.isUserSSOUnique(user.getId(), user.getSsoId())) { FieldError
-		 * ssoError = new FieldError("user", "ssoId",
-		 * messageSource.getMessage("non.unique.ssoId", new String[] { user.getSsoId()
-		 * }, Locale.getDefault())); result.addError(ssoError);
-		 * model.addAttribute("user", user); return "registration"; }
-		 * 
-		 * userService.saveUser(user);
-		 */
-
+		String status="";
+		
+		if(user!=null) {
+			
+			ResponseEntity<String> response=restTemplate.postForEntity(REST_SERVICE_URI+ "/api/newUser/", user, String.class);
+			
+			status=response.getBody();
+			
+		}
+		if(status.equals("success")) {
 		model.addAttribute("success",
-				"UserModel " + user.getFirstName() + " " + user.getLastName() + " registered successfully");
+				"User " +user.getFirstName() +" " + user.getLastName() + " registered successfully");
 		model.addAttribute("loggedinuser", super.getPrincipal());
-		// return "success";
+		//logger.info("MasterController::newProduct::Executed method successfully");
 		return "registrationsuccess";
-	}
+		
+		}else {
+			
+			
+			model.addAttribute("user", user);
+			FieldError ssoError = new FieldError("user", "ssoId", "User already exist");
+			result.addError(ssoError);
 
+			//logger.info("MasterController::newProduct::Executed method");
+			
+			return "registration";
+		
+			
+		}
+	}
+	
 	/**
 	 * This method will provide the medium to update an existing user.
 	 */
 	@RequestMapping(value = { "/edit-user-{ssoId}" }, method = RequestMethod.GET)
 	public String editUser(@PathVariable String ssoId, ModelMap model) {
-		UserModel user = userService.findBySSO(ssoId);
-		model.addAttribute("user", user);
-		model.addAttribute("edit", true);
-		model.addAttribute("loggedinuser", super.getPrincipal());
+		
+		
+		RestTemplate restTemplate = new RestTemplate(); 
+		
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(REST_SERVICE_URI+"/api/getUser/")
+		       .queryParam("ssoId", ssoId);		
+		UserModel user = restTemplate.getForObject(builder.toUriString(), UserModel.class);	
+		
+		if(user != null) {
+			model.addAttribute("user", user);
+			model.addAttribute("edit", true);
+			model.addAttribute("loggedinuser", super.getPrincipal());
+		}
 		return "registration";
 	}
 
-	/**
-	 * This method will be called on form submission, handling POST request for
-	 * updating user in database. It also validates the user input
-	 */
-
 	@RequestMapping(value = { "/edit-user-{ssoId}" }, method = RequestMethod.POST)
+	
 	public String updateUser(@ModelAttribute("user") UserModel user, BindingResult result, ModelMap model,
 			@PathVariable String ssoId) {
 
 		if (result.hasErrors()) {
+			
 			return "registration";
 		}
 
-		userService.updateUser(user);
-
-		model.addAttribute("success",
-				"UserModel " + user.getFirstName() + " " + user.getLastName() + " updated successfully");
-		model.addAttribute("loggedinuser", super.getPrincipal());
-		return "registrationsuccess";
+		RestTemplate restTemplate = new RestTemplate();
+		String status="";
+		if(user!=null) {
+			
+			ResponseEntity<String> response=restTemplate.postForEntity(REST_SERVICE_URI+ "/api/editUser/", user, String.class);
+			
+			status=response.getBody();
+			
+		}
+		if(status.equals("success")) {
+			model.addAttribute("success",
+					"User  " + user.getFirstName() + " " + user.getLastName() + " updated successfully");
+			model.addAttribute("loggedinuser", super.getPrincipal());
+			return "registrationsuccess";
+			
+		}else {
+			return "registration";
+			
+		}
+		
 	}
-
+	
+	
 	/**
 	 * This method will delete an user by it's SSOID value.
 	 */
 	@RequestMapping(value = { "/delete-user-{ssoId}" }, method = RequestMethod.GET)
 	public String deleteUser(@PathVariable String ssoId) {
-		userService.deleteUserBySSO(ssoId);
+		
+		RestTemplate restTemplate = new RestTemplate();
+		String status="";
+		if(ssoId!=null) {
+			
+			HttpHeaders headers = new HttpHeaders();
+			headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(REST_SERVICE_URI+"/api/deleteUser/")
+			        .queryParam("ssoId", ssoId);
+			        
+
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+
+			HttpEntity<String> response = restTemplate.exchange(
+			        builder.toUriString(), 
+			        HttpMethod.DELETE, 
+			        entity, 
+			        String.class);
+			 status=response.getBody();
+			if(status.equals("success"))	{	
+				
+			}
+				return "redirect:/list";
+		}// end of IF
+		
+	
 		return "redirect:/list";
 	}
 

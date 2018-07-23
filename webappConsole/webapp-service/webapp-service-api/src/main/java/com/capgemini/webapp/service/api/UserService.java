@@ -15,11 +15,11 @@ public interface UserService {
 
 	UserModel findBySSO(String sso);
 
-	void saveUser(UserModel userModel);
+	boolean saveUser(UserModel userModel);
 
-	void updateUser(UserModel userModel);
+	boolean updateUser(UserModel userModel);
 
-	void deleteUserBySSO(String sso);
+	boolean deleteUserBySSO(String sso);
 
 	List<UserModel> findAllUsers();
 

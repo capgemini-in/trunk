@@ -5,6 +5,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.dozer.DozerBeanMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -22,6 +24,7 @@ import com.capgemini.webapp.service.api.model.UserInfoModel;
 import com.capgemini.webapp.service.api.model.UserModel;
 import com.capgemini.webapp.service.api.model.UserProfileModel;
 
+
 /**
  * @author awarhoka
  *
@@ -30,6 +33,8 @@ import com.capgemini.webapp.service.api.model.UserProfileModel;
 @Transactional
 @PropertySource("classpath:/config/ldap/ldap_details.properties")
 public class UserServiceImpl implements UserService {
+	
+	public static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
 	@Autowired
 	private Environment env;
@@ -66,7 +71,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Transactional
-	public void saveUser(UserModel userModel) {
+	public boolean saveUser(UserModel userModel) {
+		
+		
+		boolean created=false;
+		try {
 		/*userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
 		User userEntity = new DozerBeanMapper().map(userModel, User.class);
 		dao.save(userEntity);*/
@@ -75,6 +84,17 @@ public class UserServiceImpl implements UserService {
 		//userModel.setPassword(encoderDecoder.encrypt(userModel.getPassword()));
 		User userEntity = new DozerBeanMapper().map(userModel, User.class);
 		dao.save(userEntity);
+		created=true;
+		return created;
+				
+				
+		}catch(Exception e) {
+			
+			logger.error("Error updating user entity:"+e.getMessage());
+			created=false;
+		}
+		return created;
+		
 		/*String authentication = env.getRequiredProperty(AuthenticationConstants.AUTHENTICATION);
 		if (authentication.equalsIgnoreCase(AuthenticationConstants.LDAP_AUTH)) {
 			LdapUserModel p = new LdapUserModel();
@@ -98,29 +118,33 @@ public class UserServiceImpl implements UserService {
 	 * update explicitly. Just fetch the entity from db and update it with proper
 	 * values within transaction. It will be updated in db once transaction ends.
 	 */
-	public void updateUser(UserModel userModel) {
-		User userEntity = new DozerBeanMapper().map(userModel, User.class);
-		User entity = dao.findById(userEntity.getId());
-		/*String authentication = env.getRequiredProperty(AuthenticationConstants.AUTHENTICATION);
+	public boolean updateUser(UserModel userModel) {
 		
-		if(authentication.equalsIgnoreCase(AuthenticationConstants.LDAP_AUTH)) {
-			entity = dao.findBySSO(userEntity.getSsoId());
-		}
-		else {			
-			entity = dao.findById(userEntity.getId());
-		}*/
-		if (entity != null) {
-			entity.setSsoId(userModel.getSsoId());
-			if (!userModel.getPassword().equals(entity.getPassword())) {
-				entity.setPassword(passwordEncoder.encode(userModel.getPassword()));
+		boolean status=false;
+		try {
+			User userEntity = new DozerBeanMapper().map(userModel, User.class);
+			User entity = dao.findBySSO(userEntity.getSsoId());
+			//User entity = dao.findById(userEntity.getId());
+			if (entity != null) {
+				entity.setSsoId(userModel.getSsoId());
+				if (!userModel.getPassword().equals(entity.getPassword())) {
+					entity.setPassword(passwordEncoder.encode(userModel.getPassword()));
+				}
+				entity.setFirstName(userModel.getFirstName());
+				entity.setLastName(userModel.getLastName());
+				entity.setEmail(userModel.getEmail());
+				
+				Set<UserProfile> userProfileEntity = getUpdatedUserProfiles(userModel.getUserProfiles(), UserProfile.class);
+				entity.setUserProfiles(userProfileEntity);
+				status=true;
 			}
-			entity.setFirstName(userModel.getFirstName());
-			entity.setLastName(userModel.getLastName());
-			entity.setEmail(userModel.getEmail());
+		}catch(Exception e) {
+			logger.error("Exception upating user bean:"+ e.getMessage());
+			status=false;
+			return status;
 			
-			Set<UserProfile> userProfileEntity = getUpdatedUserProfiles(userModel.getUserProfiles(), UserProfile.class);
-			entity.setUserProfiles(userProfileEntity);
 		}
+		return status;
 	}
 
 	/**
@@ -133,8 +157,17 @@ public class UserServiceImpl implements UserService {
 		return userProfiles.stream().map(from -> new DozerBeanMapper().map(from, toClass)).collect(Collectors.toSet());
 	}
 
-	public void deleteUserBySSO(String sso) {
-		dao.deleteBySSO(sso);
+	public boolean deleteUserBySSO(String sso) {
+		boolean isDeleted=false;
+		try { 
+			dao.deleteBySSO(sso);
+			isDeleted=true;
+			
+		}catch(Exception e) {
+			isDeleted=false;
+			return isDeleted;
+		}
+		return isDeleted;
 	}
 
 	@Transactional(readOnly = true)

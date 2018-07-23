@@ -245,7 +245,53 @@ public class MasterController extends BaseController{
 		return "updateProduct";
 	}
 	
+	
+	
 	@RequestMapping(value = { "/newproduct" }, method = RequestMethod.POST)
+	public String newProduct( @ModelAttribute("productBean") @Valid ProductModel productBean, BindingResult result, ModelMap model) {
+
+		logger.info("newProduct::POST::Creating new Product::");
+		
+		RestTemplate restTemplate=new RestTemplate();
+		
+		if (result.hasErrors()) {
+			
+			return "updateProduct";
+		}
+		String status="";
+		if(productBean!=null) {
+			
+			ResponseEntity<String> response=restTemplate.postForEntity(REST_SERVICE_URI+ "/data/createProduct/", productBean, String.class);
+			
+			status=response.getBody();
+			
+		}
+		if(status.equals("success")) {
+		model.addAttribute("success",
+				"Product " +productBean.getName() +" added  successfully");
+		model.addAttribute("loggedinuser", super.getPrincipal());
+		logger.info("MasterController::newProduct::Executed method successfully");
+		return "productsuccess";
+		
+		}else {
+			
+			
+			model.addAttribute("productBean", productBean);
+			FieldError ssoError = new FieldError("productBean", "prodId", "Product already exist");
+			result.addError(ssoError);
+
+			logger.info("MasterController::newProduct::Executed method");
+			
+			return "updateProduct";
+		
+			
+		}
+	}
+
+	
+	
+	
+	/*@RequestMapping(value = { "/newproduct" }, method = RequestMethod.POST)
 	public String newProduct( @ModelAttribute("productBean") @Valid ProductModel productBean, BindingResult result, ModelMap model) {
 
 		logger.info("MasterController::newProduct::POST::Creating new Product::");
@@ -279,7 +325,7 @@ public class MasterController extends BaseController{
 			
 		}
 	}
-
+*/
 	@RequestMapping(value = { "/sendSMS" }, method = RequestMethod.GET)
 	public String sendSMSNotification( ModelMap model) {
 		

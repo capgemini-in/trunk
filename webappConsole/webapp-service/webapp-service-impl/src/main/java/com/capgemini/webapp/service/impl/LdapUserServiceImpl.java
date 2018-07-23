@@ -44,7 +44,7 @@ public class LdapUserServiceImpl implements UserService{
 	}
 
 	@Override
-	public void saveUser(UserModel userModel) {
+	public boolean saveUser(UserModel userModel) {
 		
 		LdapUserModel p = new LdapUserModel();
 		p.setFirstName(userModel.getFirstName());
@@ -56,11 +56,11 @@ public class LdapUserServiceImpl implements UserService{
 		LdapUser ldapUser = new DozerBeanMapper().map(p, LdapUser.class);
 		//new UserRepository().create(p);
 		dao.saveLdapUser(ldapUser);
-		
+		return true;
 	}
 
 	@Override
-	public void updateUser(UserModel userModel) {
+	public boolean updateUser(UserModel userModel) {
 		User userEntity = new DozerBeanMapper().map(userModel, User.class);
 		User entity = dao.findBySSO(userEntity.getSsoId());
 		if (entity != null) {
@@ -75,6 +75,7 @@ public class LdapUserServiceImpl implements UserService{
 			Set<UserProfile> userProfileEntity = getUpdatedUserProfiles(userModel.getUserProfiles(), UserProfile.class);
 			entity.setUserProfiles(userProfileEntity);
 		}
+		return true;
 		
 	}
 	private Set<UserProfile> getUpdatedUserProfiles(Set<UserProfileModel> userProfiles, Class<UserProfile> toClass) {
@@ -82,9 +83,9 @@ public class LdapUserServiceImpl implements UserService{
 	}
 
 	@Override
-	public void deleteUserBySSO(String sso) {
+	public boolean deleteUserBySSO(String sso) {
 		// TODO Auto-generated method stub
-		
+		return true;
 	}
 
 	@Override
