@@ -29,6 +29,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import com.capgemini.webapp.security.authentication.AuthenticationFailureHandler;
 import com.capgemini.webapp.security.authentication.CustomDBAuthenticationProvider;
 import com.capgemini.webapp.security.authentication.RequestBodyReaderAuthenticationFilter;
 import com.capgemini.webapp.security.constants.AuthenticationConstants;
@@ -55,6 +57,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	CustomDBAuthenticationProvider customDBAuthenticationProvider;
+	
+	@Autowired
+	AuthenticationFailureHandler authenticaionFailureHandler;
 	
 
 	@Autowired
@@ -191,10 +196,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public RequestBodyReaderAuthenticationFilter authenticationFilter() throws Exception {
 		RequestBodyReaderAuthenticationFilter authenticationFilter = new RequestBodyReaderAuthenticationFilter();
-		//authenticationFilter.setAuthenticationSuccessHandler(this::loginSuccessHandler);
-		//authenticationFilter.setAuthenticationFailureHandler(this::loginFailureHandler);
 		authenticationFilter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
 		authenticationFilter.setAuthenticationManager(authenticationManagerBean());
+		authenticationFilter.setAuthenticationFailureHandler(authenticaionFailureHandler);
 		return authenticationFilter;
 	}
 

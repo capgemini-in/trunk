@@ -15,13 +15,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.capgemini.webapp.security.constants.AuthenticationConstants;
 
 public class RequestBodyReaderAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 	private static final Log LOG = LogFactory.getLog(RequestBodyReaderAuthenticationFilter.class);
 	private static final String ERROR_MESSAGE = "Something went wrong while parsing /login request body";
-	private final ObjectMapper objectMapper = new ObjectMapper();
+	//private final ObjectMapper objectMapper = new ObjectMapper();
 
 	public RequestBodyReaderAuthenticationFilter() {
 	}
@@ -38,23 +38,26 @@ public class RequestBodyReaderAuthenticationFilter extends UsernamePasswordAuthe
 			while (stringToken.hasMoreElements()) {
 				String credentials = (String) stringToken.nextElement();
 				String[] array = credentials.split("=");
-				if (array[0].equalsIgnoreCase("ssoId")) {
-					ssoId = array[1];
-				}
-				if (array[0].equalsIgnoreCase("password")) {
-					password = array[1];
+				if (array != null && array.length != 0) {
+					if (AuthenticationConstants.SSOID.equalsIgnoreCase(array[0])) {
+						ssoId = array[1];
+					}
+					if (AuthenticationConstants.PASSWORD.equalsIgnoreCase(array[0])) {
+						password = array[1];
+					}
 				}
 
 			}
-			//LoginRequest authRequest = objectMapper.readValue(requestBody, LoginRequest.class);
-			
+			// LoginRequest authRequest = objectMapper.readValue(requestBody,
+			// LoginRequest.class);
+
 			UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(ssoId, password);
 
 			// Allow subclasses to set the "details" property
-			//setDetails(request, token);
+			// setDetails(request, token);
 			setRequestAndToken(request, token);
 			return getAuthenticationObject(token);
-			
+
 		} catch (IOException e) {
 			LOG.error(ERROR_MESSAGE, e);
 			throw new InternalAuthenticationServiceException(ERROR_MESSAGE, e);

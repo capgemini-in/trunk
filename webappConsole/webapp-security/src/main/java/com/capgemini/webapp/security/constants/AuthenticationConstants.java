@@ -15,5 +15,7 @@ public class AuthenticationConstants {
 	public static final String  LDAP_USER = "ldap.user";
 	public static final String  LDAP_PASSWORD = "ldap.password";
 	public static final String  LDAP_URL = "ldap.url";
+	public static final String SSOID = "ssoId";
+	public static final String PASSWORD = "password";
 
 }
