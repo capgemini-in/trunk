@@ -43,6 +43,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.capgemini.webapp.common.constants.IApplicationConstants;
 import com.capgemini.webapp.dao.api.entity.FileBucket;
 import com.capgemini.webapp.service.api.UserProfileService;
 import com.capgemini.webapp.service.api.UserService;
@@ -70,7 +71,8 @@ public class UserController extends BaseController {
 	@Autowired
 	private Environment env;
 
-	public static final String REST_SERVICE_URI = "http://localhost:8082/pocwebapp";
+	//public static final String REST_SERVICE_URI ="http://localhost:8082/pocwebapp";
+		public static final String REST_SERVICE_URI = IApplicationConstants.REST_API_URL;
 
 	private static String UPLOAD_LOCATION = "D:\\log";
 
@@ -85,7 +87,7 @@ public class UserController extends BaseController {
 		List<UserModel> users = new ArrayList();
 		try {
 
-			URI uri = new URI("http://localhost:8082/pocwebapp" + "/api/user/");
+			URI uri = new URI(REST_SERVICE_URI + "/api/user/");
 			RestTemplate restTemplate = new RestTemplate();
 			List<LinkedHashMap<String, Object>> usersMap = restTemplate.getForObject(uri, List.class);
 			if (usersMap != null) {

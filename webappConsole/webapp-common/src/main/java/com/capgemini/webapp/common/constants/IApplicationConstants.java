@@ -25,6 +25,7 @@ public interface IApplicationConstants {
 	
 	String STATUS_SUCCESS ="success";
 	String STATUS_FAILED="failed";
+	String REST_API_URL = "http://localhost:8083/pocwebapp";
 	
 	
 }

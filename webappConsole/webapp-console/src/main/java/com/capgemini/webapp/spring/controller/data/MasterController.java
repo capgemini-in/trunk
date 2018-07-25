@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.capgemini.webapp.common.constants.IApplicationConstants;
 import com.capgemini.webapp.service.api.MasterDataService;
 import com.capgemini.webapp.service.api.model.EmailModel;
 import com.capgemini.webapp.service.api.model.MessageModel;
@@ -51,10 +53,14 @@ import com.capgemini.webapp.spring.controller.BaseController;
 public class MasterController extends BaseController{
 
 	@Autowired
+	private Environment env;
+	
+	@Autowired
 	MasterDataService dataService;
 	
 	//public static final String REST_SERVICE_URI ="http://10.76.132.120:8280/UserManagement/1.0.0";
-	public static final String REST_SERVICE_URI ="http://localhost:8082/pocwebapp";
+	//public static final String REST_SERVICE_URI ="http://localhost:8082/pocwebapp";
+	public static final String REST_SERVICE_URI = IApplicationConstants.REST_API_URL;
 	
 	public static final Logger logger = LoggerFactory.getLogger(MasterController.class);
 			
@@ -68,6 +74,7 @@ public class MasterController extends BaseController{
 
 		logger.info("MasterController::listProduct::Retrieving Product List");
 		List<ProductModel> prodList = new ArrayList();
+		//String REST_SERVICE_URI = env.getRequiredProperty(IApplicationConstants.REST_API_URL);
 		try {
 			
 			URI uri = new URI(REST_SERVICE_URI+"/data/products/");
