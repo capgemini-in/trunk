@@ -107,13 +107,13 @@ public class RestDataController {
 			prod = dataService.findProductByID(prodId);
 			if (prod == null) {
 				
-				return new ResponseEntity("NoData", HttpStatus.NO_CONTENT);
+				return new ResponseEntity( HttpStatus.NO_CONTENT);
 				// You many decide to return HttpStatus.NOT_FOUND
 			}
 		}catch(Exception e) {
 			
 			logger.error("Error retrieving product:"+e.getMessage());
-			return new ResponseEntity("error", HttpStatus.OK);
+			return new ResponseEntity( HttpStatus.NO_CONTENT);
 			
 		}
 
