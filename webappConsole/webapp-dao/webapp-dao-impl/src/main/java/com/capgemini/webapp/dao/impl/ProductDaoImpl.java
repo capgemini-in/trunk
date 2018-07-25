@@ -40,8 +40,16 @@ public class ProductDaoImpl extends AbstractDao<Integer, Product>implements Prod
 	}
 
 	@Override
-	public void saveProduct(Product prod) {
-		getSession().save(prod);
+	public boolean saveProduct(Product prod) {
+		boolean status=false;
+			try {
+			getSession().save(prod);
+			status=true;
+			}catch(Exception e) {
+				return false;
+				
+			}
+		return status;
 	
 	}
 	

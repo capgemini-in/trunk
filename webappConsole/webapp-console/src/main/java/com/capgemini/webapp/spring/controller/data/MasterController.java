@@ -12,6 +12,10 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -54,6 +58,11 @@ public class MasterController extends BaseController{
 	
 	public static final Logger logger = LoggerFactory.getLogger(MasterController.class);
 			
+	/**
+	 * List all available products
+	 * @param model
+	 * @return viewname
+	 */
 	@RequestMapping(value = { "/products" }, method = RequestMethod.GET)
 	public String listProduct(ModelMap model) {
 
@@ -101,7 +110,7 @@ public class MasterController extends BaseController{
 
 
 	/**
-	 * This method updates existing Product details
+	 * This method retrieves existing Product details to be updated
 	 * @param model
 	 * @return
 	 */
@@ -115,17 +124,8 @@ public class MasterController extends BaseController{
 		ProductCategoryModel prodCats=null;
 		try {
 			
-			uri = new URI(REST_SERVICE_URI+"/data/editProduct/");			
 			RestTemplate restTemplate = new RestTemplate(); 
-			
-			//HttpHeaders headers = new HttpHeaders();
-			//headers.setContentType(MediaType.TEXT_PLAIN);
-			//headers.set("Authorization", "Bearer "+accessToken);
-			//headers.set("prodId", prodId);
-			//HttpEntity<String> entity = new HttpEntity<String>(null,headers);
-			//product = restTemplate.exchange(uri, entity, ProductModel.class);
-			
-			
+						
 			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(REST_SERVICE_URI+"/data/getProduct/")
 			       .queryParam("prodId", prodId);
 			
@@ -196,7 +196,7 @@ public class MasterController extends BaseController{
 	
 	/**
 	 * This method will delete an user by it's SSOID value.
-	 */
+	 *//*
 	@RequestMapping(value = { "/deleteProduct-{prodId}" }, method = RequestMethod.GET)
 	public String deleteProduct(@PathVariable String prodId) {
 		
@@ -204,8 +204,44 @@ public class MasterController extends BaseController{
 		dataService.deleteProductByProdId(prodId);
 		logger.info("MasterController::deleteProduct::deleted Product-"+prodId);
 		return "redirect:/products";
-	}
+	}*/
 	
+	
+	/**
+	 * This method will delete an user by it's SSOID value.
+	 */
+	@RequestMapping(value = { "/deleteProduct-{prodId}" }, method = RequestMethod.GET)
+	public String deleteProduct(@PathVariable String prodId) {
+		
+		RestTemplate restTemplate = new RestTemplate();
+		String status="";
+		if(prodId!=null) {
+			
+			HttpHeaders headers = new HttpHeaders();
+			headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(REST_SERVICE_URI+"/data/deleteProduct/")
+			        .queryParam("prodId", prodId);
+			        
+
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+
+			HttpEntity<String> response = restTemplate.exchange(
+			        builder.toUriString(), 
+			        HttpMethod.DELETE, 
+			        entity, 
+			        String.class);
+			 status=response.getBody();
+			if(status.equals("success"))	{	
+				
+			}
+				return "redirect:/products";
+		}// end of IF
+		
+	
+		return "redirect:/products";
+	}
+
 	/**
 	 * This method will provide the medium to add a new user.
 	 */

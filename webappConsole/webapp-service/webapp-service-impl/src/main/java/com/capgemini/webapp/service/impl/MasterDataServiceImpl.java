@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.dozer.DozerBeanMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import com.capgemini.webapp.dao.api.entity.ProductCategory;
 import com.capgemini.webapp.service.api.MasterDataService;
 import com.capgemini.webapp.service.api.model.ProductCategoryModel;
 import com.capgemini.webapp.service.api.model.ProductModel;
+import com.capgemini.webapp.service.api.model.UserModel;
 
 
 @Service("dataService")
@@ -27,18 +30,47 @@ public class MasterDataServiceImpl implements MasterDataService {
 	
 	@Autowired
 	ProductCategoryDao prodCatDao;
+	
+	public static final Logger logger = LoggerFactory.getLogger(MasterDataServiceImpl.class);
+	
 	@Override
 	public List<ProductModel> getAllProduct() {
-		return this.mapList(dao.findAllProducts(),ProductModel.class);
-		//return dao.findAllProducts();
+		
+		logger.debug("getAllProduct+Retrieving all products");
+		
+		List<ProductModel> prodList = null;
+		try {
+			
+			prodList= this.mapList(dao.findAllProducts(),ProductModel.class);
+			
+		}catch(Exception e) {
+			
+			logger.error("Error retrieving products:"+e.getMessage());
+			return null;
+		}
+		logger.debug("getAllProduct+Completed Retrieving products list");
+
+		return prodList;
+		
 		
 	}
 
 	@Override
 	public ProductModel findProductByID(String prodId) {
+		
+		logger.debug("findProductByID+Retrieving product by Id:"+prodId);
 		ProductModel prodModel =null;
-		if(dao.findByProdID(prodId)!=null)
-			prodModel= new DozerBeanMapper().map(dao.findByProdID(prodId), ProductModel.class);
+		try {	
+			
+			if(dao.findByProdID(prodId)!=null)
+				prodModel= new DozerBeanMapper().map(dao.findByProdID(prodId), ProductModel.class);
+			
+		}catch(Exception e) {
+			
+			logger.error("Error retrieving products:"+e.getMessage());
+			
+			return null;
+		}
 		return prodModel;
 	
 		//return dao.findByProdID(prodId);
@@ -57,43 +89,50 @@ public class MasterDataServiceImpl implements MasterDataService {
 		
 	}
 	
-
 	private boolean isProductUnique(Integer id, String prodId) {
 		ProductModel product = findProductByID(prodId);
 		return (product == null);
 	}
 
 	@Override
-	public void updateProduct(ProductModel prodModel, String prodId) {
+	public boolean updateProduct(ProductModel prodModel, String prodId) {
 		
-		Product prod = new DozerBeanMapper().map(prodModel,Product.class);
-		Product prodEntity=null;
-		if(prodId!=null) {
-			prodEntity= dao.findByProdID(prodId);
-		}else {
-			prodEntity=dao.findByProdID(prod.getProdId());
-		}
-		
-		if (prodEntity != null) {
+
+		boolean status=false;
+		try {
 			
-			prodEntity.setName(prod.getName());
-			prodEntity.setPrice(prod.getPrice());
-			prodEntity.setDescription(prod.getDescription());
-			prodEntity.setQuantity(prod.getQuantity());
-			prodEntity.setProdCategory(prod.getProdCategory());
-			
+			Product prod = new DozerBeanMapper().map(prodModel,Product.class);
+			Product prodEntity=null;
+			if(prodId!=null) {
+				
+				prodEntity= dao.findByProdID(prodId);
+				
+			}else {
+				prodEntity=dao.findByProdID(prod.getProdId());
 			}
-		 dao.saveProduct(prodEntity);
+			
+			if (prodEntity != null) {
+				
+				prodEntity.setName(prod.getName());
+				prodEntity.setPrice(prod.getPrice());
+				prodEntity.setDescription(prod.getDescription());
+				prodEntity.setQuantity(prod.getQuantity());
+				prodEntity.setProdCategory(prod.getProdCategory());
+				dao.saveProduct(prodEntity);
+				status=true;
+				}else
+					logger.debug("updateProduct+Product does not exist with:"+prodId);
+			 
+		}catch(Exception e) {			
+			
+			logger.error("Error updating bean"+ e.getMessage());
+			return false;
+			
+		}
+		return status;
 		
 		}
 	
-
-	@Override
-	public void deleteProdById(Integer prodId) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	@Override
 	public List<ProductCategoryModel> getAllProductCategory() {
 		return this.mapCatList(prodCatDao.findAllProductCategory(),ProductCategoryModel.class);
@@ -101,8 +140,18 @@ public class MasterDataServiceImpl implements MasterDataService {
 	}
 
 	@Override
-	public void deleteProductByProdId(String prodId) {
-		dao.deleteByProdId(prodId);
+	public boolean deleteProductByProdId(String prodId) {
+		boolean isDeleted=false;
+		try { 
+			dao.deleteByProdId(prodId);
+			isDeleted=true;
+			
+		}catch(Exception e) {
+			isDeleted=false;
+			return isDeleted;
+		}
+		return isDeleted;
+		
 	}
 	
 	/*this is Mapper for List*/

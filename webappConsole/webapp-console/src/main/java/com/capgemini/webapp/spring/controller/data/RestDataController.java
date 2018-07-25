@@ -41,10 +41,23 @@ public class RestDataController {
 	@RequestMapping(value = "/products/", method = RequestMethod.GET)
 
 	public ResponseEntity<List<ProductModel>> listAllProducts() {
-		List<ProductModel> prodList = dataService.getAllProduct();
+		
+		List<ProductModel> prodList=null;
+		try {
+		
+		 prodList = dataService.getAllProduct();
+		
+		
 		if (prodList.isEmpty()) {
+			
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 			// You many decide to return HttpStatus.NOT_FOUND
+		}
+		}catch(Exception e) {
+			
+			logger.error("Error retrieving products:"+e.getMessage());
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+			
 		}
 		return new ResponseEntity<List<ProductModel>>(prodList, HttpStatus.OK);
 	}
@@ -56,10 +69,21 @@ public class RestDataController {
 	@RequestMapping(value = "/categories/", method = RequestMethod.GET)
 
 	public ResponseEntity<List<ProductCategoryModel>> listAllProductCategory() {
-		List<ProductCategoryModel> prodCatList = dataService.getAllProductCategory();
-		if (prodCatList.isEmpty()) {
+		List<ProductCategoryModel> prodCatList=null;
+	
+		try {
+			
+		 prodCatList = dataService.getAllProductCategory();
+		if (prodCatList!=null && prodCatList.isEmpty()) {
+			
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 			// You many decide to return HttpStatus.NOT_FOUND
+		}
+		}catch(Exception e) {
+			
+			logger.error("Error retrieving productcategory:"+e.getMessage());
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+			
 		}
 		return new ResponseEntity<List<ProductCategoryModel>>(prodCatList, HttpStatus.OK);
 	}
@@ -76,12 +100,21 @@ public class RestDataController {
 	//public ResponseEntity<ProductModel> searchProduct(@PathVariable("prodId") String prodId) {
 	public ResponseEntity<ProductModel> searchProduct(@RequestParam("prodId") String prodId) {
 		
-		System.out.println("Search Product Data for :" + prodId);
-
-		ProductModel prod = dataService.findProductByID(prodId);
-		if (prod == null) {
-			return new ResponseEntity(HttpStatus.NO_CONTENT);
-			// You many decide to return HttpStatus.NOT_FOUND
+		logger.info("Retrieving Product Data with Id :" + prodId);
+		ProductModel prod =null;
+		try {
+			
+			prod = dataService.findProductByID(prodId);
+			if (prod == null) {
+				
+				return new ResponseEntity("NoData", HttpStatus.NO_CONTENT);
+				// You many decide to return HttpStatus.NOT_FOUND
+			}
+		}catch(Exception e) {
+			
+			logger.error("Error retrieving product:"+e.getMessage());
+			return new ResponseEntity("error", HttpStatus.OK);
+			
 		}
 
 		return new ResponseEntity<ProductModel>(prod, HttpStatus.OK);
@@ -106,16 +139,27 @@ public ResponseEntity<ProductModel> getProduct(@RequestHeader(value="prodId") St
 	}
 
 	@RequestMapping(value = "/editProduct/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	//@ResponseBody()
-	public ResponseEntity<String> updateProduct( @RequestBody  ProductModel productBean) {
 
-		System.out.println("Fetch Data for :");		
-		dataService.updateProduct(productBean, productBean.getProdId());
-		/*HttpHeaders hea
-	        headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri());
-	        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
-		*///
-		return new ResponseEntity<String>(HttpStatus.OK);
+	public ResponseEntity<String> updateProduct( @RequestBody  ProductModel productBean) {
+		
+		boolean status=false;
+		logger.info("Upating Product Data with Id :" + productBean.getProdId());
+		try {
+			
+		status=dataService.updateProduct(productBean, productBean.getProdId());
+		
+		}catch(Exception e) {
+			logger.error("Error updating product details"+e.getMessage());
+			return new ResponseEntity<String>("Error",HttpStatus.OK);
+		}
+		
+		if(status) {
+			return new ResponseEntity<String>("success", HttpStatus.OK);
+			
+		}else {
+			return new ResponseEntity<String>("error", HttpStatus.OK);
+		}
+		
 	}
 	
 	/**
@@ -125,17 +169,48 @@ public ResponseEntity<ProductModel> getProduct(@RequestHeader(value="prodId") St
 	 */
 	@RequestMapping(value = "/createProduct/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> createProduct( @RequestBody  ProductModel productBean) {
-
+		
+		logger.info("Creating Product Data with Id :" + productBean.getProdId());
 		boolean isCreated=false;
+		try {
 		if(productBean!=null) {
 			
 			isCreated =  dataService.addProduct(productBean);
 		} 
+		}catch(Exception e) {
+			logger.error("Error creating new product:"+e.getMessage());
+			return new ResponseEntity<String>("Error", HttpStatus.OK);
+		}
 		if (isCreated)
 			return new ResponseEntity<String>("success",HttpStatus.OK);
 		else
-			return new ResponseEntity<String>("error", HttpStatus.OK);
+			return new ResponseEntity<String>("Error", HttpStatus.OK);
 	}
 	
+	@RequestMapping(value = { "/deleteProduct/" }, method = RequestMethod.DELETE)
+	
+	public ResponseEntity<String> deleteUser(@RequestParam("prodId") String prodId) {
+
+		logger.info("deleteUser::Deleting user with prodId " + prodId);
+		boolean status=false;
+		try {
+			
+			if(dataService.findProductByID(prodId)!=null) {
+			 status= dataService.deleteProductByProdId(prodId);
+			}
+			
+		}catch(Exception e) {
+			
+			logger.error("Error deleting user:"+ e.getMessage());
+			return new ResponseEntity("error", HttpStatus.OK);
+		}
+		if (status) {
+			return new ResponseEntity("success", HttpStatus.OK);
+			// You many decide to return HttpStatus.NOT_FOUND
+		}else {
+			return new ResponseEntity("error", HttpStatus.OK);
+		}
+
+	}
 	
 }

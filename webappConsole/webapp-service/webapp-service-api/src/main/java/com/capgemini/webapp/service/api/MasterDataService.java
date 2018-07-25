@@ -16,11 +16,9 @@ public interface MasterDataService {
 
 	boolean addProduct(ProductModel prod);
 
-	void updateProduct(ProductModel prod, String prodId);
-
-	void deleteProdById(Integer prodId);
+	boolean updateProduct(ProductModel prod, String prodId);
 
 	List<ProductCategoryModel> getAllProductCategory();
 
-	void deleteProductByProdId(String prodId);
+	boolean deleteProductByProdId(String prodId);
 }

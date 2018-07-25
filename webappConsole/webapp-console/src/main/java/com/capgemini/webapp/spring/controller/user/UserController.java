@@ -85,17 +85,12 @@ public class UserController extends BaseController {
 		List<UserModel> users = new ArrayList();
 		try {
 
-			//URI uri = new URI("http://10.48.124.69:8280/UserManagement/1.0.0"+"/api/user/");
-			//URI uri = new URI("http://localhost:8083/pocwebapp" + "/api/user/");
 			URI uri = new URI("http://localhost:8082/pocwebapp" + "/api/user/");
 			RestTemplate restTemplate = new RestTemplate();
-			
 			List<LinkedHashMap<String, Object>> usersMap = restTemplate.getForObject(uri, List.class);
 			if (usersMap != null) {
 				for (LinkedHashMap<String, Object> map : usersMap) {
-					System.out.println("User : id=" + map.get("id") + ", ssoId=" + map.get("ssoId") + ", firstName="
-							+ map.get("firstName") + ", lastName=" + map.get("lastName"));
-					;
+					
 					UserModel user = new UserModel();
 					user.setSsoId(map.get("ssoId").toString());
 					user.setFirstName(map.get("firstName").toString());
@@ -136,8 +131,6 @@ public class UserController extends BaseController {
 	public String newUser( @ModelAttribute("user") @Valid UserModel user, BindingResult result, ModelMap model) 
 	{
 
-		//logger.info("newProduct::POST::Creating new Product::");
-		
 		RestTemplate restTemplate=new RestTemplate();
 		
 		if (result.hasErrors()) {

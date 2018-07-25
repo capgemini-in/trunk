@@ -122,10 +122,12 @@ public class UserServiceImpl implements UserService {
 		
 		boolean status=false;
 		try {
+			
 			User userEntity = new DozerBeanMapper().map(userModel, User.class);
 			User entity = dao.findBySSO(userEntity.getSsoId());
 			//User entity = dao.findById(userEntity.getId());
 			if (entity != null) {
+				
 				entity.setSsoId(userModel.getSsoId());
 				if (!userModel.getPassword().equals(entity.getPassword())) {
 					entity.setPassword(passwordEncoder.encode(userModel.getPassword()));
@@ -172,8 +174,15 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional(readOnly = true)
 	public List<UserModel> findAllUsers() {
-	/*	List<UserModel> userlist = null;
-		String authentication = env.getRequiredProperty(AuthenticationConstants.AUTHENTICATION);
+		List<UserModel> userlist = null;
+		try {
+		userlist=this.mapList(dao.findAllUsers(), UserModel.class);
+		}catch(Exception e) {
+			logger.error("Error retrieving users:"+e.getMessage());
+			return null;
+		}
+		
+		/*String authentication = env.getRequiredProperty(AuthenticationConstants.AUTHENTICATION);
 		if (authentication.equalsIgnoreCase(AuthenticationConstants.LDAP_AUTH)) {
 			userlist = this.mapList(dao.findAllLdapUsers(), UserModel.class);
 		} else {

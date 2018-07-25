@@ -11,6 +11,6 @@ public interface ProductDao {
 
 	public List<Product> findAllProducts();
 	public Product findByProdID(String prodId);
-	public void saveProduct(Product prod);
+	public boolean saveProduct(Product prod);
 	public void deleteByProdId(String prodId);
 }

@@ -140,10 +140,7 @@ public class UserRestController {
 			}else {
 				return new ResponseEntity<String>("error", HttpStatus.OK);
 			}
-			/*HttpHeaders hea
-			        headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri());
-			        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
-				*///
+			
 				
 	}
 	
