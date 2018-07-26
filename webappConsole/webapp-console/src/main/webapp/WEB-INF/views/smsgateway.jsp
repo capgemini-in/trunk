@@ -52,14 +52,16 @@
 
 										<div class="w3-row-padding w3-border w3-border-cyan" id="myMain">
 			<br /> <b><h2 style="margin-left: 50dp">SMS Notification</h2></b> <br /> <br />
-		
+			<h3 style="color: red">	${status}</h3>
+			<h3 style="color: red">	${Error}</h3>
 													<form:form action="./sendSMS" method="POST" modelAttribute="smsMsgBean" class="form-horizontal">
 													<div class="row">
 					<div class="form-group col-md-12">
 					<label class="col-md-3 control-lable" for="reciepents">Reciepents</label>
 					<div class="col-md-7">
-													<form:input type="text" path="reciepents"  value="${smsMsgBean.reciepents}" id="reciepents" class="form-control input-sm" />
+													<form:input type="text" path="reciepents"  value="${smsMsgBean.reciepents}" id="reciepents" placeholder="Add Recipent" class="form-control input-sm" />
 														</div>
+														
 </div>
 </div>
 <div class="form-group col-md-12">

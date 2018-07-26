@@ -385,32 +385,46 @@ public class MasterController extends BaseController{
 	public String sendSMSNotification( @ModelAttribute("smsMsgBean") @Valid MessageModel smsMsgBean, BindingResult result, ModelMap model) {
 	
 		logger.info("MasterController::sendSMS::POST::Sending SMS");
-		
-		SMSMessageModel msg=new SMSMessageModel();
-		String recipients="";
-		if(smsMsgBean!=null) {
+		try {
+				SMSMessageModel msg=new SMSMessageModel();
+				String recipients="";
+				if(smsMsgBean!=null) {
+					
+					msg.setMessage(smsMsgBean.getMessage());
+					recipients=smsMsgBean.getReciepents();
+					if(recipients!=null && recipients.length()>0) {
+					
+					ArrayList<String> recipientsList = new ArrayList<String>(Arrays.asList(recipients.split("\\s*,\\s*")));
+					msg.setTo(recipientsList);
+				}
+					
+				}
+				SMSModel  sms=new SMSModel();
+				List<SMSMessageModel> lstSMS=new ArrayList<SMSMessageModel>();
+				lstSMS.add(msg);
+				sms.setSmsmessage(lstSMS);
+				
+				RestTemplate restTemplate = new  RestTemplate();
+				ResponseEntity<String> response=restTemplate.postForEntity(REST_SERVICE_URI+ "/util/sms/", sms, String.class);
 			
-			msg.setMessage(smsMsgBean.getMessage());
-			recipients=smsMsgBean.getReciepents();
-			if(recipients!=null && recipients.length()>0) {
-			
-			ArrayList<String> recipientsList = new ArrayList<String>(Arrays.asList(recipients.split("\\s*,\\s*")));
-			msg.setTo(recipientsList);
-		}
-			
-		}
-		SMSModel  sms=new SMSModel();
-		List<SMSMessageModel> lstSMS=new ArrayList<SMSMessageModel>();
-		lstSMS.add(msg);
-		sms.setSmsmessage(lstSMS);
-		
-		RestTemplate restTemplate = new  RestTemplate();
-		ResponseEntity<String> response=restTemplate.postForEntity(REST_SERVICE_URI+ "/util/sms/", sms, String.class);
-	
-		String status=response.getBody();
-		
-		logger.info("MasterController::sendSMSNotification::POST method executed");
-		return "smsgateway";
+				String status=response.getBody();
+				
+				logger.info("MasterController::sendSMSNotification::POST method executed");
+				
+	              smsMsgBean=new MessageModel();
+	              model.addAttribute("smsMsgBean",smsMsgBean);        
+	              model.addAttribute("status", "Sms successfully send");
+
+		}catch(Exception e)
+	       {
+            model.addAttribute("Error", " Sorry,  Could not send msg ,error in connecting to server please try later");
+            smsMsgBean=new MessageModel();
+            model.addAttribute("smsMsgBean",smsMsgBean);
+            return "smsgateway";
+            
+	       }
+
+				return "smsgateway";
 		
 	}
 	
@@ -437,6 +451,9 @@ public class MasterController extends BaseController{
 	          return "emailgateway";
 	          
 	    }	
+	    
+	    
+	    	    
 	
 	}
 

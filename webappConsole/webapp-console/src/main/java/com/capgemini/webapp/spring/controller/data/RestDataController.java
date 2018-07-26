@@ -18,11 +18,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.capgemini.webapp.common.constants.IApplicationConstants;
 import com.capgemini.webapp.dao.api.entity.Product;
 import com.capgemini.webapp.dao.api.entity.ProductCategory;
 import com.capgemini.webapp.service.api.MasterDataService;
 import com.capgemini.webapp.service.api.model.ProductCategoryModel;
 import com.capgemini.webapp.service.api.model.ProductModel;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 @RestController
 @RequestMapping("/data")
@@ -43,18 +46,24 @@ public class RestDataController {
 	public ResponseEntity<List<ProductModel>> listAllProducts() {
 		
 		List<ProductModel> prodList=null;
+		JsonObject responseObj = new JsonObject();
+		//Gson gson = new Gson();
+		//jsonInString = gson.toJson(smsModel);
 		try {
 		
-		 prodList = dataService.getAllProduct();
-		
+		 prodList = dataService.getAllProduct();		
 		
 		if (prodList.isEmpty()) {
 			
-			return new ResponseEntity(HttpStatus.NO_CONTENT);
+			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_NOCONTENT_CODE );
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,"No Data Exist" );
+			return new ResponseEntity( HttpStatus.NO_CONTENT);
+			
 			// You many decide to return HttpStatus.NOT_FOUND
 		}
 		}catch(Exception e) {
-			
+			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_ERROR_CODE );
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,"Error retrieving products" );			
 			logger.error("Error retrieving products:"+e.getMessage());
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 			
@@ -121,6 +130,8 @@ public class RestDataController {
 
 	}
 
+	
+	
 @RequestMapping(value = { "/searchProduct/" }, method = RequestMethod.GET)
 @CrossOrigin(origins = "*")
 public ResponseEntity<ProductModel> getProduct(@RequestHeader(value="prodId") String prodId) {
@@ -142,6 +153,7 @@ public ResponseEntity<ProductModel> getProduct(@RequestHeader(value="prodId") St
 
 	public ResponseEntity<String> updateProduct( @RequestBody  ProductModel productBean) {
 		
+		JsonObject responseObj = new JsonObject();
 		boolean status=false;
 		logger.info("Upating Product Data with Id :" + productBean.getProdId());
 		try {
@@ -149,16 +161,27 @@ public ResponseEntity<ProductModel> getProduct(@RequestHeader(value="prodId") St
 		status=dataService.updateProduct(productBean, productBean.getProdId());
 		
 		}catch(Exception e) {
+			
 			logger.error("Error updating product details"+e.getMessage());
-			return new ResponseEntity<String>("Error",HttpStatus.OK);
+			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_ERROR_CODE );
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,"Error updating product" );	
+			return new ResponseEntity<String>(responseObj.toString(),HttpStatus.OK);
+			
 		}
 		
-		if(status) {
-			return new ResponseEntity<String>("success", HttpStatus.OK);
-			
-		}else {
-			return new ResponseEntity<String>("error", HttpStatus.OK);
+		if (status) {
+			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_SUCCESS_CODE );
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,"Product updated successfully" );
+			return new ResponseEntity<String>(responseObj.toString(),HttpStatus.OK);
 		}
+			
+		else {
+			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_ERROR_CODE );
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,"Error updating product" );	
+			return new ResponseEntity<String>(responseObj.toString(),HttpStatus.OK);
+		}
+		
+		
 		
 	}
 	
@@ -181,18 +204,32 @@ public ResponseEntity<ProductModel> getProduct(@RequestHeader(value="prodId") St
 			logger.error("Error creating new product:"+e.getMessage());
 			return new ResponseEntity<String>("Error", HttpStatus.OK);
 		}
-		if (isCreated)
-			return new ResponseEntity<String>("success",HttpStatus.OK);
-		else
-			return new ResponseEntity<String>("Error", HttpStatus.OK);
+		JsonObject responseObj = new JsonObject();
+		
+		
+		if (isCreated) {
+			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_SUCCESS_CODE );
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,"Product created successfully" );
+			return new ResponseEntity<String>(responseObj.toString(),HttpStatus.OK);
+		}
+			
+		else {
+			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_ERROR_CODE );
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,"Error creating product" );	
+			return new ResponseEntity<String>(responseObj.toString(),HttpStatus.OK);
+		}
+		
+		
+	
 	}
 	
 	@RequestMapping(value = { "/deleteProduct/" }, method = RequestMethod.DELETE)
-	
+	@CrossOrigin(origins = "*")
 	public ResponseEntity<String> deleteUser(@RequestParam("prodId") String prodId) {
 
 		logger.info("deleteUser::Deleting user with prodId " + prodId);
 		boolean status=false;
+		JsonObject responseObj = new JsonObject();
 		try {
 			
 			if(dataService.findProductByID(prodId)!=null) {
@@ -202,13 +239,20 @@ public ResponseEntity<ProductModel> getProduct(@RequestHeader(value="prodId") St
 		}catch(Exception e) {
 			
 			logger.error("Error deleting user:"+ e.getMessage());
-			return new ResponseEntity("error", HttpStatus.OK);
+			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_ERROR_CODE );			
+			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
 		}
 		if (status) {
-			return new ResponseEntity("success", HttpStatus.OK);
+			
+			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_SUCCESS_CODE );
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,"Product deleted successfully" );
+			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
 			// You many decide to return HttpStatus.NOT_FOUND
 		}else {
-			return new ResponseEntity("error", HttpStatus.OK);
+			
+			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_ERROR_CODE );
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,"Error deleting product" );			
+			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
 		}
 
 	}

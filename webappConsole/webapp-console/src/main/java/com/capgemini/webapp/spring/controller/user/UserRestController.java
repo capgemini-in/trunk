@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.capgemini.webapp.common.constants.IApplicationConstants;
 import com.capgemini.webapp.service.api.UserProfileService;
 import com.capgemini.webapp.service.api.UserService;
 import com.capgemini.webapp.service.api.model.UserModel;
+import com.google.gson.JsonObject;
 
 @RestController
 @RequestMapping("/api")
@@ -68,10 +70,23 @@ public class UserRestController {
 					isCreated =  userService.saveUser(userBean);
 			}
 		} 
-		if (isCreated)
-			return new ResponseEntity<String>("success",HttpStatus.OK);
-		else
-			return new ResponseEntity<String>("error", HttpStatus.OK);
+		JsonObject responseObj = new JsonObject();
+		
+		
+		if (isCreated) {
+			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_SUCCESS_CODE );
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,"User created successfully" );
+			return new ResponseEntity<String>(responseObj.toString(),HttpStatus.OK);
+		}
+			
+		else {
+			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_ERROR_CODE );
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,"Error creating user" );	
+			return new ResponseEntity<String>(responseObj.toString(),HttpStatus.OK);
+		}
+		
+	
+	
 	}
 	
 /*	*//**
@@ -110,7 +125,7 @@ public class UserRestController {
 	}*/
 
 	@RequestMapping(value = { "/getUser/" }, method = RequestMethod.GET)
-	@CrossOrigin(origins = "*")
+	
 	public ResponseEntity<UserModel> getUser(@RequestParam("ssoId") String ssoId) {
 
 		logger.info("getProduct::Retrieving user with ssoId " + ssoId);
@@ -132,15 +147,31 @@ public class UserRestController {
 	 */
 	@RequestMapping(value = "/editUser/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> updateUser( @RequestBody  UserModel userBean) {
-		
-	
-			boolean status=	userService.updateUser(userBean);
-			if(status) {
-				return new ResponseEntity<String>("success", HttpStatus.OK);
-			}else {
-				return new ResponseEntity<String>("error", HttpStatus.OK);
-			}
+		JsonObject responseObj = new JsonObject();
+		boolean status=false;
+		try {
+		status	=	userService.updateUser(userBean);
+		}catch(Exception e) {
 			
+			logger.error("Error updating product details"+e.getMessage());
+			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_ERROR_CODE );
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,"Error updating user" );	
+			return new ResponseEntity<String>(responseObj.toString(),HttpStatus.OK);
+			
+		}
+		
+		if (status) {
+			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_SUCCESS_CODE );
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,"User updated successfully" );
+			return new ResponseEntity<String>(responseObj.toString(),HttpStatus.OK);
+		}
+			
+		else {
+			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_ERROR_CODE );
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,"Error updating user" );	
+			return new ResponseEntity<String>(responseObj.toString(),HttpStatus.OK);
+		}
+		
 				
 	}
 	
@@ -152,14 +183,29 @@ public class UserRestController {
 
 		logger.info("deleteUser::Deleting user with ssoId " + ssoId);
 		boolean status=false;
+		JsonObject responseObj = new JsonObject();
+		try {
 		if(userService.findBySSO(ssoId)!=null) {
 		 status= userService.deleteUserBySSO(ssoId);
+		}	
+		}catch(Exception e) {
+			
+			logger.error("Error deleting user:"+ e.getMessage());
+			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_ERROR_CODE );	
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,"User deleted successfully" );
+			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
 		}
-		if (status) {
-			return new ResponseEntity("success", HttpStatus.OK);
+	if (status) {
+			
+			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_SUCCESS_CODE );
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,"User deleted successfully" );
+			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
 			// You many decide to return HttpStatus.NOT_FOUND
 		}else {
-			return new ResponseEntity("error", HttpStatus.OK);
+			
+			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_ERROR_CODE );
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,"Error deleting user" );			
+			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
 		}
 
 	}

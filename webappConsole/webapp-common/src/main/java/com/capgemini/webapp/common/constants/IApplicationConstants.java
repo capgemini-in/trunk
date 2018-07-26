@@ -27,5 +27,12 @@ public interface IApplicationConstants {
 	String STATUS_FAILED="failed";
 	String REST_API_URL = "http://localhost:8082/pocwebapp";
 	
+	String STATUS_SUCCESS_CODE="200";
+	String STATUS_ERROR_CODE="500";
+	String STATUS_NOCONTENT_CODE="401";
+	String REST_STATUS="status";
+	String REST_MESSAGE="message";
+	
+	
 	
 }

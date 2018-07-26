@@ -67,6 +67,8 @@
 				        <th>Name</th>
 				        <th>Description</th>
 				        <th>Category</th>
+						<th>Price</th>
+						<th>Add To cart</th>
 				        <sec:authorize access="hasRole('ADMIN') or hasRole('DBA')">
 				        	<th width="100"></th>
 				        </sec:authorize>
@@ -83,12 +85,34 @@
 						<td>${prod.name}</td>
 						<td>${prod.description}</td>
 						<td>${prod.prodCategory.type}</td>
+						<td>${prod.price}</td>
+						<td>
+						<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+
+ 						 <!-- Identify your business so that you can collect the payments. -->
+ 							 <input type="hidden" name="business" value="kin@kinskards.com">
+
+ 						 <!-- Specify a PayPal Shopping Cart Add to Cart button. -->
+  							<input type="hidden" name="cmd" value="_cart">
+ 							 <input type="hidden" name="add" value="1">
+
+  					<!-- Specify a PayPal Shopping Cart Add to Cart button. -->  
+  						<input type="hidden" name="item_name" value="${prod.name}">
+  						<input type="hidden" name="amount" value="${prod.price}">
+  						<input type="hidden" name="currency_code" value="INR">
+
+
+  				<input type="image" name="submit" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif"  alt="Add to Cart">
+  				<img alt="" width="1" height="1"   src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif">
+					</form>
+						</td>
 					    <sec:authorize access="hasRole('ADMIN') or hasRole('DBA')">
 							<td><a href="<c:url value='/editProduct${prod.prodId}' />" class="btn btn-success custom-width">edit</a></td>
 				        </sec:authorize>
 				        <sec:authorize access="hasRole('ADMIN')">
 							<td><a href="<c:url value='/deleteProduct-${prod.prodId}' />" class="btn btn-danger custom-width">delete</a></td>
         				</sec:authorize>
+        				
 					</tr>
 				</c:forEach>
 	    		</tbody>
