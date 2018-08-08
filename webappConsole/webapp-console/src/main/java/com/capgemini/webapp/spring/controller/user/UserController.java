@@ -52,6 +52,8 @@ import com.capgemini.webapp.service.api.model.UserInfoModel;
 import com.capgemini.webapp.service.api.model.UserModel;
 import com.capgemini.webapp.service.api.model.UserProfileModel;
 import com.capgemini.webapp.spring.controller.BaseController;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 @Controller
 @RequestMapping("/")
@@ -145,10 +147,17 @@ public class UserController extends BaseController {
 			
 			ResponseEntity<String> response=restTemplate.postForEntity(REST_SERVICE_URI+ "/api/newUser/", user, String.class);
 			
-			status=response.getBody();
+			//status=response.getBody();
+			JsonParser parse = new JsonParser();
+			JsonObject jobj = (JsonObject) parse.parse(response.getBody());
+			if (jobj.get(IApplicationConstants.REST_STATUS) != null) {				
+			
+				 status = jobj.get(IApplicationConstants.REST_STATUS).getAsString();
+						
+			}
 			
 		}
-		if(status.equals("success")) {
+		if(status.equals(IApplicationConstants.STATUS_SUCCESS_CODE)) {
 		model.addAttribute("success",
 				"User " +user.getFirstName() +" " + user.getLastName() + " registered successfully");
 		model.addAttribute("loggedinuser", super.getPrincipal());
@@ -191,11 +200,11 @@ public class UserController extends BaseController {
 		return "registration";
 	}
 
-	@RequestMapping(value = { "/edit-user-{ssoId}" }, method = RequestMethod.POST)
 	
-	public String updateUser(@ModelAttribute("user") UserModel user, BindingResult result, ModelMap model,
-			@PathVariable String ssoId) {
-
+	@RequestMapping(value = { "/edit-user-{ssoId}" }, method = RequestMethod.POST)
+	public String updateUser(@ModelAttribute("user") UserModel user, BindingResult result, ModelMap model,@PathVariable String ssoId)
+	{
+		
 		if (result.hasErrors()) {
 			
 			return "registration";
@@ -206,28 +215,34 @@ public class UserController extends BaseController {
 		if(user!=null) {
 			
 			ResponseEntity<String> response=restTemplate.postForEntity(REST_SERVICE_URI+ "/api/editUser/", user, String.class);
+			JsonParser parse = new JsonParser();
+			JsonObject jobj = (JsonObject) parse.parse(response.getBody());
+			if (jobj.get(IApplicationConstants.REST_STATUS) != null) {				
 			
-			status=response.getBody();
+				 status = jobj.get(IApplicationConstants.REST_STATUS).getAsString();
+			//status=response.getBody();
 			
-		}
-		if(status.equals("success")) {
-			model.addAttribute("success",
+			}
+		
+		//if(status.equals("success")) {
+			if(status.equals(IApplicationConstants.STATUS_SUCCESS_CODE)) {
+				model.addAttribute("success",
 					"User  " + user.getFirstName() + " " + user.getLastName() + " updated successfully");
-			model.addAttribute("loggedinuser", super.getPrincipal());
-			return "registrationsuccess";
+				model.addAttribute("loggedinuser", super.getPrincipal());
+				return "registrationsuccess";
 			
 		}else {
 			return "registration";
 			
-		}
-		
+		} 
+	} else  
+		return "registration";
 	}
-	
-	
+			
 	/**
 	 * This method will delete an user by it's SSOID value.
 	 */
-	@RequestMapping(value = { "/delete-user-{ssoId}" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/delete-user-{ssoId}"}, method = RequestMethod.GET)
 	public String deleteUser(@PathVariable String ssoId) {
 		
 		RestTemplate restTemplate = new RestTemplate();
@@ -248,8 +263,16 @@ public class UserController extends BaseController {
 			        HttpMethod.DELETE, 
 			        entity, 
 			        String.class);
-			 status=response.getBody();
-			if(status.equals("success"))	{	
+			
+			// status=response.getBody();
+			JsonParser parse = new JsonParser();
+			JsonObject jobj = (JsonObject) parse.parse(response.getBody());
+			if (jobj.get(IApplicationConstants.REST_STATUS) != null) {				
+			
+				 status = jobj.get(IApplicationConstants.REST_STATUS).getAsString();
+			}
+			
+			if(status!=null && status.equals(IApplicationConstants.STATUS_SUCCESS_CODE))	{	
 				
 			}
 				return "redirect:/list";

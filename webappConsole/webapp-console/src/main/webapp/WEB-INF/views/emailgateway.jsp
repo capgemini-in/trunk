@@ -49,6 +49,9 @@
 <div class="w3-main w3-border" style="margin-left: 340px; margin-right: 40px">
 		<!-- Header -->
 		<%@include file="Header.jsp"%>
+		<h3 style="color: red">	${status}</h3>
+			<h3 style="color: red">	${Error}</h3>
+	
 
 										<div class="w3-row-padding w3-border w3-border-cyan" id="myMain">
 			<br /> <b><h2 style="margin-left: 50dp">Email Notification</h2></b> <br /> <br />

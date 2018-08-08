@@ -27,7 +27,6 @@ public class EmailServiceImpl implements EmailService {
 
 	private static final Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class.getName());
 	
-	
 	public String sendEmail(EmailModel emailModel) {
 		
 		logger.info("EmailServiceImpl::sendEmail: Method Initiated");
@@ -49,7 +48,7 @@ public class EmailServiceImpl implements EmailService {
 	         mail.setFrom(new Email(emailModel.getFromEmail()));
 	         mail.addPersonalization(personalization);
 	         mail.addContent(content);
-		  	 SendGrid sg = new SendGrid("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");
+		  	 SendGrid sg = new SendGrid("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");
 		  	 Request req = new Request();
 
 			try {

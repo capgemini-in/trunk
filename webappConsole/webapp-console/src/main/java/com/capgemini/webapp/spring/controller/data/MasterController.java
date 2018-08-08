@@ -39,6 +39,8 @@ import com.capgemini.webapp.service.api.model.ProductModel;
 import com.capgemini.webapp.service.api.model.SMSMessageModel;
 import com.capgemini.webapp.service.api.model.SMSModel;
 import com.capgemini.webapp.spring.controller.BaseController;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 
 @Controller
@@ -306,10 +308,18 @@ public class MasterController extends BaseController{
 			
 			ResponseEntity<String> response=restTemplate.postForEntity(REST_SERVICE_URI+ "/data/createProduct/", productBean, String.class);
 			
-			status=response.getBody();
+			//status=response.getBody();
+			JsonParser parse = new JsonParser();
+			JsonObject jobj = (JsonObject) parse.parse(response.getBody());
+			if (jobj.get(IApplicationConstants.REST_STATUS) != null) {				
+			
+				 status = jobj.get(IApplicationConstants.REST_STATUS).getAsString();
+						
+			}
+		
 			
 		}
-		if(status.equals("success")) {
+		if(status.equals(IApplicationConstants.STATUS_SUCCESS_CODE)) {
 		model.addAttribute("success",
 				"Product " +productBean.getName() +" added  successfully");
 		model.addAttribute("loggedinuser", super.getPrincipal());
@@ -439,7 +449,7 @@ public class MasterController extends BaseController{
 	
 	    @RequestMapping(value = { "/sendemail" }, method = RequestMethod.POST)
 	    public String sendEmail( @ModelAttribute("emailBean") @Valid EmailModel emailBean, BindingResult result, ModelMap model) {
-	    	
+	    	try {
 	            // System.out.println("newProduct:"+emailModel);
 	           if(emailBean!=null) {
 	               
@@ -447,8 +457,18 @@ public class MasterController extends BaseController{
 	               URI uri =restTemplate.postForLocation(REST_SERVICE_URI+ "/util/email/", emailBean, EmailModel.class);
 	                      
 	          }
-	           
-	          return "emailgateway";
+	    	}
+	    	catch(Exception e)
+	    	{
+	    		model.addAttribute("Error", " Sorry,  Could not send email ,error in connecting to server please try later");
+	            emailBean=new EmailModel();
+	            model.addAttribute("emailBean",emailBean);
+	            return "emailgateway";	    		
+	    	}
+	        emailBean=new EmailModel();
+            model.addAttribute("emailBean",emailBean);
+           model.addAttribute("status", "Email successfully send");
+	    	return "emailgateway";
 	          
 	    }	
 	    
