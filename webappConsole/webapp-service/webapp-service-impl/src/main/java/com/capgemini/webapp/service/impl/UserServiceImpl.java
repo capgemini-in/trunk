@@ -176,7 +176,8 @@ public class UserServiceImpl implements UserService {
 	public List<UserModel> findAllUsers() {
 		List<UserModel> userlist = null;
 		try {
-		userlist=this.mapList(dao.findAllUsers(), UserModel.class);
+			return this.mapList(dao.findAllUsers(), UserModel.class);
+		//=this.mapList(dao.findAllUsers(), UserModel.class);
 		}catch(Exception e) {
 			logger.error("Error retrieving users:"+e.getMessage());
 			return null;
@@ -188,7 +189,7 @@ public class UserServiceImpl implements UserService {
 		} else {
 			userlist = this.mapList(dao.findAllUsers(), UserModel.class);
 		}*/
-		return this.mapList(dao.findAllUsers(), UserModel.class);
+		
 	}
 
 	/* this is Mapper for List */
