@@ -33,6 +33,7 @@ public interface IApplicationConstants {
 	String REST_STATUS="status";
 	String REST_MESSAGE="message";
 	
-	
+	String BUSINESS_NAME = "business_name";
+	String BUSINESS_TYPE = "business_type";
 	
 }
