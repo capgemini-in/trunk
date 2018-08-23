@@ -4,14 +4,15 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -38,17 +39,15 @@ public class Business implements Serializable{
 
 	@Column(name = "IS_ACTIVE")
 	private String isActive;
-
-	@OneToMany(fetch = FetchType.LAZY)
+		
+	/*@OneToMany(mappedBy ="businessId" )
+	@JsonBackReference
+	private Set<BusinessType> businessType=new HashSet<BusinessType>();		
+	
+	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "menu_business_mapping", joinColumns = { @JoinColumn(name = "business_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "menu_id") })
-	private Set<BusinessMenu> businessMenus=new HashSet<BusinessMenu>();
-	
-	
-	@OneToMany(mappedBy ="businessId" )
-	@JsonBackReference
-	private Set<BusinessType> businessType=new HashSet<BusinessType>();
-	
+	private Set<BusinessMenu> events = new HashSet<BusinessMenu>();*/
 	
 	public Integer getBusinessId() {
 		return businessId;
@@ -82,19 +81,11 @@ public class Business implements Serializable{
 		this.isActive = isActive;
 	}
 
-	public Set<BusinessMenu> getBusinessMenus() {
-		return businessMenus;
-	}
-
-	public void setBusinessMenus(Set<BusinessMenu> businessMenus) {
-		this.businessMenus = businessMenus;
-	}
-
-	public Set<BusinessType> getBusinessType() {
+	/*public Set<BusinessType> getBusinessType() {
 		return businessType;
 	}
 
 	public void setBusinessType(Set<BusinessType> businessType) {
 		this.businessType = businessType;
-	}
+	}*/
 }

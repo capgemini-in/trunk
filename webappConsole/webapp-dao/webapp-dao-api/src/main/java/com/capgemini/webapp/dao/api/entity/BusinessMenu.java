@@ -1,56 +1,73 @@
 package com.capgemini.webapp.dao.api.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "menu")
-public class BusinessMenu implements Serializable{
+public class BusinessMenu implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "menu_id")
-	private Integer businessId;
-	
+	private Integer menuId;
+
 	@Column(name = "menu_code")
-	private String businessCode;
-	
+	private String menuCode;
+
 	@Column(name = "menu_name")
-	private String businessName;
+	private String menuName;
 
 	@Column(name = "IS_ACTIVE")
 	private String isActive;
-
-	public Integer getBusinessId() {
-		return businessId;
+	
+	/*@ManyToMany(mappedBy = "menus")
+	@JsonManagedReference
+    private List<BusinessType> businessTypes;	
+	
+	public List<BusinessType> getBusinessTypes() {
+		return businessTypes;
 	}
 
-	public void setBusinessId(Integer businessId) {
-		this.businessId = businessId;
+	public void setBusinessTypes(List<BusinessType> businessTypes) {
+		this.businessTypes = businessTypes;
+	}*/
+
+	public Integer getMenuId() {
+		return menuId;
 	}
 
-	public String getBusinessCode() {
-		return businessCode;
+	public void setMenuId(Integer menuId) {
+		this.menuId = menuId;
 	}
 
-	public void setBusinessCode(String businessCode) {
-		this.businessCode = businessCode;
+	public String getMenuCode() {
+		return menuCode;
 	}
 
-	public String getBusinessName() {
-		return businessName;
+	public void setMenuCode(String menuCode) {
+		this.menuCode = menuCode;
 	}
 
-	public void setBusinessName(String businessName) {
-		this.businessName = businessName;
+	public String getMenuName() {
+		return menuName;
+	}
+
+	public void setMenuName(String menuName) {
+		this.menuName = menuName;
 	}
 
 	public String getIsActive() {
@@ -60,7 +77,5 @@ public class BusinessMenu implements Serializable{
 	public void setIsActive(String isActive) {
 		this.isActive = isActive;
 	}
-	
-	
 
 }

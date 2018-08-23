@@ -3,6 +3,8 @@ package com.capgemini.webapp.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.dozer.DozerBeanMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,34 +14,45 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.capgemini.webapp.common.constants.IApplicationConstants;
-import com.capgemini.webapp.dao.api.MenuDao;
+import com.capgemini.webapp.dao.api.BusinessTypeDao;
 import com.capgemini.webapp.dao.api.entity.BusinessMenu;
-import com.capgemini.webapp.service.api.BusinessMenuService;
+import com.capgemini.webapp.dao.api.entity.BusinessType;
+import com.capgemini.webapp.dao.api.entity.User;
+import com.capgemini.webapp.service.api.BusinessTypeService;
 import com.capgemini.webapp.service.api.model.BusinessMenuModel;
-import com.capgemini.webapp.service.api.model.CountryModel;
+import com.capgemini.webapp.service.api.model.BusinessTypeModel;
+import com.capgemini.webapp.service.api.model.UserModel;
 
 
 @Service("menuService")
+@Transactional
 @PropertySource("classpath:/config/ldap/ldap_details.properties")
-public class BusinessMenuServiceImpl implements BusinessMenuService{
+public class BusinessTypeServiceImpl implements BusinessTypeService{
 
 	
-	public static final Logger logger = LoggerFactory.getLogger(BusinessMenuServiceImpl.class);
+	public static final Logger logger = LoggerFactory.getLogger(BusinessTypeServiceImpl.class);
 
 	@Autowired
 	private Environment env;
 
 	@Autowired
-	private MenuDao dao;
+	private BusinessTypeDao dao;
 
 	@Override
-	public List<BusinessMenuModel> getAllBusinessMenus() {
+	public BusinessTypeModel getAllBusinessMenus() {
 		
-		List<BusinessMenuModel> menuModelList = null;
+		BusinessTypeModel typeModel = null;
 		String businessName = env.getRequiredProperty(IApplicationConstants.BUSINESS_NAME);
 		String businessType = env.getRequiredProperty(IApplicationConstants.BUSINESS_TYPE);
-		menuModelList=this.mapList(dao.getAllBusinessMenus(), BusinessMenuModel.class); 
-		return menuModelList;
+		
+		BusinessType btype = null;
+		btype = dao.getAllBusinessMenus(businessType);
+		if (btype != null) {
+			typeModel = new DozerBeanMapper().map(btype, BusinessTypeModel.class);
+		}
+		return typeModel;
+		//menuModelList=this.mapList(dao.getAllBusinessMenus(businessType), BusinessTypeModel.class); 
+		//return menuModelList;
 	}
 
 	/**
@@ -48,7 +61,7 @@ public class BusinessMenuServiceImpl implements BusinessMenuService{
 	 * @param class1
 	 * @return
 	 */
-	private List<BusinessMenuModel> mapList(List<BusinessMenu> allBusinessMenus, Class<BusinessMenuModel> toClass) {
+	private List<BusinessTypeModel> mapList(List<BusinessType> allBusinessMenus, Class<BusinessTypeModel> toClass) {
 		// TODO Auto-generated method stub
 		return allBusinessMenus.stream().map(from -> new DozerBeanMapper().map(from, toClass)).collect(Collectors.toList());
 	}
