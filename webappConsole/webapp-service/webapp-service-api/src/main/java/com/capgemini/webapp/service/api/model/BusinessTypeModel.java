@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.capgemini.webapp.dao.api.entity.BusinessMenu;
+import com.capgemini.webapp.dao.api.entity.BusinessSubMenu;
 
 public class BusinessTypeModel implements Serializable {
 
@@ -19,7 +20,7 @@ public class BusinessTypeModel implements Serializable {
 	private String isActive;
 		
 	private Set<BusinessMenu> menus = new HashSet<BusinessMenu>();
-
+	
 	public Integer getBusTypeId() {
 		return busTypeId;
 	}
@@ -59,6 +60,4 @@ public class BusinessTypeModel implements Serializable {
 	public void setMenus(Set<BusinessMenu> menus) {
 		this.menus = menus;
 	}
-	
-	
 }

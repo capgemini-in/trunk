@@ -1,17 +1,19 @@
 package com.capgemini.webapp.dao.api.entity;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -34,6 +36,13 @@ public class BusinessMenu implements Serializable {
 	@Column(name = "IS_ACTIVE")
 	private String isActive;
 	
+	
+	@OneToMany(mappedBy ="menuId",cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+	@JsonManagedReference
+	private Set<BusinessSubMenu> subMenus=new HashSet<BusinessSubMenu>();
+	
+	
+	
 	/*@ManyToMany(mappedBy = "menus")
 	@JsonManagedReference
     private List<BusinessType> businessTypes;	
@@ -45,6 +54,14 @@ public class BusinessMenu implements Serializable {
 	public void setBusinessTypes(List<BusinessType> businessTypes) {
 		this.businessTypes = businessTypes;
 	}*/
+
+	public Set<BusinessSubMenu> getSubMenus() {
+		return subMenus;
+	}
+
+	public void setSubMenus(Set<BusinessSubMenu> subMenus) {
+		this.subMenus = subMenus;
+	}
 
 	public Integer getMenuId() {
 		return menuId;

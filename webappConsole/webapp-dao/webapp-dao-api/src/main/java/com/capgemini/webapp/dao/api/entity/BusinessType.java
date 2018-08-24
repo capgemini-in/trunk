@@ -14,11 +14,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 
@@ -42,10 +44,10 @@ public class BusinessType implements Serializable{
 	@Column(name = "IS_ACTIVE")
 	private String isActive;
 	
-	/*@OneToOne
+	@OneToOne
     @JoinColumn(name="business_id")
 	@JsonManagedReference
-	private Business businessId;*/
+	private Business businessId;
 	
 	@NotEmpty
 	@ManyToMany(cascade=CascadeType.ALL, fetch = FetchType.EAGER)
@@ -56,13 +58,13 @@ public class BusinessType implements Serializable{
 	private Set<BusinessMenu> menus = new HashSet<BusinessMenu>();
 		
 		
-	/*public Business getBusinessId() {
+	public Business getBusinessId() {
 		return businessId;
 	}
 
 	public void setBusinessId(Business businessId) {
 		this.businessId = businessId;
-	}*/
+	}
 
 	public Set<BusinessMenu> getMenus() {
 		return menus;
