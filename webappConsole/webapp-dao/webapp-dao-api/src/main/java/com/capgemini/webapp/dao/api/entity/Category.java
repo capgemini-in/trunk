@@ -42,11 +42,10 @@ public class Category implements Serializable {
 		@Column(name = "image_Path")
 		private String imagePath;
 				
-		@ManyToOne
-		@JoinColumn(name="sub_menu_id")	
-		//@JsonManagedReference
-		private BusinessSubMenu subMenuId;
-	
+		//@ManyToOne
+	//	@JoinColumn(name="sub_menu_id")	
+		@Column(name = "sub_menu_id")
+		private int subMenuId;
 
 		public Integer getCategoryId() {
 			return categoryId;
@@ -80,16 +79,13 @@ public class Category implements Serializable {
 			this.imagePath = imagePath;
 		}
 
-		public BusinessSubMenu getSubMenuId() {
+		public int getSubMenuId() {
 			return subMenuId;
 		}
 
-		public void setSubMenuId(BusinessSubMenu subMenuId) {
+		public void setSubMenuId(int subMenuId) {
 			this.subMenuId = subMenuId;
 		}
-
-		
 	
-		
 
 }

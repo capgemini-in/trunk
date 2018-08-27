@@ -21,10 +21,11 @@ public class CategoryDaoImpl extends AbstractDao<Integer,Category> implements Ca
 	
 	@Override
 	public List<Category> getCategoryforMenu(String subMenuId,String businessType) {
-		
+		//List<Category> catList =getSession().createSQLQuery("Select category.category_name from Category where category.sub_menu_id=:SMID").setParameter("SMID", 1).list();
 		Criteria criteria = createEntityCriteria();
-		//int busTypeId = Integer.parseUnsignedInt(subMenuId);
-		criteria.add(Restrictions.eq("subMenuId", Integer.getInteger(subMenuId)));
+		int busTypeId = Integer.parseUnsignedInt(subMenuId);
+		criteria.add(Restrictions.eq("subMenuId", busTypeId));
+
 		//criteria.add(Restrictions.eq("submenuId", busTypeId));
 		//criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);// To avoid duplicates.
 		List<Category> catList = (List<Category>) criteria.list();		

@@ -22,8 +22,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Entity
 @Table(name = "submenu")
 public class BusinessSubMenu implements Serializable{
-
-	
+		
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -46,9 +45,9 @@ public class BusinessSubMenu implements Serializable{
 	private BusinessMenu menuId;	
 	
 	
-	@OneToMany(mappedBy ="subMenuId")//,cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+	//@OneToMany(mappedBy ="subMenuId")//,cascade=CascadeType.ALL, fetch = FetchType.EAGER)
 	//@JsonBackReference
-	private Set<Category> category=new HashSet<Category>();
+	//private Set<Category> category=new HashSet<Category>();
 
 
 	public Integer getSubMenuId() {
@@ -101,7 +100,7 @@ public class BusinessSubMenu implements Serializable{
 	}
 
 
-	public Set<Category> getCategory() {
+	/*public Set<Category> getCategory() {
 		return category;
 	}
 
@@ -110,6 +109,6 @@ public class BusinessSubMenu implements Serializable{
 		this.category = category;
 	}
 	
-
+*/
 	
 }

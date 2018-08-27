@@ -50,14 +50,7 @@ public class LocationServiceImpl implements LocationService {
 	public List<CategoryModel> getCategoryDetail(String subMenuId, String businessTypeId){
 		List<CategoryModel> categoryList=new ArrayList<CategoryModel> ();
 		List< Category> catList=catDao.getCategoryforMenu(subMenuId, businessTypeId);
-		
-		for(Category c: catList) {
-			
-		        System.out.println(c.getCategoryName());
-		    }
-		
-
-		// categoryList=this.mapCategoryList(catDao.getCategoryforMenu(menuId, businessTypeId), CategoryModel.class); 
+		categoryList=this.mapCategoryList(catList, CategoryModel.class); 
 		return categoryList;
 	}
 	
