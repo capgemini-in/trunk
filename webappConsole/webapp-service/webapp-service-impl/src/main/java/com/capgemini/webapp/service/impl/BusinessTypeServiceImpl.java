@@ -15,13 +15,9 @@ import org.springframework.stereotype.Service;
 
 import com.capgemini.webapp.common.constants.IApplicationConstants;
 import com.capgemini.webapp.dao.api.BusinessTypeDao;
-import com.capgemini.webapp.dao.api.entity.BusinessMenu;
 import com.capgemini.webapp.dao.api.entity.BusinessType;
-import com.capgemini.webapp.dao.api.entity.User;
 import com.capgemini.webapp.service.api.BusinessTypeService;
-import com.capgemini.webapp.service.api.model.BusinessMenuModel;
 import com.capgemini.webapp.service.api.model.BusinessTypeModel;
-import com.capgemini.webapp.service.api.model.UserModel;
 
 
 @Service("menuService")
@@ -42,6 +38,7 @@ public class BusinessTypeServiceImpl implements BusinessTypeService{
 	public BusinessTypeModel getAllBusinessMenus() {
 		
 		BusinessTypeModel typeModel = null;
+		
 		String businessName = env.getRequiredProperty(IApplicationConstants.BUSINESS_NAME);
 		String businessType = env.getRequiredProperty(IApplicationConstants.BUSINESS_TYPE);
 		
