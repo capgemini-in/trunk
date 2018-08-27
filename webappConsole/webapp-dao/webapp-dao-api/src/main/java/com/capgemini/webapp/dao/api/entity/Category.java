@@ -23,6 +23,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Table(name = "Category")
 public class Category implements Serializable {
 	
+	
+	
 		
 		private static final long serialVersionUID = 1L;
 		
@@ -42,8 +44,8 @@ public class Category implements Serializable {
 				
 		@ManyToOne
 		@JoinColumn(name="sub_menu_id")	
-		@JsonManagedReference
-		private BusinessSubMenu submenuId;
+		//@JsonManagedReference
+		private BusinessSubMenu subMenuId;
 	
 
 		public Integer getCategoryId() {
@@ -78,13 +80,15 @@ public class Category implements Serializable {
 			this.imagePath = imagePath;
 		}
 
-		public BusinessSubMenu getSubmenuId() {
-			return submenuId;
+		public BusinessSubMenu getSubMenuId() {
+			return subMenuId;
 		}
 
-		public void setSubmenuId(BusinessSubMenu submenuId) {
-			this.submenuId = submenuId;
+		public void setSubMenuId(BusinessSubMenu subMenuId) {
+			this.subMenuId = subMenuId;
 		}
+
+		
 	
 		
 

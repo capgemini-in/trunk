@@ -18,12 +18,14 @@ import com.capgemini.webapp.dao.api.entity.Category;
 @Repository("categoryDao")
 public class CategoryDaoImpl extends AbstractDao<Integer,Category> implements CategoryDao {
 
+	
 	@Override
 	public List<Category> getCategoryforMenu(String subMenuId,String businessType) {
 		
 		Criteria criteria = createEntityCriteria();
-		criteria.add(Restrictions.eq("submenuId", Integer.getInteger(subMenuId)));
-		int busTypeId = Integer.parseUnsignedInt(subMenuId);
+		//int busTypeId = Integer.parseUnsignedInt(subMenuId);
+		criteria.add(Restrictions.eq("subMenuId", Integer.getInteger(subMenuId)));
+		//criteria.add(Restrictions.eq("submenuId", busTypeId));
 		//criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);// To avoid duplicates.
 		List<Category> catList = (List<Category>) criteria.list();		
 		return catList;

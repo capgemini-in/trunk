@@ -46,8 +46,8 @@ public class BusinessSubMenu implements Serializable{
 	private BusinessMenu menuId;	
 	
 	
-	@OneToMany(mappedBy ="submenuId",cascade=CascadeType.ALL, fetch = FetchType.EAGER)
-	@JsonBackReference
+	@OneToMany(mappedBy ="subMenuId")//,cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+	//@JsonBackReference
 	private Set<Category> category=new HashSet<Category>();
 
 
