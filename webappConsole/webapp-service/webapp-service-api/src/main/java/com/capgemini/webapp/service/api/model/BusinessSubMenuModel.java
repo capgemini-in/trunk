@@ -17,7 +17,7 @@ public class BusinessSubMenuModel implements Serializable{
 	
 	private String isActive;
 
-	private BusinessMenu menuId;	
+	/*private BusinessMenu menuId;	
 	
 	public BusinessMenu getMenuId() {
 		return menuId;
@@ -25,7 +25,7 @@ public class BusinessSubMenuModel implements Serializable{
 
 	public void setMenuId(BusinessMenu menuId) {
 		this.menuId = menuId;
-	}
+	}*/
 
 	public Integer getSubMenuId() {
 		return subMenuId;

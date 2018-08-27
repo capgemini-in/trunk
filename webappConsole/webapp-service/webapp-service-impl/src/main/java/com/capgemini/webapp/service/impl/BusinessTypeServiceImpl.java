@@ -46,7 +46,7 @@ public class BusinessTypeServiceImpl implements BusinessTypeService{
 		btype = dao.getAllBusinessMenus(businessType);
 		if (btype != null) {
 			typeModel = new DozerBeanMapper().map(btype, BusinessTypeModel.class);
-		}
+		} 
 		return typeModel;
 		//menuModelList=this.mapList(dao.getAllBusinessMenus(businessType), BusinessTypeModel.class); 
 		//return menuModelList;

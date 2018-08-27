@@ -1,10 +1,8 @@
 package com.capgemini.webapp.service.api.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
-
-import com.capgemini.webapp.dao.api.entity.BusinessMenu;
+import java.util.TreeSet;
 
 public class BusinessTypeModel implements Serializable {
 
@@ -18,7 +16,7 @@ public class BusinessTypeModel implements Serializable {
 
 	private String isActive;
 		
-	private Set<BusinessMenu> menus = new HashSet<BusinessMenu>();
+	private Set<BusinessMenuModel> menus = new TreeSet<BusinessMenuModel>(new IdComparator());
 	
 	public Integer getBusTypeId() {
 		return busTypeId;
@@ -52,11 +50,13 @@ public class BusinessTypeModel implements Serializable {
 		this.isActive = isActive;
 	}
 
-	public Set<BusinessMenu> getMenus() {
+	public Set<BusinessMenuModel> getMenus() {
 		return menus;
 	}
 
-	public void setMenus(Set<BusinessMenu> menus) {
+	public void setMenus(Set<BusinessMenuModel> menus) {
 		this.menus = menus;
 	}
+
+	
 }

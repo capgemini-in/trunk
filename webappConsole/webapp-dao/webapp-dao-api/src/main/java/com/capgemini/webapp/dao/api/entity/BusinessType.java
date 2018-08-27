@@ -1,8 +1,8 @@
 package com.capgemini.webapp.dao.api.entity;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -54,8 +55,9 @@ public class BusinessType implements Serializable{
 	@JoinTable(name = "MENU_BUSINESS_MAPPING", joinColumns = { @JoinColumn(name = "bus_type_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "menu_id") })
 
-	@JsonBackReference	
-	private Set<BusinessMenu> menus = new HashSet<BusinessMenu>();
+	@JsonBackReference
+	@OrderBy("menuId ASC")
+	private Set<BusinessMenu> menus = new TreeSet<BusinessMenu>();
 		
 		
 	public Business getBusinessId() {
