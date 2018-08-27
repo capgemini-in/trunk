@@ -10,3 +10,4 @@ public interface LocationDao {
 	public List<Country> getAllCountries();
 
 }
+ 
