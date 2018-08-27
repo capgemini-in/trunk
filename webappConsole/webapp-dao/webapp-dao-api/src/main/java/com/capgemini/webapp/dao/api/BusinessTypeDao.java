@@ -14,4 +14,5 @@ import com.capgemini.webapp.dao.api.entity.BusinessType;
 public interface BusinessTypeDao {
 
 	public BusinessType getAllBusinessMenus(String businessType);
+	
 }

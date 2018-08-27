@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.capgemini.webapp.dao.api.entity.BusinessMenu;
-import com.capgemini.webapp.dao.api.entity.BusinessSubMenu;
 
 public class BusinessTypeModel implements Serializable {
 

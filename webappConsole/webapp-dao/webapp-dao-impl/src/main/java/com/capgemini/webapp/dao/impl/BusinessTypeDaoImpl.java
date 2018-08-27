@@ -1,7 +1,5 @@
 package com.capgemini.webapp.dao.impl;
 
-import javax.transaction.Transactional;
-
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.Restrictions;
@@ -15,6 +13,7 @@ public class BusinessTypeDaoImpl extends AbstractDao<Integer, BusinessType> impl
 
 	@Override
 	public BusinessType getAllBusinessMenus(String busType) {
+		
 		
 		/*Criteria criteria = createEntityCriteria().addOrder(Order.asc("bus_type_id"));
 		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);// To avoid duplicates.
