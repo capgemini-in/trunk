@@ -12,9 +12,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -45,10 +49,15 @@ public class BusinessSubMenu implements Serializable{
 	private BusinessMenu menuId;	
 	
 	
-	//@OneToMany(mappedBy ="subMenuId")//,cascade=CascadeType.ALL, fetch = FetchType.EAGER)
-	//@JsonBackReference
-	//private Set<Category> category=new HashSet<Category>();
+	@NotEmpty
+	@OneToMany(cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "SUBMENU_CATEGORY_MAPPING", joinColumns = { @JoinColumn(name = "sub_menu_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "category_id") })
+	private Set<Category> category=new HashSet<Category>();
 
+	/*@OneToMany(mappedBy ="subMenuId" ,cascade=CascadeType.ALL, fetch = FetchType.EAGER)//,cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+	@JsonBackReference
+	private Set<Category> category=new HashSet<Category>();*/
 
 	public Integer getSubMenuId() {
 		return subMenuId;
@@ -99,8 +108,7 @@ public class BusinessSubMenu implements Serializable{
 		this.menuId = menuId;
 	}
 
-
-	/*public Set<Category> getCategory() {
+	public Set<Category> getCategory() {
 		return category;
 	}
 
@@ -108,7 +116,5 @@ public class BusinessSubMenu implements Serializable{
 	public void setCategory(Set<Category> category) {
 		this.category = category;
 	}
-	
-*/
 	
 }

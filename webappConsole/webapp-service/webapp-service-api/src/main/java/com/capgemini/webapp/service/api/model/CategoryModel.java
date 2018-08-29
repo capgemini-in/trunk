@@ -1,16 +1,26 @@
 package com.capgemini.webapp.service.api.model;
 
-public class CategoryModel {
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+public class CategoryModel implements Serializable{
 	
-	private String categoryId;
+	private static final long serialVersionUID = 1L;
+	private Integer categoryId;
 	private String categoryCode;
 	private String categoryName;
-	private String categoryImage;
-	private String menuId;
-	public String getCategoryId() {
+	private String imagePath;
+	
+	//private BusinessSubMenuModel subMenuId;
+	
+	private Set<CategoryVariantsModel> variants = new HashSet<CategoryVariantsModel>();
+	
+	
+	public Integer getCategoryId() {
 		return categoryId;
 	}
-	public void setCategoryId(String categoryId) {
+	public void setCategoryId(Integer categoryId) {
 		this.categoryId = categoryId;
 	}
 	public String getCategoryCode() {
@@ -25,18 +35,27 @@ public class CategoryModel {
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
 	}
-	public String getCategoryImage() {
-		return categoryImage;
+	public String getImagePath() {
+		return imagePath;
 	}
-	public void setCategoryImage(String categoryImage) {
-		this.categoryImage = categoryImage;
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
-	public String getMenuId() {
-		return menuId;
+	
+	public Set<CategoryVariantsModel> getVariants() {
+		return variants;
 	}
-	public void setMenuId(String menuId) {
-		this.menuId = menuId;
+	public void setVariants(Set<CategoryVariantsModel> variants) {
+		this.variants = variants;
 	}
+	
+	/*public int getSubMenuId() {
+		return subMenuId;
+	}
+	public void setSubMenuId(int subMenuId) {
+		this.subMenuId = subMenuId;
+	}*/
+	
 	
 
 }
