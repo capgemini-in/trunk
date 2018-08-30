@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.capgemini.webapp.common.constants.IApplicationConstants;
 import com.capgemini.webapp.service.api.BusinessTypeService;
+import com.capgemini.webapp.service.api.DealerService;
 import com.capgemini.webapp.service.api.LocationService;
 import com.capgemini.webapp.service.api.model.BusinessSubMenuModel;
 import com.capgemini.webapp.service.api.model.BusinessTypeModel;
 import com.capgemini.webapp.service.api.model.CategoryModel;
 import com.capgemini.webapp.service.api.model.CategoryVariantsModel;
 import com.capgemini.webapp.service.api.model.CountryModel;
+import com.capgemini.webapp.service.api.model.DealerModel;
 import com.capgemini.webapp.service.api.model.SubMenuCategoryModel;
 import com.google.gson.JsonObject;
 
@@ -36,6 +38,10 @@ public class ModelDataController {
 
 	@Autowired
 	BusinessTypeService menuService;
+	
+
+	@Autowired
+	DealerService dealerService;
 
 	@RequestMapping(value = "/country/", method = RequestMethod.GET)
 
@@ -170,4 +176,38 @@ public class ModelDataController {
 		return new ResponseEntity<List<CategoryVariantsModel>>(variantsList, HttpStatus.OK);
 	}
 
+	
+	
+
+	@RequestMapping(value = "/dealers/", method = RequestMethod.GET)
+	public ResponseEntity<List<DealerModel>> getDealerbyStateCity(@RequestParam(value = "stateID") String stateId,
+			@RequestParam(value = "cityId") String cityId) {
+		
+		List<DealerModel> dealerList = null;
+		JsonObject responseObj = new JsonObject();
+
+		try {
+
+			dealerList = dealerService.getAllDealerforStateCity(stateId, cityId);
+
+			if (dealerList != null && dealerList.isEmpty()) {
+
+				responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_NOCONTENT_CODE);
+				responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "No Data Exist");
+				return new ResponseEntity(HttpStatus.NO_CONTENT);
+
+				// You many decide to return HttpStatus.NOT_FOUND
+			}
+		} catch (Exception e) {
+			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error retrieving category");
+			logger.error("Error retrieving category:" + e.getMessage());
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+
+		}
+		return new ResponseEntity<List<DealerModel>>(dealerList, HttpStatus.OK);
+		
+		
+
+	}
 }
