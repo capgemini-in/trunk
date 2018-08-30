@@ -10,5 +10,5 @@ public interface LocationService {
 	public List<CountryModel> getAllCountries();
 	public List<CategoryModel> getCategoryDetail(String subMenuId, String businessTypeId);
 	public SubMenuCategoryModel getVariantsForCategory(String subMenuId);
-	
+	public void getVariantColor(String variantId); 
 }

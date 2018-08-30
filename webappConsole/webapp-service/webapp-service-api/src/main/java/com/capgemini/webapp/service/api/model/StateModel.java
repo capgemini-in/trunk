@@ -1,6 +1,8 @@
 package com.capgemini.webapp.service.api.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.capgemini.webapp.dao.api.entity.Country;
 
@@ -15,7 +17,7 @@ public class StateModel implements Serializable {
 
 	private String isActive;
 	
-	private Country coun;
+ 	private Set<CityModel> city=new HashSet<CityModel>();
 
 	public Integer getStateId() {
 		return stateId;
@@ -49,14 +51,15 @@ public class StateModel implements Serializable {
 		this.isActive = isActive;
 	}
 
-	public Country getCoun() {
-		return coun;
+	public Set<CityModel> getCity() {
+		return city;
 	}
 
-	public void setCoun(Country coun) {
-		this.coun = coun;
+	public void setCity(Set<CityModel> city) {
+		this.city = city;
 	}
 
+	
 	
 	
 	

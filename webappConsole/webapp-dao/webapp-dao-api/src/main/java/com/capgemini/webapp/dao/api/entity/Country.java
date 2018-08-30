@@ -40,7 +40,7 @@ public class Country  implements Serializable{
 	private String isActive;
 	
 	@OneToMany(mappedBy ="coun" )
-	@JsonBackReference
+	//@JsonBackReference
 	private Set<State> state=new HashSet<State>();
 
 	public Integer getCountryId() {

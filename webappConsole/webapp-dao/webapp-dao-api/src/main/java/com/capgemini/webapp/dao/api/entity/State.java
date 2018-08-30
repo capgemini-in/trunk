@@ -1,10 +1,11 @@
 package com.capgemini.webapp.dao.api.entity;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,8 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 /**
  * State entity class
@@ -42,8 +41,13 @@ public class State implements Serializable {
 	
 	@ManyToOne
     @JoinColumn(name="country_id")
-	@JsonManagedReference
+	//@JsonManagedReference
 	private Country coun;
+	
+	
+	@OneToMany(mappedBy ="cityState" )
+	//@JsonBackReference
+	private Set<City> city=new HashSet<City>();
 
 	public Integer getStateId() {
 		return stateId;
@@ -85,5 +89,14 @@ public class State implements Serializable {
 		this.coun = coun;
 	}
 
+	public Set<City> getCity() {
+		return city;
+	}
+
+	public void setCity(Set<City> city) {
+		this.city = city;
+	}
+
+	
 	
 }

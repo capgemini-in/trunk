@@ -80,4 +80,13 @@ public class LocationServiceImpl implements LocationService {
 		} 
 		return subMenuModel;
 	}
+
+
+	@Override
+	public void getVariantColor(String variantId) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 }
