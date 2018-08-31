@@ -39,20 +39,17 @@ public class Dealer  implements Serializable  {
 	@Column(name = "pincode")
 	private String pincode;
 	
-	/*@ManyToOne
-	@JoinColumn(name = "state_id")
-	private State state;
 	
 	@ManyToOne
 	@JoinColumn(name = "city_id")
-	private City city;*/
+	private City city;
 	
-	
+	/*
 	@Column(name = "state_id")
 	private int  state;
 	
 	@Column(name = "city_id")
-	private int city;
+	private int city;*/
 	
 	@Column(name = "website")
 	private String website;
@@ -104,16 +101,10 @@ public class Dealer  implements Serializable  {
 		this.pincode = pincode;
 	}
 	
-	public int getState() {
-		return state;
-	}
-	public void setState(int state) {
-		this.state = state;
-	}
-	public int getCity() {
+	public City getCity() {
 		return city;
 	}
-	public void setCity(int city) {
+	public void setCity(City city) {
 		this.city = city;
 	}
 	public String getWebsite() {
