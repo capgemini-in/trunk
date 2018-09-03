@@ -17,6 +17,7 @@ import com.capgemini.webapp.common.constants.IApplicationConstants;
 import com.capgemini.webapp.service.api.BusinessTypeService;
 import com.capgemini.webapp.service.api.DealerService;
 import com.capgemini.webapp.service.api.LocationService;
+import com.capgemini.webapp.service.api.VariantDetailsService;
 import com.capgemini.webapp.service.api.model.BusinessSubMenuModel;
 import com.capgemini.webapp.service.api.model.BusinessTypeModel;
 import com.capgemini.webapp.service.api.model.CategoryModel;
@@ -24,6 +25,7 @@ import com.capgemini.webapp.service.api.model.CategoryVariantsModel;
 import com.capgemini.webapp.service.api.model.CountryModel;
 import com.capgemini.webapp.service.api.model.DealerModel;
 import com.capgemini.webapp.service.api.model.SubMenuCategoryModel;
+import com.capgemini.webapp.service.api.model.VariantDetailsModel;
 import com.google.gson.JsonObject;
 
 @RestController
@@ -37,11 +39,14 @@ public class ModelDataController {
 	LocationService locationService;
 
 	@Autowired
-	BusinessTypeService menuService;
-	
+	BusinessTypeService menuService;	
 
 	@Autowired
 	DealerService dealerService;
+	
+	@Autowired
+	VariantDetailsService variantDetailsService;
+
 
 	@RequestMapping(value = "/country/", method = RequestMethod.GET)
 
@@ -175,7 +180,37 @@ public class ModelDataController {
 		// return new ResponseEntity<SubMenuCategoryModel>(subMenuModel, HttpStatus.OK);
 		return new ResponseEntity<List<CategoryVariantsModel>>(variantsList, HttpStatus.OK);
 	}
+	
+	
+	@RequestMapping(value = "/variantdetails/", method = RequestMethod.GET)
 
+	public ResponseEntity<List<VariantDetailsModel>> getVariantDetails(
+			@RequestParam(value = "variantId") String variantId,@RequestParam(value = "fuelType") String fuelType) {
+
+		List<VariantDetailsModel> detailsModel = null;
+		JsonObject responseObj = new JsonObject();
+		try {
+
+			detailsModel = variantDetailsService.getVariantDetails(variantId,fuelType);
+
+			if (detailsModel == null) {
+
+				responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_NOCONTENT_CODE);
+				responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "No Data Exist");
+				return new ResponseEntity(HttpStatus.NO_CONTENT);
+
+				// You many decide to return HttpStatus.NOT_FOUND
+			}
+		} catch (Exception e) {
+			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error retrieving Variant Details");
+			logger.error("Error retrieving category:" + e.getMessage());
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+
+		}
+
+		return new ResponseEntity<List<VariantDetailsModel>>(detailsModel, HttpStatus.OK);
+	}
 	
 	
 
@@ -205,8 +240,7 @@ public class ModelDataController {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 
 		}
-		return new ResponseEntity<List<DealerModel>>(dealerList, HttpStatus.OK);
-		
+		return new ResponseEntity<List<DealerModel>>(dealerList, HttpStatus.OK);	
 		
 
 	}
