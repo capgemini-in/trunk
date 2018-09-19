@@ -3,6 +3,7 @@ package com.capgemini.webapp.dao.api.entity;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,6 +12,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -41,7 +44,10 @@ public class BusinessMenu implements Serializable {
 	@JsonManagedReference
 	private Set<BusinessSubMenu> subMenus=new HashSet<BusinessSubMenu>();
 	
-	
+	@OneToMany(cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "userprofile_menu_mapping", joinColumns = { @JoinColumn(name = "menu_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "profile_id") })	
+	private Set<UserProfile> userProfile = new TreeSet<UserProfile>();
 	
 	/*@ManyToMany(mappedBy = "menus")
 	@JsonManagedReference
@@ -94,5 +100,15 @@ public class BusinessMenu implements Serializable {
 	public void setIsActive(String isActive) {
 		this.isActive = isActive;
 	}
+
+	public Set<UserProfile> getUserProfile() {
+		return userProfile;
+	}
+
+	public void setUserProfile(Set<UserProfile> userProfile) {
+		this.userProfile = userProfile;
+	}
+	
+	
 
 }
