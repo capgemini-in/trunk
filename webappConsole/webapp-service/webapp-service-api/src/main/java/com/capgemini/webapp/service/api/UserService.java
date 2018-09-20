@@ -11,24 +11,26 @@ import com.capgemini.webapp.service.api.model.UserModel;
  */
 public interface UserService {
 
-	UserModel findById(int id);
+	public UserModel findById(int id);
 
-	UserModel findBySSO(String sso);
+	public UserModel findBySSO(String sso);
 
-	boolean saveUser(UserModel userModel);
+	public boolean saveUser(UserModel userModel);
 
-	boolean updateUser(UserModel userModel);
+	public boolean updateUser(UserModel userModel);
 
-	boolean deleteUserBySSO(String sso);
+	public boolean deleteUserBySSO(String sso);
 
-	List<UserModel> findAllUsers();
+	public List<UserModel> findAllUsers();
 
-	boolean isUserSSOUnique(Integer id, String sso);
+	public boolean isUserSSOUnique(Integer id, String sso);
 	
-	List<UserModel> getallProfile();
+	public List<UserModel> getallProfile();
 	
-	void updateList(List<UserInfoModel> lstUser) throws Exception; 
+	public void updateList(List<UserInfoModel> lstUser) throws Exception; 
 	
-	void uploadUser(List<UserModel> lstUser) throws Exception; 
+	public void uploadUser(List<UserModel> lstUser) throws Exception; 
+	
+	public String createSSOID (String firstName, String lastName);
 
 }

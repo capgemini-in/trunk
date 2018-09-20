@@ -19,7 +19,9 @@ import com.capgemini.webapp.dao.api.entity.User;
 import com.capgemini.webapp.dao.api.entity.UserInfo;
 import com.capgemini.webapp.dao.api.entity.UserProfile;
 import com.capgemini.webapp.security.constants.AuthenticationConstants;
+import com.capgemini.webapp.service.api.EmailService;
 import com.capgemini.webapp.service.api.UserService;
+import com.capgemini.webapp.service.api.model.EmailModel;
 import com.capgemini.webapp.service.api.model.UserInfoModel;
 import com.capgemini.webapp.service.api.model.UserModel;
 import com.capgemini.webapp.service.api.model.UserProfileModel;
@@ -44,6 +46,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private EmailService emailService;
 
 	public UserModel findById(int id) {
 		UserModel usermodel = null;
@@ -85,6 +90,7 @@ public class UserServiceImpl implements UserService {
 		User userEntity = new DozerBeanMapper().map(userModel, User.class);
 		dao.save(userEntity);
 		created=true;
+		sendEmailNotification(userEntity);
 		return created;
 				
 				
@@ -234,4 +240,53 @@ public class UserServiceImpl implements UserService {
 	private List<User> mapUploadUserToList(List<UserModel> fromList, Class<User> toClass) {
 		return fromList.stream().map(from -> new DozerBeanMapper().map(from, toClass)).collect(Collectors.toList());
 	} 
+	
+	/**
+	 * Function to generate ssoid
+	 */
+	public String  createSSOID (String firstName, String lastName) {
+		int counter=4;
+		int inc=0;
+		StringBuffer buffer=new StringBuffer();
+		do {
+			
+			buffer=new StringBuffer();			
+			if(firstName.length()>=counter+inc) 
+			{
+			
+				buffer.append(firstName.substring(0,counter+inc));			
+				buffer.append(lastName.substring(0,counter-inc));
+				
+				System.out.println("SSOID:" + buffer.toString());
+				
+				UserModel user=findBySSO(buffer.toString());
+				if(user==null)
+					return  buffer.toString();
+				
+				 
+				inc++;
+			}	
+		}while(inc<3);
+			
+		return buffer.toString();
+	}
+	
+	
+	private void sendEmailNotification(User newUser) {
+		EmailModel emailModel=new EmailModel();
+		emailModel.setToEmail(newUser.getEmail());
+		emailModel.setFromEmail("vipul.satpute@capgemini.com");
+		emailModel.setCcEmail("vipul.satpute@capgemini.com");
+		emailModel.setSubject("Yours CGMotors Account Created");
+		emailModel.setContent("Hi" + newUser.getFirstName() +"\nWelcome to CGMotors. Your account has been created."
+				+ " \n Following are the details:\n Username: "+newUser.getSsoId() +"\n Password: "+ newUser.getPassword());
+		emailService.sendEmail(emailModel);
+		System.out.println("Email send");
+		
+	}
+	public static void main(String[] args) {
+		UserServiceImpl user=new UserServiceImpl();
+		user.createSSOID("palla", "patil");
+		//System.out.println(user.createSSOID("pallavi", "patil"));
+	}
 }

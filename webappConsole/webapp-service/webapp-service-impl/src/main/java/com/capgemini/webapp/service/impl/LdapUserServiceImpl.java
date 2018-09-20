@@ -126,4 +126,11 @@ public class LdapUserServiceImpl implements UserService{
 		
 	}
 
+	@Override
+	public String createSSOID(String firstName, String lastName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+			
 }

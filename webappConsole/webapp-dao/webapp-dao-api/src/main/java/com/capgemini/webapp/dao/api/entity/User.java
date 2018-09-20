@@ -51,6 +51,28 @@ public class User extends BaseUser implements Serializable {
 			@JoinColumn(name = "USER_PROFILE_ID") })
 	private Set<UserProfile> userProfiles = new HashSet<UserProfile>();
 
+	
+   @Column(name="mobile_number")
+   private String mobileNumber;
+	
+   @Column(name="address")
+	private String address;
+   
+   @Column(name="zip_code")
+	private String zipcode;
+	
+   @Column(name="state")
+	private String state;
+	
+   @Column(name="city")
+	private String city;
+	
+   @Column(name="country")
+	private String country;
+	
+	
+	
+	
 	public Integer getId() {
 		return id;
 	}
@@ -147,5 +169,55 @@ public class User extends BaseUser implements Serializable {
 		return "User [id=" + id + ", ssoId=" + ssoId + ", password=" + password + ", firstName=" + firstName
 				+ ", lastName=" + lastName + ", email=" + email + "]";
 	}
+
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getZipcode() {
+		return zipcode;
+	}
+
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+	
+	
 
 }

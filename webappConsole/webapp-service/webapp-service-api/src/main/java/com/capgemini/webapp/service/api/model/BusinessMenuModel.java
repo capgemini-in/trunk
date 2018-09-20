@@ -18,7 +18,7 @@ public class BusinessMenuModel implements Serializable {
 	private String isActive;
 
 	private Set<BusinessSubMenuModel> subMenus = new HashSet<BusinessSubMenuModel>();
-	private Set<UserProfileModel> userProfile = new TreeSet<UserProfileModel>();
+	private Set<UserProfileModel> userProfile = new HashSet<UserProfileModel>();
 
 	public Integer getMenuId() {
 		return menuId;

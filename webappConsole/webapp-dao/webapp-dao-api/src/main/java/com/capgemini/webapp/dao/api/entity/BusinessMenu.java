@@ -47,7 +47,7 @@ public class BusinessMenu implements Serializable {
 	@OneToMany(cascade=CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "userprofile_menu_mapping", joinColumns = { @JoinColumn(name = "menu_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "profile_id") })	
-	private Set<UserProfile> userProfile = new TreeSet<UserProfile>();
+	private Set<UserProfile> userProfile = new HashSet<UserProfile>();
 	
 	/*@ManyToMany(mappedBy = "menus")
 	@JsonManagedReference

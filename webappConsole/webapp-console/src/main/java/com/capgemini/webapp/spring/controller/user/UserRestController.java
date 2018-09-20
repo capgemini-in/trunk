@@ -65,6 +65,14 @@ public class UserRestController {
 		
 		if(userBean!=null) {
 			
+			if(userBean.getSsoId()==null) {
+				String ssoId= userService.createSSOID(userBean.getFirstName(), userBean.getLastName());
+				if(ssoId !=null)
+					userBean.setSsoId(ssoId);
+				    userBean.setPassword("guest123");
+			   }		
+			
+			
 			if (userService.isUserSSOUnique(userBean.getId(), userBean.getSsoId())) { 
 			
 					isCreated =  userService.saveUser(userBean);
@@ -76,6 +84,8 @@ public class UserRestController {
 		if (isCreated) {
 			responseObj.addProperty(IApplicationConstants.REST_STATUS,IApplicationConstants.STATUS_SUCCESS_CODE );
 			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,"User created successfully" );
+			
+			
 			return new ResponseEntity<String>(responseObj.toString(),HttpStatus.OK);
 		}
 			
