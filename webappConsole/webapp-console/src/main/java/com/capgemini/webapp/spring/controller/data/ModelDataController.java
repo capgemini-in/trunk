@@ -7,7 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +26,8 @@ import com.capgemini.webapp.service.api.model.CategoryModel;
 import com.capgemini.webapp.service.api.model.CategoryVariantsModel;
 import com.capgemini.webapp.service.api.model.CountryModel;
 import com.capgemini.webapp.service.api.model.DealerModel;
+import com.capgemini.webapp.service.api.model.ProductModel;
+import com.capgemini.webapp.service.api.model.QuotationModel;
 import com.capgemini.webapp.service.api.model.SubMenuCategoryModel;
 import com.capgemini.webapp.service.api.model.VariantDetailsModel;
 import com.google.gson.JsonObject;
@@ -212,8 +216,6 @@ public class ModelDataController {
 		return new ResponseEntity<List<VariantDetailsModel>>(detailsModel, HttpStatus.OK);
 	}
 	
-	
-
 	@RequestMapping(value = "/dealers/", method = RequestMethod.GET)
 	public ResponseEntity<List<DealerModel>> getDealerbyStateCity(@RequestParam(value = "stateID") String stateId,
 			@RequestParam(value = "cityId") String cityId) {
@@ -244,4 +246,15 @@ public class ModelDataController {
 		
 
 	}
+
+	@RequestMapping(value = "/quotationRequest/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> processQuotationRequest(@RequestBody  QuotationModel quotationModel){
+		
+		System.out.println("Processing quotation Request:"+ quotationModel.getUserModel().getFirstName()+" "+ quotationModel.getUserModel().getLastName());
+		
+		return  new ResponseEntity(HttpStatus.OK);
+	}
+	
+
+
 }
