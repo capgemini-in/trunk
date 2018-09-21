@@ -12,7 +12,7 @@ public interface UserDao {
 	
 	User findBySSO(String sso);
 	
-	void save(User user);
+	User save(User user);
 	
 	void deleteBySSO(String sso);
 	

@@ -82,14 +82,14 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 		return users;
 	}
 
-	public void save(User user) {
-		saveUser(user);
+	public User save(User user) {
+		return saveUser(user);
 	}
 
-	public long saveUser(User user) {
+	public User saveUser(User user) {
 		// User existinguser = findUserBySSOID(user.getSsoId());
 		getSession().save(user);
-		return 1;
+		return user;
 	}
 
 	public User findUserBySSOID(String ssoId) {

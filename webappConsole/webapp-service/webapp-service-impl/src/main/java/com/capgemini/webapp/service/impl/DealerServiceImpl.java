@@ -11,9 +11,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.capgemini.webapp.dao.api.DealerDao;
+import com.capgemini.webapp.dao.api.QuotationDao;
 import com.capgemini.webapp.dao.api.entity.Dealer;
+import com.capgemini.webapp.dao.api.entity.Quotation;
 import com.capgemini.webapp.service.api.DealerService;
 import com.capgemini.webapp.service.api.model.DealerModel;
+import com.capgemini.webapp.service.api.model.QuotationModel;
 
 
 /**
@@ -28,9 +31,11 @@ public class DealerServiceImpl implements DealerService {
 	
 	@Autowired
 	DealerDao dealerDao;
+	
+	@Autowired 
+	QuotationDao quotationDao;
 
 	public static final Logger logger = LoggerFactory.getLogger(DealerServiceImpl.class);
-	
 	
 	@Override
 	public List<DealerModel> getAllDealerforStateCity(String stateId, String cityId) {
@@ -62,6 +67,23 @@ public class DealerServiceImpl implements DealerService {
 	            .stream()
 	            .map(from -> new DozerBeanMapper().map(from, toClass))
 	            .collect(Collectors.toList());
+	}
+
+	@Override
+	public boolean processQuotationRequest(QuotationModel quotationModel) {
+		boolean isCeated=false;
+		try {
+			
+			
+			Quotation quotationEntity=new DozerBeanMapper().map(quotationModel, Quotation.class);
+			isCeated=quotationDao.createQuotationRequest(quotationEntity);
+			
+		}catch(Exception e) {
+			
+			logger.error("Error updating quotation entity:"+e.getMessage());
+			isCeated=false;
+		}
+		return isCeated;
 	}
 	
 }

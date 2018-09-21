@@ -64,19 +64,20 @@ public class UserRestController {
 		boolean isCreated=false;
 		
 		if(userBean!=null) {
-			
+			/*
 			if(userBean.getSsoId()==null) {
 				String ssoId= userService.createSSOID(userBean.getFirstName(), userBean.getLastName());
 				if(ssoId !=null)
 					userBean.setSsoId(ssoId);
 				    userBean.setPassword("guest123");
 			   }		
+			*/
 			
-			
-			if (userService.isUserSSOUnique(userBean.getId(), userBean.getSsoId())) { 
+			//if (userService.isUserSSOUnique(userBean.getId(), userBean.getSsoId())) { 
 			
 					isCreated =  userService.saveUser(userBean);
-			}
+			//}
+			
 		} 
 		JsonObject responseObj = new JsonObject();
 		

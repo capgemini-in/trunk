@@ -19,14 +19,13 @@ import com.capgemini.webapp.common.constants.IApplicationConstants;
 import com.capgemini.webapp.service.api.BusinessTypeService;
 import com.capgemini.webapp.service.api.DealerService;
 import com.capgemini.webapp.service.api.LocationService;
+import com.capgemini.webapp.service.api.UserService;
 import com.capgemini.webapp.service.api.VariantDetailsService;
-import com.capgemini.webapp.service.api.model.BusinessSubMenuModel;
 import com.capgemini.webapp.service.api.model.BusinessTypeModel;
 import com.capgemini.webapp.service.api.model.CategoryModel;
 import com.capgemini.webapp.service.api.model.CategoryVariantsModel;
 import com.capgemini.webapp.service.api.model.CountryModel;
 import com.capgemini.webapp.service.api.model.DealerModel;
-import com.capgemini.webapp.service.api.model.ProductModel;
 import com.capgemini.webapp.service.api.model.QuotationModel;
 import com.capgemini.webapp.service.api.model.SubMenuCategoryModel;
 import com.capgemini.webapp.service.api.model.VariantDetailsModel;
@@ -52,6 +51,9 @@ public class ModelDataController {
 	VariantDetailsService variantDetailsService;
 
 
+	@Autowired
+	UserService userService;
+	
 	@RequestMapping(value = "/country/", method = RequestMethod.GET)
 
 	public ResponseEntity<List<CountryModel>> listCountriesDetail() {
@@ -250,7 +252,11 @@ public class ModelDataController {
 	@RequestMapping(value = "/quotationRequest/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> processQuotationRequest(@RequestBody  QuotationModel quotationModel){
 		
-		System.out.println("Processing quotation Request:"+ quotationModel.getUserModel().getFirstName()+" "+ quotationModel.getUserModel().getLastName());
+		
+		logger.debug("processQuotationRequest");
+		if(quotationModel.getUser()!=null)
+			userService.saveUser(quotationModel.getUser());
+		boolean isQuotationCreated=	dealerService.processQuotationRequest(quotationModel);		
 		
 		return  new ResponseEntity(HttpStatus.OK);
 	}

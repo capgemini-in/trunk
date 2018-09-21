@@ -76,23 +76,33 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Transactional
-	public boolean saveUser(UserModel userModel) {
-		
+	public boolean saveUser(UserModel userModel) {		
 		
 		boolean created=false;
 		try {
-		/*userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
-		User userEntity = new DozerBeanMapper().map(userModel, User.class);
-		dao.save(userEntity);*/
-		
-		userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
-		//userModel.setPassword(encoderDecoder.encrypt(userModel.getPassword()));
-		User userEntity = new DozerBeanMapper().map(userModel, User.class);
-		dao.save(userEntity);
-		created=true;
-		sendEmailNotification(userEntity);
-		return created;
+			
+			//Checks if SSOID is null, if null then generates SSOID
+			if(userModel.getSsoId()==null) {
+				String ssoId= createSSOID(userModel.getFirstName(), userModel.getLastName());
+				if(ssoId !=null) {
+					userModel.setSsoId(ssoId);
+				    userModel.setPassword("guest123");
+				}  else {
+					
+				   return false;
+			   }
+			}
+			if (isUserSSOUnique(userModel.getId(), userModel.getSsoId())) {
 				
+					userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
+					User userEntity = new DozerBeanMapper().map(userModel, User.class);
+					dao.save(userEntity);
+					System.out.println("UPdated user id:"+ userEntity.getId());
+					created=true;
+					userModel.setId(userEntity.getId());
+					sendEmailNotification(userEntity);
+					return created;
+			}
 				
 		}catch(Exception e) {
 			
@@ -101,22 +111,7 @@ public class UserServiceImpl implements UserService {
 		}
 		return created;
 		
-		/*String authentication = env.getRequiredProperty(AuthenticationConstants.AUTHENTICATION);
-		if (authentication.equalsIgnoreCase(AuthenticationConstants.LDAP_AUTH)) {
-			LdapUserModel p = new LdapUserModel();
-			p.setFirstName(userModel.getFirstName());
-			p.setLastName(userModel.getLastName());
-			p.setUid(userModel.getSsoId());
-			p.setEmail(userModel.getEmail());
-			p.setPassword(userModel.getPassword());			
-			p.setUserProfile(userModel.getUserProfiles());
-			LdapUser ldapUser = new DozerBeanMapper().map(p, LdapUser.class);
-			//new UserRepository().create(p);
-			dao.saveLdapUser(ldapUser);
-		}
-		else {			
-			dao.save(userEntity);
-		}*/
+		
 	}
 
 	/*
@@ -271,6 +266,11 @@ public class UserServiceImpl implements UserService {
 		return buffer.toString();
 	}
 	
+	
+	private UserModel createNewUser(UserModel userModel) {
+		
+		return userModel;
+	}
 	
 	private void sendEmailNotification(User newUser) {
 		EmailModel emailModel=new EmailModel();

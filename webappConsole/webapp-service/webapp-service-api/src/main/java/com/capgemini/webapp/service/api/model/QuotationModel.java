@@ -1,47 +1,51 @@
 package com.capgemini.webapp.service.api.model;
 
-public class QuotationModel {
+import java.io.Serializable;
+
+public class QuotationModel implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	
-	private UserModel userModel;
+	private UserModel user;
 	
-	private CategoryVariantsModel varaintModel;
+	private CategoryVariantsModel variant;
 	
-	private DealerModel dealerModel;
+	private DealerModel dealer;
 	
-	private CityModel cityModel;
+	private CityModel city;
 	
 	double discountedPrice;
-	
-	public UserModel getUserModel() {
-		return userModel;
+
+	public UserModel getUser() {
+		return user;
 	}
 
-	public void setUserModel(UserModel userModel) {
-		this.userModel = userModel;
+	public void setUser(UserModel user) {
+		this.user = user;
 	}
 
-	public CategoryVariantsModel getVaraintModel() {
-		return varaintModel;
+	public CategoryVariantsModel getVariant() {
+		return variant;
 	}
 
-	public void setVaraintModel(CategoryVariantsModel varaintModel) {
-		this.varaintModel = varaintModel;
-	}
-	
-	public DealerModel getDealerModel() {
-		return dealerModel;
+	public void setVariant(CategoryVariantsModel variant) {
+		this.variant = variant;
 	}
 
-	public void setDealerModel(DealerModel dealerModel) {
-		this.dealerModel = dealerModel;
+	public DealerModel getDealer() {
+		return dealer;
 	}
 
-	public CityModel getCityModel() {
-		return cityModel;
+	public void setDealer(DealerModel dealer) {
+		this.dealer = dealer;
 	}
 
-	public void setCityModel(CityModel cityModel) {
-		this.cityModel = cityModel;
+	public CityModel getCity() {
+		return city;
+	}
+
+	public void setCity(CityModel city) {
+		this.city = city;
 	}
 
 	public double getDiscountedPrice() {
@@ -51,9 +55,7 @@ public class QuotationModel {
 	public void setDiscountedPrice(double discountedPrice) {
 		this.discountedPrice = discountedPrice;
 	}
-	
-	
-	
-	
 
+	
+	
 }
