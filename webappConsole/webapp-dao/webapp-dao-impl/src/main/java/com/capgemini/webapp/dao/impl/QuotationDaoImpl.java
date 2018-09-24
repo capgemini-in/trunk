@@ -52,6 +52,27 @@ public List<Quotation> getQuotationForDealer(int dealerId){
 	return quotationList;
 }
 
+
+public List<Quotation> getQuotationForUser(int userId){
+
+	List<Quotation> quotationList =null;
+	
+	try {
+		
+		Criteria criteria = createEntityCriteria();
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);// To avoid duplicates.
+		criteria.add(Restrictions.eq("user.id", userId));
+		quotationList = (List<Quotation>) criteria.list();
+		
+   }catch(Exception e) {
+		
+	   logger.debug("Exception retrieving user"+ e.getMessage());
+			
+	}
+	return quotationList;
+}
+
+
 @Override
 public boolean saveQuotation(Quotation quot) {
 	

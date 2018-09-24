@@ -14,4 +14,6 @@ public interface DealerService {
 	public List<QuotationModel> getQuotationRequest(String dealerId);
 
 	boolean updateQuotationRequest(QuotationModel quotationModel);
+	
+	public List<QuotationModel> getQuotationforUser(String userId);
 }

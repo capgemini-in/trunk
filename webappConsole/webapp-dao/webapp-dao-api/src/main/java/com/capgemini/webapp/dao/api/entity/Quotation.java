@@ -49,6 +49,9 @@ public class Quotation  implements Serializable  {
 
 	@Column(name = "discounted_price")
 	private double discountedPrice;
+	
+	@Column(name = "file_path")
+	private String filePath;
 
 	public int getQuotation_id() {
 		return quotation_id;
@@ -96,6 +99,14 @@ public class Quotation  implements Serializable  {
 
 	public void setDiscountedPrice(double discountedPrice) {
 		this.discountedPrice = discountedPrice;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 	
 

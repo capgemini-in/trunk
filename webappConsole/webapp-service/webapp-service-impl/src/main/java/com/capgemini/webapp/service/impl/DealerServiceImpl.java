@@ -111,13 +111,35 @@ public class DealerServiceImpl implements DealerService {
 	}
 	
 	@Override
+	public List<QuotationModel> getQuotationforUser(String userId) {
+
+		
+			
+			logger.debug("getQuotationRequest+Retrieving quotation request");			
+			List<QuotationModel> quotationList = null;
+			try {
+				
+				quotationList= this.mapDealerList(quotationDao.getQuotationForDealer(Integer.parseUnsignedInt(userId)), QuotationModel.class);
+				
+			}catch(Exception e) {
+				
+				logger.error("Error retrieving dealers:"+e.getMessage());
+				return null;
+			}
+			logger.debug("getAllProduct+Completed Retrieving products list");
+
+			return quotationList;
+		
+	
+	}
+	@Override
 	public boolean updateQuotationRequest(QuotationModel quotationModel) {
 		
 			
 			logger.debug("Updating QuotationRequest");			
 		    boolean isUpdate=false;
 			try {
-				
+							
 				Quotation quotationEntity=new DozerBeanMapper().map(quotationModel, Quotation.class);
 				quotationDao.saveQuotation(quotationEntity);
 				

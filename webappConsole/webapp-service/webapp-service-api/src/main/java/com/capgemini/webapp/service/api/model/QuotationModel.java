@@ -18,6 +18,8 @@ public class QuotationModel implements Serializable {
 	
 	double discountedPrice;
 	
+	String filePath;
+	
 	public int getQuotation_id() {
 		return quotation_id;
 	}
@@ -64,6 +66,14 @@ public class QuotationModel implements Serializable {
 
 	public void setDiscountedPrice(double discountedPrice) {
 		this.discountedPrice = discountedPrice;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
 	

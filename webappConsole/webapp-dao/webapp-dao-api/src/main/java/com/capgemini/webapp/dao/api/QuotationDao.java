@@ -16,6 +16,7 @@ public interface QuotationDao {
 
 	public boolean createQuotationRequest(Quotation quotation);
 	public List<Quotation> getQuotationForDealer(int dealerId);
+	public List<Quotation> getQuotationForUser(int userId);
 	boolean saveQuotation(Quotation quot);
 	
 }
