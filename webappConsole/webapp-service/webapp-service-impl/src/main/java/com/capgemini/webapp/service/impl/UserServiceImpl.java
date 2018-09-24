@@ -140,15 +140,19 @@ public class UserServiceImpl implements UserService {
 				Set<UserProfile> userProfileEntity = getUpdatedUserProfiles(userModel.getUserProfiles(), UserProfile.class);
 				entity.setUserProfiles(userProfileEntity);
 				status=true;
+				
 			}
 		}catch(Exception e) {
+			
 			logger.error("Exception upating user bean:"+ e.getMessage());
-			status=false;
-			return status;
+			status=false;		
 			
 		}
 		return status;
+		
 	}
+	
+	
 
 	/**
 	 * 

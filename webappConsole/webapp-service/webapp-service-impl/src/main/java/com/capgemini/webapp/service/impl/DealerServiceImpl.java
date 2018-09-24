@@ -86,4 +86,63 @@ public class DealerServiceImpl implements DealerService {
 		return isCeated;
 	}
 	
+	
+	@Override
+	public List<QuotationModel> getQuotationRequest(String dealerId) {
+
+		
+			
+			logger.debug("getQuotationRequest+Retrieving quotation request");			
+			List<QuotationModel> quotationList = null;
+			try {
+				
+				quotationList= this.mapDealerList(quotationDao.getQuotationForDealer(Integer.parseUnsignedInt(dealerId)), QuotationModel.class);
+				
+			}catch(Exception e) {
+				
+				logger.error("Error retrieving dealers:"+e.getMessage());
+				return null;
+			}
+			logger.debug("getAllProduct+Completed Retrieving products list");
+
+			return quotationList;
+		
+	
+	}
+	
+	@Override
+	public boolean updateQuotationRequest(QuotationModel quotationModel) {
+		
+			
+			logger.debug("Updating QuotationRequest");			
+		    boolean isUpdate=false;
+			try {
+				
+				Quotation quotationEntity=new DozerBeanMapper().map(quotationModel, Quotation.class);
+				quotationDao.saveQuotation(quotationEntity);
+				
+			}catch(Exception e) {
+				
+				logger.error("Error retrieving dealers:"+e.getMessage());
+				return isUpdate;
+			}
+			logger.debug("getAllProduct+Completed Retrieving products list");
+
+			return isUpdate;
+		
+	
+	}
+	
+	/*this is Mapper for List*/
+    private List<QuotationModel> mapDealerList(List<Quotation> fromList, final Class<QuotationModel> toClass) {
+    	if(fromList!=null)
+		    return fromList
+		            .stream()
+		            .map(from -> new DozerBeanMapper().map(from, toClass))
+		            .collect(Collectors.toList());
+    	else
+    		return null;
+	}
+
+	
 }

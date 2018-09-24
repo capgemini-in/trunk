@@ -6,6 +6,8 @@ public class QuotationModel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	private int quotation_id;
+	
 	private UserModel user;
 	
 	private CategoryVariantsModel variant;
@@ -15,6 +17,14 @@ public class QuotationModel implements Serializable {
 	private CityModel city;
 	
 	double discountedPrice;
+	
+	public int getQuotation_id() {
+		return quotation_id;
+	}
+
+	public void setQuotation_id(int quotation_id) {
+		this.quotation_id = quotation_id;
+	}
 
 	public UserModel getUser() {
 		return user;

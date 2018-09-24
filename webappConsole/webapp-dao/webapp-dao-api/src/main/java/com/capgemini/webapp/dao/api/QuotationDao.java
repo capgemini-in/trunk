@@ -15,5 +15,7 @@ import com.capgemini.webapp.dao.api.entity.Quotation;
 public interface QuotationDao {
 
 	public boolean createQuotationRequest(Quotation quotation);
+	public List<Quotation> getQuotationForDealer(int dealerId);
+	boolean saveQuotation(Quotation quot);
 	
 }

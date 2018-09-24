@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +28,8 @@ import com.capgemini.webapp.service.api.model.CategoryModel;
 import com.capgemini.webapp.service.api.model.CategoryVariantsModel;
 import com.capgemini.webapp.service.api.model.CountryModel;
 import com.capgemini.webapp.service.api.model.DealerModel;
+import com.capgemini.webapp.service.api.model.ProductCategoryModel;
+import com.capgemini.webapp.service.api.model.ProductModel;
 import com.capgemini.webapp.service.api.model.QuotationModel;
 import com.capgemini.webapp.service.api.model.SubMenuCategoryModel;
 import com.capgemini.webapp.service.api.model.VariantDetailsModel;
@@ -262,5 +266,22 @@ public class ModelDataController {
 	}
 	
 
+	@RequestMapping(value = { "/getQuotationRequest/" }, method = RequestMethod.GET)
+	@CrossOrigin(origins = "*")
+	public ResponseEntity<List<QuotationModel>> geQuotationByDealer(@RequestParam(value="dealerId") String dealerId) {
+		
+		List<QuotationModel> quotationList=null;
+		quotationList=dealerService.getQuotationRequest(dealerId);
+		return new ResponseEntity<List<QuotationModel>>(quotationList, HttpStatus.OK);
+		}
 
+
+	@RequestMapping(value = { "/updateQuotationRequest/" }, method = RequestMethod.POST)
+	@CrossOrigin(origins = "*")
+	public ResponseEntity<String> geQuotationByDealer(@RequestBody  QuotationModel quotationModel) {
+		
+	
+		dealerService.updateQuotationRequest(quotationModel);
+		return new ResponseEntity("Updated Quotation", HttpStatus.OK);
+		}
 }

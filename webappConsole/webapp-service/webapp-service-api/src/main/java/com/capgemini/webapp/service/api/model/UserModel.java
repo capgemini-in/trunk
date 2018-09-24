@@ -33,7 +33,7 @@ public class UserModel implements Serializable {
 	private String country;
 	
 
-	private Set<UserProfileModel> userProfileModels = new HashSet<UserProfileModel>();
+	private Set<UserProfileModel> userProfiles = new HashSet<UserProfileModel>();
 
 	public Integer getId() {
 		return id;
@@ -84,11 +84,11 @@ public class UserModel implements Serializable {
 	}
 
 	public Set<UserProfileModel> getUserProfiles() {
-		return userProfileModels;
+		return userProfiles;
 	}
 
 	public void setUserProfiles(Set<UserProfileModel> userProfileModels) {
-		this.userProfileModels = userProfileModels;
+		this.userProfiles = userProfileModels;
 	}
 	
 	
@@ -141,14 +141,7 @@ public class UserModel implements Serializable {
 		this.country = country;
 	}
 
-	public Set<UserProfileModel> getUserProfileModels() {
-		return userProfileModels;
-	}
-
-	public void setUserProfileModels(Set<UserProfileModel> userProfileModels) {
-		this.userProfileModels = userProfileModels;
-	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
