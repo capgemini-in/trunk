@@ -13,8 +13,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.json.simple.JSONObject;
-import org.seleniumhq.jetty7.util.ajax.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -111,9 +109,9 @@ public class FileOperationsController {
 		}
 	}
 	
-	@RequestMapping(value="/download/{fileName}", method = RequestMethod.GET)       
-    public void downloadFile(HttpServletResponse response, @PathVariable("fileName") String fileName ) 
-          throws IOException {
+	@RequestMapping(value="/download/", method = RequestMethod.GET)	
+	public void downloadFile(HttpServletResponse response, @RequestParam("fileName") String fileName ) 
+		throws IOException { 
                        
                 //  File file = new File("D:\\dev\\test.pdf");
                   
