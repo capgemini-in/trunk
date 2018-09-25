@@ -57,18 +57,17 @@ public class ModelDataController {
 	LocationService locationService;
 
 	@Autowired
-	BusinessTypeService menuService;	
+	BusinessTypeService menuService;
 
 	@Autowired
 	DealerService dealerService;
-	
+
 	@Autowired
 	VariantDetailsService variantDetailsService;
 
-
 	@Autowired
 	UserService userService;
-	
+
 	@RequestMapping(value = "/country/", method = RequestMethod.GET)
 
 	public ResponseEntity<List<CountryModel>> listCountriesDetail() {
@@ -175,7 +174,7 @@ public class ModelDataController {
 			for (CategoryModel cat : subMenuModel.getCategory()) {
 
 				for (CategoryVariantsModel variantModel : cat.getVariants()) {
-					
+
 					variantModel.setCategoryName(cat.getCategoryName());
 					variantsList.add(variantModel);
 
@@ -201,18 +200,17 @@ public class ModelDataController {
 		// return new ResponseEntity<SubMenuCategoryModel>(subMenuModel, HttpStatus.OK);
 		return new ResponseEntity<List<CategoryVariantsModel>>(variantsList, HttpStatus.OK);
 	}
-	
-	
+
 	@RequestMapping(value = "/variantdetails/", method = RequestMethod.GET)
 
 	public ResponseEntity<List<VariantDetailsModel>> getVariantDetails(
-			@RequestParam(value = "variantId") String variantId,@RequestParam(value = "fuelType") String fuelType) {
+			@RequestParam(value = "variantId") String variantId, @RequestParam(value = "fuelType") String fuelType) {
 
 		List<VariantDetailsModel> detailsModel = null;
 		JsonObject responseObj = new JsonObject();
 		try {
 
-			detailsModel = variantDetailsService.getVariantDetails(variantId,fuelType);
+			detailsModel = variantDetailsService.getVariantDetails(variantId, fuelType);
 
 			if (detailsModel == null) {
 
@@ -232,11 +230,11 @@ public class ModelDataController {
 
 		return new ResponseEntity<List<VariantDetailsModel>>(detailsModel, HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(value = "/dealers/", method = RequestMethod.GET)
 	public ResponseEntity<List<DealerModel>> getDealerbyStateCity(@RequestParam(value = "stateID") String stateId,
 			@RequestParam(value = "cityId") String cityId) {
-		
+
 		List<DealerModel> dealerList = null;
 		JsonObject responseObj = new JsonObject();
 
@@ -259,97 +257,118 @@ public class ModelDataController {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 
 		}
-		return new ResponseEntity<List<DealerModel>>(dealerList, HttpStatus.OK);	
-		
+		return new ResponseEntity<List<DealerModel>>(dealerList, HttpStatus.OK);
 
 	}
 
 	@RequestMapping(value = "/quotationRequest/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> processQuotationRequest(@RequestBody  QuotationModel quotationModel){
-		
-		
+	public ResponseEntity<String> processQuotationRequest(@RequestBody QuotationModel quotationModel) {
+
 		logger.debug("processQuotationRequest");
-		if(quotationModel.getUser()!=null)
+		if (quotationModel.getUser() != null)
 			userService.saveUser(quotationModel.getUser());
-		boolean isQuotationCreated=	dealerService.processQuotationRequest(quotationModel);		
-		
-		return new ResponseEntity(HttpStatus.OK);
+		boolean isQuotationCreated = dealerService.processQuotationRequest(quotationModel);
+		JsonObject responseObj = new JsonObject();
+		if (isQuotationCreated) {
+
+			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_SUCCESS_CODE);
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Quotation Requested initiated successfully");
+			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
+			// You many decide to return HttpStatus.NOT_FOUND
+		} else {
+
+			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error processing quotation request");
+			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
+		}
+
 	}
-	
 
 	@RequestMapping(value = { "/getQuotationRequest/" }, method = RequestMethod.GET)
 	@CrossOrigin(origins = "*")
-	public ResponseEntity<List<QuotationModel>> geQuotationByDealer(@RequestParam(value="dealerId") String dealerId) {
-		
-		List<QuotationModel> quotationList=null;
-		quotationList=dealerService.getQuotationRequest(dealerId);
-		return new ResponseEntity<List<QuotationModel>>(quotationList, HttpStatus.OK);
-		
-		
-		
-		}
+	public ResponseEntity<List<QuotationModel>> getQuotationByDealer(@RequestParam(value = "dealerId") String dealerId) {
 
-	
+		List<QuotationModel> quotationList = null;
+		quotationList = dealerService.getQuotationRequest(dealerId);
+		return new ResponseEntity<List<QuotationModel>>(quotationList, HttpStatus.OK);
+
+	}
+
 	@RequestMapping(value = { "/getQuotation/" }, method = RequestMethod.GET)
 	@CrossOrigin(origins = "*")
-	public ResponseEntity<List<QuotationModel>> geQuotationForUser(@RequestParam(value="userId") String userId) {
-		
-		List<QuotationModel> quotationList=null;
-		quotationList=dealerService.getQuotationforUser(userId);
+	public ResponseEntity<List<QuotationModel>> getQuotationForUser(@RequestParam(value = "userId") String userId) {
+
+		List<QuotationModel> quotationList = null;
+		quotationList = dealerService.getQuotationforUser(userId);
 		return new ResponseEntity<List<QuotationModel>>(quotationList, HttpStatus.OK);
-		}
-	
+	}
 
 	@RequestMapping(value = { "/updateQuotationRequest/" }, method = RequestMethod.POST)
 	@CrossOrigin(origins = "*")
-	public ResponseEntity<String> geQuotationByDealer(@RequestBody  QuotationModel quotationModel) {
-		
-	
-		dealerService.updateQuotationRequest(quotationModel);
-		return new ResponseEntity("Updated Quotation", HttpStatus.OK);
-		}
-	
-	@RequestMapping(value="/download/{type}", method = RequestMethod.GET)
-	 public void downloadFile(HttpServletResponse response, @PathVariable("type") String type) throws IOException {
-		       
-	        File file = new File("D:\\dev\\test.pdf");		 
-	         
-	        if(!file.exists()){
-	            String errorMessage = "Sorry. The file you are looking for does not exist";
-	            System.out.println(errorMessage);
-	            OutputStream outputStream = response.getOutputStream();
-	            outputStream.write(errorMessage.getBytes(Charset.forName("UTF-8")));
-	            outputStream.close();
-	            return;
-	        }
-	         
-	        String mimeType= URLConnection.guessContentTypeFromName(file.getName());
-	        if(mimeType==null){
-	            System.out.println("mimetype is not detectable, will take default");
-	            mimeType = "application/octet-stream";
-	        }
-	         
-	        System.out.println("mimetype : "+mimeType);
-	         
-	        response.setContentType(mimeType);
-	         
-	        /* "Content-Disposition : inline" will show viewable types [like images/text/pdf/anything viewable by browser] right on browser 
-	            while others(zip e.g) will be directly downloaded [may provide save as popup, based on your browser setting.]*/
-	        response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() +"\""));
-	 
-	         
-	        /* "Content-Disposition : attachment" will be directly download, may provide save as popup, based on your browser setting*/
-	        //response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
-	         
-	        response.setContentLength((int)file.length());
-	 
-	        InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-	 
-	        //Copy bytes from source to destination(outputstream in this example), closes both streams.
-	        FileCopyUtils.copy(inputStream, response.getOutputStream());
-	    }
-	 
-	
+	public ResponseEntity<String> geQuotationByDealer(@RequestBody QuotationModel quotationModel) {
 
-	
+		boolean isUpdated = dealerService.updateQuotationRequest(quotationModel);		
+		JsonObject responseObj = new JsonObject();
+		if (isUpdated) {
+
+			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_SUCCESS_CODE);
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Quotation Requested Updated successfully");
+			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
+			// You many decide to return HttpStatus.NOT_FOUND
+		} else {
+
+			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error Updating quotation request");
+			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
+		}
+	}
+
+	@RequestMapping(value = "/download/{type}", method = RequestMethod.GET)
+	public void downloadFile(HttpServletResponse response, @PathVariable("type") String type) throws IOException {
+
+		File file = new File("D:\\dev\\test.pdf");
+
+		if (!file.exists()) {
+			String errorMessage = "Sorry. The file you are looking for does not exist";
+			System.out.println(errorMessage);
+			OutputStream outputStream = response.getOutputStream();
+			outputStream.write(errorMessage.getBytes(Charset.forName("UTF-8")));
+			outputStream.close();
+			return;
+		}
+
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			System.out.println("mimetype is not detectable, will take default");
+			mimeType = "application/octet-stream";
+		}
+
+		System.out.println("mimetype : " + mimeType);
+
+		response.setContentType(mimeType);
+
+		/*
+		 * "Content-Disposition : inline" will show viewable types [like
+		 * images/text/pdf/anything viewable by browser] right on browser while
+		 * others(zip e.g) will be directly downloaded [may provide save as popup, based
+		 * on your browser setting.]
+		 */
+		response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
+
+		/*
+		 * "Content-Disposition : attachment" will be directly download, may provide
+		 * save as popup, based on your browser setting
+		 */
+		// response.setHeader("Content-Disposition", String.format("attachment;
+		// filename=\"%s\"", file.getName()));
+
+		response.setContentLength((int) file.length());
+
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+
+		// Copy bytes from source to destination(outputstream in this example), closes
+		// both streams.
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+	}
+
 }
