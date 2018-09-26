@@ -3,8 +3,6 @@
  */
 package com.capgemini.webapp.dao.api;
 
-import java.util.List;
-
 import com.capgemini.webapp.dao.api.entity.CustomerBooking;
 
 /**
@@ -14,6 +12,7 @@ import com.capgemini.webapp.dao.api.entity.CustomerBooking;
 public interface BookingDao {
 
 	public boolean createBookingRequest(CustomerBooking customerBooking);
-	
+
+	public CustomerBooking findById(int booking_id);	
 	
 }

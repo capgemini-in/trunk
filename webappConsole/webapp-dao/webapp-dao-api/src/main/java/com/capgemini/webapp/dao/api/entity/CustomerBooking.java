@@ -48,6 +48,12 @@ public class CustomerBooking  implements Serializable  {
 	
 	@Column(name="finalPrice")
 	private double finalPrice;
+	
+	@Column(name="transaction_id")
+	private String transactionId;
+	
+	@Column(name="status")
+	private String status;
 
 	public int getBooking_id() {
 		return booking_id;
@@ -112,7 +118,20 @@ public class CustomerBooking  implements Serializable  {
 	public void setFinalPrice(double finalPrice) {
 		this.finalPrice = finalPrice;
 	}
-	
-	
-	
+
+	public String getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }

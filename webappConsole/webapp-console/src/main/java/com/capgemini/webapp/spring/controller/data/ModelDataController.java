@@ -340,4 +340,27 @@ public class ModelDataController {
 	}
 	
 
+	@RequestMapping(value = "/updateBookingRequest/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> updateBookingRequest(@RequestBody CustomerBookingModel bookingModel) {
+
+		logger.debug("process booking Request");
+		
+		boolean isQuotationCreated = bookingService.updateBookingRequestWithTransactionDetails(bookingModel);
+		
+		
+		JsonObject responseObj = new JsonObject();
+		if (isQuotationCreated) {
+
+			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_SUCCESS_CODE);
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Quotation Requested initiated successfully");
+			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
+			// You many decide to return HttpStatus.NOT_FOUND
+		} else {
+
+			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error processing quotation request");
+			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
+		}
+
+	}
 }

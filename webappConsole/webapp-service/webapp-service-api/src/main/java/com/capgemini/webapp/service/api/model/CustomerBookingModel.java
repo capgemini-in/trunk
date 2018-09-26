@@ -24,7 +24,7 @@ public class CustomerBookingModel implements Serializable {
 	
 	private String status;
 	
-	private String transactionId;
+	private String transactionId;	
 
 	public int getBooking_id() {
 		return booking_id;
