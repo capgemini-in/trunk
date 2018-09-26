@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private EmailService emailService;
-
+	
 	public UserModel findById(int id) {
 		UserModel usermodel = null;
 		User user = null;
@@ -83,26 +83,26 @@ public class UserServiceImpl implements UserService {
 			
 			//Checks if SSOID is null, if null then generates SSOID
 			if(userModel.getSsoId()==null) {
-				String ssoId= createSSOID(userModel.getFirstName(), userModel.getLastName());
-				if(ssoId !=null) {
-					userModel.setSsoId(ssoId);
+				//String ssoId= createSSOID(userModel.getFirstName(), userModel.getLastName());
+				//String ssoId=userModel.getMobileNumber();
+				if(userModel.getMobileNumber() !=null) {
+								
+					userModel.setSsoId(userModel.getMobileNumber());
 				    userModel.setPassword("guest123");
-				}  else {
-					
-				   return false;
-			   }
+				}
+				
 			}
-			if (isUserSSOUnique(userModel.getId(), userModel.getSsoId())) {
+			 if (isUserSSOUnique(userModel.getId(), userModel.getSsoId())) {
 				
 					userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
 					User userEntity = new DozerBeanMapper().map(userModel, User.class);
 					dao.save(userEntity);
-					System.out.println("UPdated user id:"+ userEntity.getId());
 					created=true;
 					userModel.setId(userEntity.getId());
 					sendEmailNotification(userEntity);
-					return created;
+					
 			}
+				
 				
 		}catch(Exception e) {
 			
@@ -271,6 +271,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	
+	
 	private UserModel createNewUser(UserModel userModel) {
 		
 		return userModel;
@@ -288,9 +289,8 @@ public class UserServiceImpl implements UserService {
 		System.out.println("Email send");
 		
 	}
-	public static void main(String[] args) {
-		UserServiceImpl user=new UserServiceImpl();
-		user.createSSOID("palla", "patil");
-		//System.out.println(user.createSSOID("pallavi", "patil"));
-	}
+	
+	
+	
+	
 }

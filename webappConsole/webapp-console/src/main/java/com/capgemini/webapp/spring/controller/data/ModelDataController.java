@@ -1,29 +1,15 @@
 package com.capgemini.webapp.spring.controller.data;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URLConnection;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Produces;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.capgemini.webapp.common.constants.IApplicationConstants;
+import com.capgemini.webapp.service.api.BookingService;
 import com.capgemini.webapp.service.api.BusinessTypeService;
 import com.capgemini.webapp.service.api.DealerService;
 import com.capgemini.webapp.service.api.LocationService;
@@ -40,6 +27,7 @@ import com.capgemini.webapp.service.api.model.BusinessTypeModel;
 import com.capgemini.webapp.service.api.model.CategoryModel;
 import com.capgemini.webapp.service.api.model.CategoryVariantsModel;
 import com.capgemini.webapp.service.api.model.CountryModel;
+import com.capgemini.webapp.service.api.model.CustomerBookingModel;
 import com.capgemini.webapp.service.api.model.DealerModel;
 import com.capgemini.webapp.service.api.model.QuotationModel;
 import com.capgemini.webapp.service.api.model.SubMenuCategoryModel;
@@ -68,6 +56,10 @@ public class ModelDataController {
 	@Autowired
 	UserService userService;
 
+	@Autowired
+	BookingService bookingService;
+
+	
 	@RequestMapping(value = "/country/", method = RequestMethod.GET)
 
 	public ResponseEntity<List<CountryModel>> listCountriesDetail() {
@@ -323,52 +315,29 @@ public class ModelDataController {
 		}
 	}
 
-	@RequestMapping(value = "/download/{type}", method = RequestMethod.GET)
-	public void downloadFile(HttpServletResponse response, @PathVariable("type") String type) throws IOException {
+	@RequestMapping(value = "/bookingRequest/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> processBookingRequest(@RequestBody CustomerBookingModel bookingModel) {
 
-		File file = new File("D:\\dev\\test.pdf");
+		logger.debug("process booking Request");
+		
+		boolean isQuotationCreated = bookingService.processBookingRequest(bookingModel);
+		
+		
+		JsonObject responseObj = new JsonObject();
+		if (isQuotationCreated) {
 
-		if (!file.exists()) {
-			String errorMessage = "Sorry. The file you are looking for does not exist";
-			System.out.println(errorMessage);
-			OutputStream outputStream = response.getOutputStream();
-			outputStream.write(errorMessage.getBytes(Charset.forName("UTF-8")));
-			outputStream.close();
-			return;
+			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_SUCCESS_CODE);
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Quotation Requested initiated successfully");
+			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
+			// You many decide to return HttpStatus.NOT_FOUND
+		} else {
+
+			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error processing quotation request");
+			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
 		}
 
-		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-		if (mimeType == null) {
-			System.out.println("mimetype is not detectable, will take default");
-			mimeType = "application/octet-stream";
-		}
-
-		System.out.println("mimetype : " + mimeType);
-
-		response.setContentType(mimeType);
-
-		/*
-		 * "Content-Disposition : inline" will show viewable types [like
-		 * images/text/pdf/anything viewable by browser] right on browser while
-		 * others(zip e.g) will be directly downloaded [may provide save as popup, based
-		 * on your browser setting.]
-		 */
-		response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
-
-		/*
-		 * "Content-Disposition : attachment" will be directly download, may provide
-		 * save as popup, based on your browser setting
-		 */
-		// response.setHeader("Content-Disposition", String.format("attachment;
-		// filename=\"%s\"", file.getName()));
-
-		response.setContentLength((int) file.length());
-
-		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-
-		// Copy bytes from source to destination(outputstream in this example), closes
-		// both streams.
-		FileCopyUtils.copy(inputStream, response.getOutputStream());
 	}
+	
 
 }

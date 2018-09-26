@@ -2,6 +2,7 @@ package com.capgemini.webapp.service.api;
 
 import java.util.List;
 
+import com.capgemini.webapp.service.api.model.CustomerBookingModel;
 import com.capgemini.webapp.service.api.model.UserInfoModel;
 import com.capgemini.webapp.service.api.model.UserModel;
 
@@ -33,4 +34,5 @@ public interface UserService {
 	
 	public String createSSOID (String firstName, String lastName);
 
+	
 }
