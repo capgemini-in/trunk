@@ -105,12 +105,13 @@ public class UserServiceImpl implements UserService {
 			}
 			 if (isUserSSOUnique(userModel.getId(), userModel.getSsoId())) {
 				
-					userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
+					//userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
 					User userEntity = new DozerBeanMapper().map(userModel, User.class);
+					userEntity.setPassword(passwordEncoder.encode(userModel.getPassword()));
 					dao.save(userEntity);
 					created=true;
 					userModel.setId(userEntity.getId());
-					sendEmailNotification(userEntity);
+					sendEmailNotification(userModel);
 					
 			}
 				
@@ -331,7 +332,7 @@ public class UserServiceImpl implements UserService {
 		return status;
 	}
 	
-	private void sendEmailNotification(User newUser) {
+	private void sendEmailNotification(UserModel newUser) {
 		EmailModel emailModel=new EmailModel();
 		emailModel.setToEmail(newUser.getEmail());
 		emailModel.setFromEmail("vipul.satpute@capgemini.com");

@@ -122,7 +122,7 @@ public class DealerServiceImpl implements DealerService {
 			List<QuotationModel> quotationList = null;
 			try {
 				
-				quotationList= this.mapDealerList(quotationDao.getQuotationForDealer(Integer.parseUnsignedInt(userId)), QuotationModel.class);
+				quotationList= this.mapDealerList(quotationDao.getQuotationForUser(Integer.parseUnsignedInt(userId)), QuotationModel.class);
 				
 			}catch(Exception e) {
 				
