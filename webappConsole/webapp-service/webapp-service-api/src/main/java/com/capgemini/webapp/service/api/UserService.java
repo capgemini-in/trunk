@@ -34,5 +34,6 @@ public interface UserService {
 	
 	public String createSSOID (String firstName, String lastName);
 
+	public String getUserDetail(UserModel userModel) ;
 	
 }

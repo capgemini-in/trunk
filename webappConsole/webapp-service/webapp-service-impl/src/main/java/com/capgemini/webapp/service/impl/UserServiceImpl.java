@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.capgemini.webapp.common.constants.IApplicationConstants;
 import com.capgemini.webapp.dao.api.UserDao;
 import com.capgemini.webapp.dao.api.entity.User;
 import com.capgemini.webapp.dao.api.entity.UserInfo;
@@ -69,6 +70,16 @@ public class UserServiceImpl implements UserService {
 		UserModel usermodel = null;
 		User user = null;
 		user = dao.findBySSO(sso);
+		if (user != null) {
+			usermodel = new DozerBeanMapper().map(user, UserModel.class);
+		}
+		return usermodel;
+	}
+	
+	public UserModel findBySSOEmail(String sso,String email) {
+		UserModel usermodel = null;
+		User user = null;
+		user = dao.findBySSOEmail(sso,email);
 		if (user != null) {
 			usermodel = new DozerBeanMapper().map(user, UserModel.class);
 		}
@@ -204,10 +215,13 @@ public class UserServiceImpl implements UserService {
 
 	public boolean isUserSSOUnique(Integer id, String sso) {
 		UserModel userModel = findBySSO(sso);
-		return userModel == null;
-		//return (userModel == null || ((id != null) && (userModel.getId() == id)));
+		//return userModel == null;
+		return (userModel == null || ((id != null) && (userModel.getId() == id)));
 	}
 
+	
+
+	
 	@Override
 	public List<UserModel> getallProfile() {
 		/*List<UserModel> userlist = null;
@@ -273,9 +287,48 @@ public class UserServiceImpl implements UserService {
 	
 	
 	
-	private UserModel createNewUser(UserModel userModel) {
+	public String getUserDetail(UserModel userModel) {
 		
-		return userModel;
+		String status="";
+		UserModel newUser=null;
+		try {
+			
+			if(userModel.getSsoId()==null) {
+				
+				if(userModel.getMobileNumber() !=null) {								
+						userModel.setSsoId(userModel.getMobileNumber());
+					    userModel.setPassword("guest123");
+				}
+			}			
+			newUser =	findBySSOEmail(userModel.getSsoId(), userModel.getEmail());
+			
+			if(newUser==null) {
+					
+					userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
+					User userEntity = new DozerBeanMapper().map(userModel, User.class);
+					dao.save(userEntity);
+					status=IApplicationConstants.USER_CREATED;;
+					userModel.setId(userEntity.getId());
+					sendEmailNotification(userEntity);
+					
+			} else {
+				//check if FN and LN matches with user entity from db
+				if(userModel.getFirstName().equals(newUser.getFirstName()) && userModel.getLastName().equals(newUser.getLastName())) {
+					
+					status=IApplicationConstants.USER_CREATED;
+					userModel.setId(newUser.getId());
+							
+				}else {
+					status=IApplicationConstants.DUPLICATE_USER;
+				}
+				
+			}
+			}catch(Exception e) {
+				
+			}
+			
+		
+		return status;
 	}
 	
 	private void sendEmailNotification(User newUser) {

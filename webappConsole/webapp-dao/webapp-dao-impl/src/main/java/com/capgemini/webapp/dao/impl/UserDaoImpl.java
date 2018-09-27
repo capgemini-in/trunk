@@ -296,4 +296,20 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 			groupRepository.addMemberToGroup(profile.getType(), p);
 		}*/
 	}
+	
+	public User findBySSOEmail(String sso, String email) {
+		logger.info("SSO : {}", sso);
+		Criteria crit = createEntityCriteria();
+		crit.add(Restrictions.eq("ssoId", sso));
+		crit.add(Restrictions.eq("email", email));
+		User user = (User) crit.uniqueResult();
+		// User user= mapper.retrieveUserBySSOID(sso);
+		// user.setUserProfiles(mapper.getUserProfile(user.getId()));
+		if (user != null) {
+			Hibernate.initialize(user.getUserProfiles());
+		}
+		return user;
+		
+	}
+	
 }

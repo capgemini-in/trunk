@@ -25,7 +25,7 @@ public interface IApplicationConstants {
 	
 	String STATUS_SUCCESS ="success";
 	String STATUS_FAILED="failed";
-	String REST_API_URL = "http://localhost:8082/pocwebapp";
+	String REST_API_URL = "http://localhost:8084/pocwebapp";
 	
 	String STATUS_SUCCESS_CODE="200";
 	String STATUS_ERROR_CODE="500";
@@ -36,4 +36,7 @@ public interface IApplicationConstants {
 	String BUSINESS_NAME = "business_name";
 	String BUSINESS_TYPE = "business_type";
 	
+	String USER_EXIST="User Exist";
+	String USER_CREATED="New User Created";
+	String DUPLICATE_USER="Duplicate user record. Please check details";
 }

@@ -257,24 +257,40 @@ public class ModelDataController {
 	public ResponseEntity<String> processQuotationRequest(@RequestBody QuotationModel quotationModel) {
 
 		logger.debug("processQuotationRequest");
-		if (quotationModel.getUser() != null)
-			userService.saveUser(quotationModel.getUser());
-		boolean isQuotationCreated = dealerService.processQuotationRequest(quotationModel);
-		JsonObject responseObj = new JsonObject();
-		if (isQuotationCreated) {
-
-			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_SUCCESS_CODE);
-			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Quotation Requested initiated successfully");
-			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
-			// You many decide to return HttpStatus.NOT_FOUND
-		} else {
-
-			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
-			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error processing quotation request");
-			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
+		String status="";
+		if (quotationModel.getUser() != null) {
+			 //quotationModel.getUser().setCity(quotationModel.getCity());
+			//boolean isNewUserCreated=userService.saveUser(quotationModel.getUser());			
+			 status=userService.getUserDetail(quotationModel.getUser());
+			 
 		}
 
+		JsonObject responseObj = new JsonObject();
+		if(status.equals(IApplicationConstants.USER_EXIST) || status.equals(IApplicationConstants.USER_CREATED)) {
+				boolean isQuotationCreated = dealerService.processQuotationRequest(quotationModel);
+				 responseObj = new JsonObject();
+				if (isQuotationCreated) {
+		
+					responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_SUCCESS_CODE);
+					responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Quotation Requested initiated successfully");
+					//return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
+					// You many decide to return HttpStatus.NOT_FOUND
+				} else {
+		
+					responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
+					responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error processing quotation request");
+					//return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
+				}
+		}else if (status.equals(IApplicationConstants.DUPLICATE_USER)){
+
+			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, status);
+			//return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
+		}
+		return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
 	}
+
+	
 
 	@RequestMapping(value = { "/getQuotationRequest/" }, method = RequestMethod.GET)
 	@CrossOrigin(origins = "*")

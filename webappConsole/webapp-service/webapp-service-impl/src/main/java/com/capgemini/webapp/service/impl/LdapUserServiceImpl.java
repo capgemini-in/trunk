@@ -132,5 +132,11 @@ public class LdapUserServiceImpl implements UserService{
 		return null;
 	}
 
+	@Override
+	public String getUserDetail(UserModel userModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 			
 }

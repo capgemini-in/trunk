@@ -32,5 +32,7 @@ public interface UserDao {
 	
 	void saveLdapUser(LdapUser p);
 	
+	User findBySSOEmail(String sso, String email);
+	
 }
 
