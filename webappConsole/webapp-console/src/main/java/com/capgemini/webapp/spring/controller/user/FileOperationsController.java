@@ -85,15 +85,20 @@ public class FileOperationsController {
 		System.out.println("quotation:" + quotationJson);
 		ObjectMapper mapper = new ObjectMapper();
 		QuotationModel model = null;
+
+		String fileName = file.getOriginalFilename();
 		try {
 			model = mapper.readValue(quotationJson, QuotationModel.class);
+			File destinationFile = new File(context.getRealPath("/uploaded") + File.separator + fileName);
+			file.transferTo(destinationFile);
 			System.out.println(" Model :-" + model.getDiscountedPrice());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String fileName = file.getOriginalFilename();
+		
 		JsonObject responseObj = new JsonObject();
+		model.setFilePath(fileName); 
 		boolean isUpdated = dealerService.updateQuotationRequest(model);
 		if (isUpdated) {
 

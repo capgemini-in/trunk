@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.capgemini.webapp.dao.api.QuotationDao;
+import com.capgemini.webapp.dao.api.entity.CustomerBooking;
 import com.capgemini.webapp.dao.api.entity.Quotation;
 
 
@@ -89,6 +90,12 @@ public boolean saveQuotation(Quotation quot) {
 	}
 	return status;
 
+}
+@Override
+public Quotation findById(int quotationId) {
+	logger.info("quotationId : {}", quotationId);
+	Quotation quotation = getByKey(quotationId);	
+	return quotation;
 }
 
 }
