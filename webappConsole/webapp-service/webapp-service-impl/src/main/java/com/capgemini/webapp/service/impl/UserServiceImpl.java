@@ -309,7 +309,7 @@ public class UserServiceImpl implements UserService {
 					dao.save(userEntity);
 					status=IApplicationConstants.USER_CREATED;;
 					userModel.setId(userEntity.getId());
-					sendEmailNotification(userEntity);
+					//sendEmailNotification(userEntity);
 					
 			} else {
 				//check if FN and LN matches with user entity from db

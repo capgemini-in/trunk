@@ -9,15 +9,15 @@ public class BusinessTypeModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Integer busTypeId;
-	
+
 	private String busTypeCode;
-	
+
 	private String busTypeName;
 
 	private String isActive;
-		
+
 	private Set<BusinessMenuModel> menus = new TreeSet<BusinessMenuModel>(new IdComparator());
-	
+
 	public Integer getBusTypeId() {
 		return busTypeId;
 	}
@@ -58,5 +58,4 @@ public class BusinessTypeModel implements Serializable {
 		this.menus = menus;
 	}
 
-	
 }

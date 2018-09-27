@@ -259,7 +259,7 @@ public class ModelDataController {
 		logger.debug("processQuotationRequest");
 		String status="";
 		if (quotationModel.getUser() != null) {
-			 //quotationModel.getUser().setCity(quotationModel.getCity());
+			 quotationModel.getUser().setCity(quotationModel.getCity());
 			//boolean isNewUserCreated=userService.saveUser(quotationModel.getUser());			
 			 status=userService.getUserDetail(quotationModel.getUser());
 			 

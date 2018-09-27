@@ -2,8 +2,6 @@ package com.capgemini.webapp.service.api.model;
 
 import java.io.Serializable;
 
-import com.capgemini.webapp.dao.api.entity.Country;
-
 public class CityModel implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

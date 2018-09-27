@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.capgemini.webapp.dao.api.entity.City;
+
 public class UserModel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -26,11 +28,13 @@ public class UserModel implements Serializable {
 	
 	private String zipcode;
 	
-	private String state;
+	/*private String state;
 	
 	private String city;
 	
-	private String country;
+	private String country;*/
+	
+	private CityModel city;
 	
 
 	private Set<UserProfileModel> userProfiles = new HashSet<UserProfileModel>();
@@ -117,7 +121,7 @@ public class UserModel implements Serializable {
 		this.zipcode = zipcode;
 	}
 
-	public String getState() {
+/*	public String getState() {
 		return state;
 	}
 
@@ -139,9 +143,16 @@ public class UserModel implements Serializable {
 
 	public void setCountry(String country) {
 		this.country = country;
+	}*/
+	
+	public CityModel getCity() {
+		return city;
 	}
 
-	
+	public void setCity(CityModel city) {
+		this.city = city;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

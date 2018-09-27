@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -62,15 +63,19 @@ public class User extends BaseUser implements Serializable {
    @Column(name="zip_code")
 	private String zipcode;
 	
-   @Column(name="state")
+  /* @Column(name="state")
 	private String state;
 	
    @Column(name="city")
-	private String city;
+   private String city;
 	
    @Column(name="country")
-	private String country;
-	
+	private String country;*/
+   
+   
+   @ManyToOne
+   @JoinColumn(name="city_id")
+   private City city;
 	
 	
 	
@@ -195,30 +200,14 @@ public class User extends BaseUser implements Serializable {
 		this.zipcode = zipcode;
 	}
 
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getCity() {
+	
+	public City getCity() {
 		return city;
 	}
 
-	public void setCity(String city) {
+	public void setCity(City city) {
 		this.city = city;
 	}
 
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
 	
-	
-
 }

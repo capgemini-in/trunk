@@ -13,7 +13,6 @@ import com.capgemini.webapp.dao.api.UserDao;
 import com.capgemini.webapp.dao.api.entity.CustomerBooking;
 import com.capgemini.webapp.dao.api.entity.User;
 import com.capgemini.webapp.service.api.BookingService;
-import com.capgemini.webapp.service.api.UserService;
 import com.capgemini.webapp.service.api.model.CustomerBookingModel;
 import com.capgemini.webapp.service.api.model.UserModel;
 
@@ -66,9 +65,9 @@ public class BookingServiceImpl implements BookingService {
 		UserModel userModel = bookingModel.getUser();
 		User userEntity = userDao.findById(userModel.getId());
 		if(userEntity != null) {
-			userEntity.setCountry(userModel.getCountry() != null?userModel.getCountry():null);
+			/*userEntity.setCountry(userModel.getCountry() != null?userModel.getCountry():null);
 			userEntity.setState(userModel.getState() != null?userModel.getState():null);
-			userEntity.setCity(userModel.getCity() != null?userModel.getCity():null);
+			userEntity.setCity(userModel.getCity() != null?userModel.getCity():null);*/
 			userEntity.setAddress(userModel.getAddress() != null?userModel.getAddress():null);
 			userEntity.setZipcode(userModel.getZipcode() != null?userModel.getZipcode():null);
 		}

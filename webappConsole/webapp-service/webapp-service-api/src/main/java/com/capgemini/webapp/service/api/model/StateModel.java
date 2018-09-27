@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.capgemini.webapp.dao.api.entity.Country;
-
 public class StateModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
