@@ -305,12 +305,13 @@ public class UserServiceImpl implements UserService {
 			
 			if(newUser==null) {
 					
-					userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
+					//userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
 					User userEntity = new DozerBeanMapper().map(userModel, User.class);
+					userEntity.setPassword(passwordEncoder.encode(userModel.getPassword()));
 					dao.save(userEntity);
 					status=IApplicationConstants.USER_CREATED;;
 					userModel.setId(userEntity.getId());
-					//sendEmailNotification(userEntity);
+					sendEmailNotification(userModel);
 					
 			} else {
 				//check if FN and LN matches with user entity from db
