@@ -12,11 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.capgemini.webapp.dao.api.DealerDao;
 import com.capgemini.webapp.dao.api.QuotationDao;
-import com.capgemini.webapp.dao.api.entity.CustomerBooking;
 import com.capgemini.webapp.dao.api.entity.Dealer;
 import com.capgemini.webapp.dao.api.entity.Quotation;
 import com.capgemini.webapp.service.api.DealerService;
-import com.capgemini.webapp.service.api.model.CustomerBookingModel;
 import com.capgemini.webapp.service.api.model.DealerModel;
 import com.capgemini.webapp.service.api.model.QuotationModel;
 
@@ -35,6 +33,11 @@ public class DealerServiceImpl implements DealerService {
 
 	@Autowired
 	QuotationDao quotationDao;
+	
+
+	//@Autowired
+	//DealerDao2 dealerDao2;
+
 
 	public static final Logger logger = LoggerFactory.getLogger(DealerServiceImpl.class);
 
@@ -45,7 +48,7 @@ public class DealerServiceImpl implements DealerService {
 
 		List<DealerModel> dealerList = null;
 		try {
-
+		//	dealerDao2.getDealerByStateCity(Integer.parseUnsignedInt(stateId), Integer.parseUnsignedInt(cityId));
 			dealerList = this.mapList(
 					dealerDao.getDealerByStateCity(Integer.parseUnsignedInt(stateId), Integer.parseUnsignedInt(cityId)),
 					DealerModel.class);

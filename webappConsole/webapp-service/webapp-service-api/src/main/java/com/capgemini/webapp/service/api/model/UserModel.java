@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.capgemini.webapp.dao.api.entity.City;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class UserModel implements Serializable {
 
@@ -14,6 +14,7 @@ public class UserModel implements Serializable {
 
 	private String ssoId;
 
+	@JsonIgnore
 	private String password;
 
 	private String firstName;

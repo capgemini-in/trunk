@@ -2,16 +2,20 @@ package com.capgemini.webapp.service.api.model;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class CityModel implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
 	private Integer cityId;
 	
+	@JsonIgnore
 	private String cityCode;
 	
 	private String cityName;
 
+	@JsonIgnore
 	private String isActive;
 
 	public Integer getCityId() {
