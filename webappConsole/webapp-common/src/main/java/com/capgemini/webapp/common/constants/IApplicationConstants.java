@@ -25,7 +25,11 @@ public interface IApplicationConstants {
 	
 	String STATUS_SUCCESS ="success";
 	String STATUS_FAILED="failed";
-	String REST_API_URL = "http://localhost:8082/pocwebapp";
+	//String REST_API_URL = "http://localhost:8084/pocwebapp";
+	
+//	String REST_API_URL ="https://10.48.124.72:9443/publisher";
+	
+	String REST_API_URL ="http://10.48.124.72:8280/AssetManagement/1.0.0";
 	
 	String STATUS_SUCCESS_CODE="200";
 	String STATUS_ERROR_CODE="500";
