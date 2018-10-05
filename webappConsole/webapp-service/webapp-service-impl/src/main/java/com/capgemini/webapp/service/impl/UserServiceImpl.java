@@ -336,11 +336,13 @@ public class UserServiceImpl implements UserService {
 	private void sendEmailNotification(UserModel newUser) {
 		EmailModel emailModel=new EmailModel();
 		emailModel.setToEmail(newUser.getEmail());
-		emailModel.setFromEmail("vipul.satpute@capgemini.com");
+		emailModel.setFromEmail("admin@cgmotors.com");
 		emailModel.setCcEmail("vipul.satpute@capgemini.com");
-		emailModel.setSubject("Yours CGMotors Account Created");
-		emailModel.setContent("Hi" + newUser.getFirstName() +"\nWelcome to CGMotors. Your account has been created."
-				+ " \n Following are the details:\n Username: "+newUser.getSsoId() +"\n Password: "+ newUser.getPassword());
+		emailModel.setSubject("Your CGMotors Account Created");
+		emailModel.setContent("Hi " + newUser.getFirstName() +				
+				"\n Welcome to CGMotors. Your account has been created."
+				+ " \n \n Following are the details:\n  Username: "+newUser.getSsoId() +"\n Password: "+ newUser.getPassword() + "\n \n \n Regards \n CG Motors");
+		
 		emailService.sendEmail(emailModel);
 		System.out.println("Email send");
 		

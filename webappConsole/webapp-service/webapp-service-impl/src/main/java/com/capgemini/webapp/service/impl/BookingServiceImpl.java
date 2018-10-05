@@ -38,6 +38,9 @@ public class BookingServiceImpl implements BookingService {
 	public boolean processBookingRequest(CustomerBookingModel bookingModel) {
 
 		boolean isCreated = false;
+		if (bookingModel.getQuotation()!=null && bookingModel.getQuotation().getQuotation_id()==0) {
+			bookingModel.setQuotation(null);
+		}
 		try {
 
 			CustomerBooking bookingEntity = new DozerBeanMapper().map(bookingModel, CustomerBooking.class);

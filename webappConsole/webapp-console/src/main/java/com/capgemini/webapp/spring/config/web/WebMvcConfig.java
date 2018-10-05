@@ -164,6 +164,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 				.addTransformer(new CssLinkResourceTransformer());
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
 		registry.addResourceHandler("/images/**").addResourceLocations("/images/");
+		registry.addResourceHandler("/uploaded/**").addResourceLocations("/uploaded/");
 		registry.addResourceHandler("/img/**").addResourceLocations("/img/**");
 		registry.addResourceHandler("/js/**").addResourceLocations("/js/**");
 	}
