@@ -26,6 +26,7 @@ public interface IApplicationConstants {
 	String STATUS_SUCCESS ="success";
 	String STATUS_FAILED="failed";
 	String REST_API_URL = "http://localhost:8084/pocwebapp";
+	//String REST_API_URL = "http://10.220.28.100:8280/UserManagement/1.0.0";
 	
 	String STATUS_SUCCESS_CODE="200";
 	String STATUS_ERROR_CODE="500";
@@ -39,4 +40,17 @@ public interface IApplicationConstants {
 	String USER_EXIST="User Exist";
 	String USER_CREATED="New User Created";
 	String DUPLICATE_USER="Duplicate user record. Please check details";
+	
+	String ROLE_USER = "USER";
+	String ROLE_DEALER = "DEALER";
+	String ROLE_CUSTOMER = "CUSTOMER";
+	String ROLE_DBA = "DBA";
+	String ROLE_ADMIN = "ADMIN";
+	
+	int ROLE_ID_FOR_USER = 1;
+	int ROLE_ID_FOR_DEALER = 4;
+	int ROLE_ID_FOR_DBA = 3;
+	int ROLE_ID_FOR_ADMIN = 2;
+	int ROLE_ID_FOR_CUSTOMER = 5;
+	
 }
