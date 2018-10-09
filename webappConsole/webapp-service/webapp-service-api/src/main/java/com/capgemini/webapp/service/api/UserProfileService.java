@@ -17,4 +17,10 @@ public interface UserProfileService {
 	
 	List<UserProfileModel> findAll();
 	
+	boolean saveUserProfile(UserProfileModel userProfile) throws org.hibernate.exception.ConstraintViolationException;
+
+	boolean deleteRoleByProfileID(String userProfileId) throws org.hibernate.exception.ConstraintViolationException;
+	
+	boolean isUserExistForRole(int profileId);
+	
 }

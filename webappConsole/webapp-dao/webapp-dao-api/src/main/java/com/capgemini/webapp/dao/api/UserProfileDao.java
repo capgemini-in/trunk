@@ -12,4 +12,10 @@ public interface UserProfileDao {
 	UserProfile findByType(String type);
 	
 	UserProfile findById(int id);
+	
+	UserProfile saveUserProfile(UserProfile userProfile);
+
+	void deleteByProfileID(String userProfileId);
+
+	boolean isUserExistForRole(int profileId);
 }
