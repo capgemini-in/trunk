@@ -14,7 +14,7 @@ public class UserModel implements Serializable {
 
 	private String ssoId;
 
-	@JsonIgnore
+	//@JsonIgnore
 	private String password;
 
 	private String firstName;
