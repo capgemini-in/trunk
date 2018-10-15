@@ -334,7 +334,7 @@ public class ModelDataController {
 	@RequestMapping(value = "/bookingRequest/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> processBookingRequest(@RequestBody CustomerBookingModel bookingModel) {
 
-		logger.debug("Process booking Request3");
+		logger.debug("Process booking Request4");
 		
 		boolean isQuotationCreated = bookingService.processBookingRequest(bookingModel);
 		
