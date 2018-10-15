@@ -46,6 +46,7 @@ public class RestDataController {
 	public ResponseEntity<List<ProductModel>> listAllProducts() {
 		
 		List<ProductModel> prodList=null;
+		logger.debug("Retrieving products:");
 		JsonObject responseObj = new JsonObject();
 		//Gson gson = new Gson();
 		//jsonInString = gson.toJson(smsModel);
