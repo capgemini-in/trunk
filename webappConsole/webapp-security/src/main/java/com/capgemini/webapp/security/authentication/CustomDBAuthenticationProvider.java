@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 import com.capgemini.webapp.security.config.EncodeDecoder;
 
 @Component
-@PropertySource("classpath:/config/ldap/ldap_details.properties")
+
 public class CustomDBAuthenticationProvider implements AuthenticationProvider {
 
 	@Autowired

@@ -55,7 +55,7 @@ import com.capgemini.webapp.spring.converter.RoleToUserProfileConverter;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = { "com.capgemini.webapp" })
-@PropertySource("classpath:/config/ldap/ldap_details.properties")
+
 public class WebMvcConfig implements WebMvcConfigurer {
 
 	@Autowired

@@ -22,12 +22,12 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -62,6 +62,9 @@ public class FileOperationsController {
 
 	@Autowired
 	PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private Environment env;
 
 	@RequestMapping(value = "/fileupload/", headers = ("content-type=multipart/*"), method = RequestMethod.POST)
 	public ResponseEntity<FileInfo> upload(@RequestParam("file") MultipartFile inputFile) {
@@ -196,7 +199,7 @@ public class FileOperationsController {
 		}
 	}
 
-	@RequestMapping(value = "/uploadData/", method = RequestMethod.POST, consumes = { "multipart/form-data" })
+/*	@RequestMapping(value = "/uploadData/", method = RequestMethod.POST, consumes = { "multipart/form-data" })
 	@ResponseBody
 	public boolean executeSampleService(@RequestPart("quot") @Valid QuotationModel quotation,
 			@RequestPart("file") @Valid MultipartFile file) {
@@ -205,7 +208,7 @@ public class FileOperationsController {
 		System.out.println(file.getOriginalFilename());
 
 		return false;
-	}
+	}*/
 
 	@RequestMapping(value = "/uploadQuotation/", method = RequestMethod.POST)
 	public ResponseEntity<String> uploadQuotation(@RequestParam("file") MultipartFile file,
@@ -217,7 +220,8 @@ public class FileOperationsController {
 		String fileName = file.getOriginalFilename();
 		try {
 			model = mapper.readValue(quotationJson, QuotationModel.class);
-			File destinationFile = new File(context.getRealPath("/uploaded") + File.separator + fileName);
+			//File destinationFile = new File(context.getRealPath("/uploaded") + File.separator + fileName);
+			File destinationFile = new File(env.getRequiredProperty("uploaded_quote_path") + File.separator + fileName);
 			file.transferTo(destinationFile);
 			System.out.println(" Model :-" + model.getDiscountedPrice());
 		} catch (IOException e) {
@@ -248,7 +252,8 @@ public class FileOperationsController {
 
 		// File file = new File("D:\\dev\\test.pdf");
 
-		File sourceFile = new File(context.getRealPath("/uploaded") + File.separator + fileName);
+		//File sourceFile = new File(context.getRealPath("/uploaded") + File.separator + fileName);
+		File sourceFile = new File(env.getRequiredProperty("uploaded_quote_path") + File.separator + fileName);
 
 		if (!sourceFile.exists()) {
 			String errorMessage = "Sorry. The file you are looking for does not exist";

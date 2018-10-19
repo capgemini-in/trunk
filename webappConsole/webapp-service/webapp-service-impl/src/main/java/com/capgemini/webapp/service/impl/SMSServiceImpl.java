@@ -30,7 +30,6 @@ import com.google.gson.JsonParser;
  *
  */
 @Service("smsService")
-@PropertySource("classpath:/config/interface/gateway.properties")
 public class SMSServiceImpl implements SMSService {
 	
 	@Autowired

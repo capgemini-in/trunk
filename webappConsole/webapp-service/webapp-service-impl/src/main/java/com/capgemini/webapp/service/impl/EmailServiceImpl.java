@@ -39,6 +39,7 @@ public class EmailServiceImpl implements EmailService {
 	         personalization.addTo(new Email(st.nextToken()));
 	     }
 		st = null;
+		//if(ccEmail!=null) {
 		st = new StringTokenizer(ccEmail,",");
 		while (st.hasMoreTokens()) { 
 			

@@ -25,8 +25,8 @@ public interface IApplicationConstants {
 	
 	String STATUS_SUCCESS ="success";
 	String STATUS_FAILED="failed";
-	//String REST_API_URL = "http://localhost:8084/pocwebapp";
-	String REST_API_URL = "http://10.48.124.75:8280/AssetManagement/1.0.0";
+	String REST_API_URL = "http://localhost:8083/pocwebapp";
+	//String REST_API_URL = "http://10.48.124.75:8280/AssetManagement/1.0.0";
 	
 	String STATUS_SUCCESS_CODE="200";
 	String STATUS_ERROR_CODE="500";
@@ -53,4 +53,6 @@ public interface IApplicationConstants {
 	int ROLE_ID_FOR_ADMIN = 2;
 	int ROLE_ID_FOR_CUSTOMER = 5;
 	
+	
+	public static final String REST_APIGATEWAY_URL="rest.apigateway.uri";
 }

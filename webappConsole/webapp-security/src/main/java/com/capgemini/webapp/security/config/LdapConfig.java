@@ -1,6 +1,7 @@
 package com.capgemini.webapp.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -26,10 +27,11 @@ public class LdapConfig {
 
 	@Autowired
 	Environment env;
-
+	
 	@Bean
 	public LdapContextSource contextSource() {
 		LdapContextSource contextSource = new LdapContextSource();
+		
 		contextSource.setUrl(env.getRequiredProperty(AuthenticationConstants.LDAP_URL));
 		contextSource.setBase(env.getRequiredProperty(AuthenticationConstants.LDAP_BASE));
 		contextSource.setUserDn(env.getRequiredProperty(AuthenticationConstants.LDAP_USER));

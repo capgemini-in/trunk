@@ -22,7 +22,6 @@ import com.capgemini.webapp.service.api.model.UserModel;
 import com.capgemini.webapp.service.api.model.UserProfileModel;
 
 @Service("roleGranter")
-@PropertySource("classpath:/config/ldap/ldap_details.properties")
 public class RoleGranter implements AuthorityGranter {
 
 	@Autowired

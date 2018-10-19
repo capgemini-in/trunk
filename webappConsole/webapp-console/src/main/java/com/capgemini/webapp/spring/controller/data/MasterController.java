@@ -12,6 +12,8 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -60,10 +62,6 @@ public class MasterController extends BaseController{
 	@Autowired
 	MasterDataService dataService;
 	
-	//public static final String REST_SERVICE_URI ="http://10.76.132.120:8280/UserManagement/1.0.0";
-	//public static final String REST_SERVICE_URI ="http://localhost:8082/pocwebapp";
-	public static final String REST_SERVICE_URI = IApplicationConstants.REST_API_URL;
-	
 	public static final Logger logger = LoggerFactory.getLogger(MasterController.class);
 			
 	/**
@@ -76,10 +74,10 @@ public class MasterController extends BaseController{
 
 		logger.info("MasterController::listProduct::Retrieving Product List");
 		List<ProductModel> prodList = new ArrayList();
-		//String REST_SERVICE_URI = env.getRequiredProperty(IApplicationConstants.REST_API_URL);
+		String REST_SERVICE_URI = env.getRequiredProperty("rest.apigateway.uri");
 		try {
 			
-			URI uri = new URI(REST_SERVICE_URI+"/data/products/");
+			URI uri = new URI(REST_SERVICE_URI +"/data/products/");
 			RestTemplate restTemplate = new RestTemplate(); 
 			List<LinkedHashMap<String, Object>> productMap = restTemplate.getForObject(uri, List.class);
 			if(productMap!=null){	
@@ -135,14 +133,14 @@ public class MasterController extends BaseController{
 			
 			RestTemplate restTemplate = new RestTemplate(); 
 						
-			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(REST_SERVICE_URI+"/data/getProduct/")
+			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(env.getRequiredProperty("rest.apigateway.uri")+"/data/getProduct/")
 			       .queryParam("prodId", prodId);
 			
 			product = restTemplate.getForObject(builder.toUriString(), ProductModel.class);	
 			
 			List<ProductCategoryModel> cateogryList=new ArrayList<ProductCategoryModel>();				
 		
-			List<LinkedHashMap<String, Object>> categoryMap = restTemplate.getForObject(REST_SERVICE_URI+"/data/categories/", List.class);
+			List<LinkedHashMap<String, Object>> categoryMap = restTemplate.getForObject(env.getRequiredProperty("rest.apigateway.uri")+"/data/categories/", List.class);
 			
 			if(categoryMap!=null){	
 				
@@ -194,7 +192,7 @@ public class MasterController extends BaseController{
 		}
 		
 		RestTemplate restTemplate = new  RestTemplate();
-		URI uri =restTemplate.postForLocation(REST_SERVICE_URI+ "/data/editProduct/", productBean, ProductModel.class);
+		URI uri =restTemplate.postForLocation(env.getRequiredProperty("rest.apigateway.uri")+ "/data/editProduct/", productBean, ProductModel.class);
 	
 		model.addAttribute("success", "Product updated successfully");
 		model.addAttribute("loggedinuser", super.getPrincipal());
@@ -229,7 +227,7 @@ public class MasterController extends BaseController{
 			HttpHeaders headers = new HttpHeaders();
 			headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(REST_SERVICE_URI+"/data/deleteProduct/")
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(env.getRequiredProperty("rest.apigateway.uri")+"/data/deleteProduct/")
 			        .queryParam("prodId", prodId);
 			        
 
@@ -262,7 +260,7 @@ public class MasterController extends BaseController{
 		ProductModel prod = new ProductModel();
 		List<ProductCategoryModel> cateogryList=new ArrayList<ProductCategoryModel>();
 		RestTemplate restTemplate=new RestTemplate();
-		List<LinkedHashMap<String, Object>> categoryMap = restTemplate.getForObject(REST_SERVICE_URI+"/data/categories/", List.class);
+		List<LinkedHashMap<String, Object>> categoryMap = restTemplate.getForObject(env.getRequiredProperty("rest.apigateway.uri")+"/data/categories/", List.class);
 		
 		if(categoryMap!=null){	
 			
@@ -306,7 +304,7 @@ public class MasterController extends BaseController{
 		String status="";
 		if(productBean!=null) {
 			
-			ResponseEntity<String> response=restTemplate.postForEntity(REST_SERVICE_URI+ "/data/createProduct/", productBean, String.class);
+			ResponseEntity<String> response=restTemplate.postForEntity(env.getRequiredProperty("rest.apigateway.uri")+ "/data/createProduct/", productBean, String.class);
 			
 			//status=response.getBody();
 			JsonParser parse = new JsonParser();
@@ -415,7 +413,7 @@ public class MasterController extends BaseController{
 				sms.setSmsmessage(lstSMS);
 				
 				RestTemplate restTemplate = new  RestTemplate();
-				ResponseEntity<String> response=restTemplate.postForEntity(REST_SERVICE_URI+ "/util/sms/", sms, String.class);
+				ResponseEntity<String> response=restTemplate.postForEntity(env.getRequiredProperty("rest.apigateway.uri")+ "/util/sms/", sms, String.class);
 			
 				String status=response.getBody();
 				
@@ -454,7 +452,7 @@ public class MasterController extends BaseController{
 	           if(emailBean!=null) {
 	               
 	               RestTemplate restTemplate = new  RestTemplate();
-	               URI uri =restTemplate.postForLocation(REST_SERVICE_URI+ "/util/email/", emailBean, EmailModel.class);
+	               URI uri =restTemplate.postForLocation(env.getRequiredProperty("rest.apigateway.uri")+ "/util/email/", emailBean, EmailModel.class);
 	                      
 	          }
 	    	}

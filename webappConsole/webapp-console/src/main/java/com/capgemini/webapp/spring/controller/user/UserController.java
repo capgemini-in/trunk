@@ -18,6 +18,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -56,6 +58,7 @@ import com.google.gson.JsonParser;
 @RequestMapping("/")
 @SessionAttributes("roles")
 
+
 public class UserController extends BaseController {
 
 	@Autowired
@@ -69,12 +72,9 @@ public class UserController extends BaseController {
 
 	@Autowired
 	private Environment env;
-
-	//public static final String REST_SERVICE_URI ="http://localhost:8082/pocwebapp";
-		public static final String REST_SERVICE_URI = IApplicationConstants.REST_API_URL;
+	
 
 	private static String UPLOAD_LOCATION = "D:\\log";
-
 	
 	/**
 	 * This method will list all existing users.
@@ -86,7 +86,7 @@ public class UserController extends BaseController {
 		List<UserModel> users = new ArrayList();
 		try {
 
-			URI uri = new URI(REST_SERVICE_URI + "/api/user/");
+			URI uri = new URI( env.getRequiredProperty("rest.apigateway.uri") + "/api/user/");
 			RestTemplate restTemplate = new RestTemplate();
 			List<LinkedHashMap<String, Object>> usersMap = restTemplate.getForObject(uri, List.class);
 			if (usersMap != null) {
@@ -142,7 +142,7 @@ public class UserController extends BaseController {
 		
 		if(user!=null) {
 			
-			ResponseEntity<String> response=restTemplate.postForEntity(REST_SERVICE_URI+ "/api/newUser/", user, String.class);
+			ResponseEntity<String> response=restTemplate.postForEntity(env.getRequiredProperty("rest.apigateway.uri")+ "/api/newUser/", user, String.class);
 			
 			//status=response.getBody();
 			JsonParser parse = new JsonParser();
@@ -185,7 +185,7 @@ public class UserController extends BaseController {
 		
 		RestTemplate restTemplate = new RestTemplate(); 
 		
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(REST_SERVICE_URI+"/api/getUser/")
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(env.getRequiredProperty("rest.apigateway.uri")+"/api/getUser/")
 		       .queryParam("ssoId", ssoId);		
 		UserModel user = restTemplate.getForObject(builder.toUriString(), UserModel.class);	
 		
@@ -211,7 +211,7 @@ public class UserController extends BaseController {
 		String status="";
 		if(user!=null) {
 			
-			ResponseEntity<String> response=restTemplate.postForEntity(REST_SERVICE_URI+ "/api/editUser/", user, String.class);
+			ResponseEntity<String> response=restTemplate.postForEntity(env.getRequiredProperty("rest.apigateway.uri")+ "/api/editUser/", user, String.class);
 			JsonParser parse = new JsonParser();
 			JsonObject jobj = (JsonObject) parse.parse(response.getBody());
 			if (jobj.get(IApplicationConstants.REST_STATUS) != null) {				
@@ -249,7 +249,7 @@ public class UserController extends BaseController {
 			HttpHeaders headers = new HttpHeaders();
 			headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(REST_SERVICE_URI+"/api/deleteUser/")
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(env.getRequiredProperty("rest.apigateway.uri")+"/api/deleteUser/")
 			        .queryParam("ssoId", ssoId);
 			        
 

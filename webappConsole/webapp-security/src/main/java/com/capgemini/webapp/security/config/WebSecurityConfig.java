@@ -38,7 +38,7 @@ import com.capgemini.webapp.security.constants.AuthenticationConstants;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@PropertySource("classpath:/config/ldap/ldap_details.properties")
+
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired

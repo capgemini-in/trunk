@@ -22,7 +22,6 @@ import com.capgemini.webapp.service.api.model.BusinessTypeModel;
 
 @Service("menuService")
 @Transactional
-@PropertySource("classpath:/config/ldap/ldap_details.properties")
 public class BusinessTypeServiceImpl implements BusinessTypeService{
 
 	

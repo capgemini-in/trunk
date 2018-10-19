@@ -34,7 +34,7 @@ import com.capgemini.webapp.service.api.model.UserProfileModel;
  */
 @Service
 @Transactional
-@PropertySource("classpath:/config/ldap/ldap_details.properties")
+
 public class UserServiceImpl implements UserService {
 	
 	public static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
