@@ -19,34 +19,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.capgemini.webapp.common.constants.IApplicationConstants;
 import com.capgemini.webapp.common.utils.ServicesEnumMessages;
 import com.capgemini.webapp.security.authentication.RequestBodyReaderAuthenticationFilter;
-import com.capgemini.webapp.service.api.UserService;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 @RestController
 @RequestMapping("restservices")
-public class RestAuthenticateService {
-
-	@Autowired
-	private UserService userService;
+public class RestAuthenticateService {	
 
 	@Autowired
 	private RequestBodyReaderAuthenticationFilter authenticationFilter;
 
-	private Log log = LogFactory.getLog(RestAuthenticateService.class.getName());
+	private Log logger = LogFactory.getLog(RestAuthenticateService.class.getName());
 
 	@RequestMapping(value = "/validateAccount", headers = "Accept=*/*", method = RequestMethod.POST, produces = "application/json")
 	public ResponseEntity<String> authenticate(HttpServletRequest request, HttpServletResponse response) {
+		
+		logger.info("::RestAuthenticateService : authenticate() Called to Authenticate the User::");
 		JsonObject message = new JsonObject();
 		final HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 		try {
 			JsonObject reqJson = new JsonParser().parse(request.getReader()).getAsJsonObject();
-			String ssoId = reqJson.get("ssoId").getAsString();
-			String password = reqJson.get("password").getAsString();
+			String ssoId = reqJson.get(IApplicationConstants.LOGIN_FORM_USERNAME_FIELD).getAsString();
+			String password = reqJson.get(IApplicationConstants.LOGIN_FORM_PASSWORD_FIELD).getAsString();
 			if (ssoId != null && password != null) {
+				logger.info(":: Authenticating for User id ::"+ssoId);
 				UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(ssoId, password);
 				authenticationFilter.setRequestAndToken(request, token);
 				Authentication auth = authenticationFilter.getAuthenticationObject(token);
@@ -54,9 +54,9 @@ public class RestAuthenticateService {
 
 				JsonObject jsonObj = new JsonObject();
 				if (auth.isAuthenticated()) {
+					logger.info("::User ::" +ssoId+ " Authenticated ..");
 					jsonObj = ServicesEnumMessages.OK.getJsonMessage();
 					for (GrantedAuthority role : authorities) {
-						//System.out.println("Role_" + role.getAuthority());
 						jsonObj.addProperty("userType", role.getAuthority());
 					}
 					jsonObj.addProperty("uid", ssoId);
@@ -70,7 +70,7 @@ public class RestAuthenticateService {
 		} catch (Exception ex) {
 			message.addProperty("message", ex.toString());
 			message.addProperty("status", 400);
-			log.error("RestAccountService ->authenticate", ex);
+			logger.error("RestAccountService ->authenticate", ex);
 		}
 		return new ResponseEntity<String>(message.toString(), httpHeaders, HttpStatus.OK);
 	}

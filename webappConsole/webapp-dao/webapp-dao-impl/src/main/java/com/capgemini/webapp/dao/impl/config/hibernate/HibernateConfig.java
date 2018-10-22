@@ -6,13 +6,10 @@ import static org.hibernate.cfg.AvailableSettings.C3P0_MAX_STATEMENTS;
 import static org.hibernate.cfg.AvailableSettings.C3P0_MIN_SIZE;
 import static org.hibernate.cfg.AvailableSettings.C3P0_TIMEOUT;
 import static org.hibernate.cfg.AvailableSettings.CACHE_REGION_FACTORY;
-import static org.hibernate.cfg.AvailableSettings.DRIVER;
-import static org.hibernate.cfg.AvailableSettings.PASS;
 import static org.hibernate.cfg.AvailableSettings.SHOW_SQL;
-import static org.hibernate.cfg.AvailableSettings.URL;
-import static org.hibernate.cfg.AvailableSettings.USER;
-import java.util.Properties;
 import static org.hibernate.cfg.AvailableSettings.USE_SECOND_LEVEL_CACHE;
+
+import java.util.Properties;
 
 import javax.sql.DataSource;
 
@@ -33,65 +30,67 @@ import com.capgemini.webapp.dao.api.constants.IDaoConstants;;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan({ "com.capgemini.webapp.dao.api.entity" })
-@PropertySource(value = {"classpath:/config/database/myappdb_dev.properties"}, ignoreResourceNotFound=true)
+@PropertySource(value = { "classpath:/config/database/myappdb_dev.properties" }, ignoreResourceNotFound = true)
 public class HibernateConfig {
 
 	@Autowired
 	private Environment env;
-	
-    @Bean
-    public LocalSessionFactoryBean getSessionFactory() {
-        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-        sessionFactory.setHibernateProperties(getHibernateProperties());
-        sessionFactory.setDataSource(getDataSource());
-        sessionFactory.setPackagesToScan(new String[] { "com.capgemini.webapp.dao.api.entity" });
-        
-        return sessionFactory;
-     }
-	
-    @Bean
-    public DataSource getDataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getRequiredProperty("jdbc.driverClassName"));
-        dataSource.setUrl(env.getRequiredProperty("jdbc.url"));
-        dataSource.setUsername(env.getRequiredProperty("jdbc.username"));
-        dataSource.setPassword(env.getRequiredProperty("jdbc.password"));
-        return dataSource;
-    }
-    
-    private Properties getHibernateProperties() {
-    	Properties props = new Properties();
+
+	@Bean
+	public LocalSessionFactoryBean getSessionFactory() {
+		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+		sessionFactory.setHibernateProperties(getHibernateProperties());
+		sessionFactory.setDataSource(getDataSource());
+		sessionFactory.setPackagesToScan(new String[] { "com.capgemini.webapp.dao.api.entity" });
+
+		return sessionFactory;
+	}
+
+	@Bean
+	public DataSource getDataSource() {
+		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+		dataSource.setDriverClassName(env.getRequiredProperty(IDaoConstants.JDBC_DRIVER_CLASSNAME));
+		dataSource.setUrl(env.getRequiredProperty(IDaoConstants.JDBC_URL));
+		dataSource.setUsername(env.getRequiredProperty(IDaoConstants.JDBC_USERNAME));
+		dataSource.setPassword(env.getRequiredProperty(IDaoConstants.JDBC_PASSWORD));
+		return dataSource;
+	}
+
+	private Properties getHibernateProperties() {
+		Properties props = new Properties();
 
 		// Setting JDBC properties
-		/*props.put(DRIVER, env.getProperty("jdbc.driverClassName"));
-		props.put(URL, env.getProperty("jdbc.url"));
-		props.put(USER, env.getProperty("jdbc.username"));
-		props.put(PASS, env.getProperty("jdbc.password"));*/
+		/*
+		 * props.put(DRIVER, env.getProperty("jdbc.driverClassName")); props.put(URL,
+		 * env.getProperty("jdbc.url")); props.put(USER,
+		 * env.getProperty("jdbc.username")); props.put(PASS,
+		 * env.getProperty("jdbc.password"));
+		 */
 
 		// Setting Hibernate properties
-		props.put(SHOW_SQL, env.getProperty("hibernate.show_sql"));
+		props.put(SHOW_SQL, env.getProperty(IDaoConstants.HIBERNATE_SHOW_SQL));
 		// props.put(HBM2DDL_AUTO, env.getProperty("hibernate.hbm2ddl.auto"));
 
 		// Setting C3P0 properties
-		props.put(C3P0_MIN_SIZE, env.getProperty("hibernate.c3p0.min_size"));
-		props.put(C3P0_MAX_SIZE, env.getProperty("hibernate.c3p0.max_size"));
-		props.put(C3P0_ACQUIRE_INCREMENT, env.getProperty("hibernate.c3p0.acquire_increment"));
-		props.put(C3P0_TIMEOUT, env.getProperty("hibernate.c3p0.timeout"));
-		props.put(C3P0_MAX_STATEMENTS, env.getProperty("hibernate.c3p0.max_statements"));
+		props.put(C3P0_MIN_SIZE, env.getProperty(IDaoConstants.HIBERNATE_C3P0_MIN_SIZE));
+		props.put(C3P0_MAX_SIZE, env.getProperty(IDaoConstants.HIBERNATE_C3P0_MAX_SIZE));
+		props.put(C3P0_ACQUIRE_INCREMENT, env.getProperty(IDaoConstants.HIBERNATE_C3P0_ACQUIRE_INCREMENT));
+		props.put(C3P0_TIMEOUT, env.getProperty(IDaoConstants.HIBERNATE_C3P0_TIMEOUT));
+		props.put(C3P0_MAX_STATEMENTS, env.getProperty(IDaoConstants.HIBERNATE_C3P0_MAX_STATEMENTS));
 		props.put(USE_SECOND_LEVEL_CACHE, env.getProperty(IDaoConstants.HBT_USE_2ND_CACHE));
 		props.put(CACHE_REGION_FACTORY, env.getProperty(IDaoConstants.HBT_CACHE_RGN_FACTORY_CLS));
 		props.put(IDaoConstants.HBT_CACHE_PROVIDER, env.getProperty(IDaoConstants.HBT_CACHE_PROVIDER));
-        return props;        
-    }
-    
+		return props;
+	}
+
 	@Bean
-    @Autowired
-    public HibernateTransactionManager getTransactionManager(SessionFactory s) {
-       HibernateTransactionManager txManager = new HibernateTransactionManager();
-       txManager.setSessionFactory(s);
-       return txManager;
-    }
-	
+	@Autowired
+	public HibernateTransactionManager getTransactionManager(SessionFactory s) {
+		HibernateTransactionManager txManager = new HibernateTransactionManager();
+		txManager.setSessionFactory(s);
+		return txManager;
+	}
+
 	/**
 	 * DEVELOPER PROFILE (activate with: spring.profiles.active=developer)
 	 */
@@ -113,4 +112,3 @@ public class HibernateConfig {
 	 * ignoreResourceNotFound = true),}) static class DeveloperProps { }
 	 */
 }
-

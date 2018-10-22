@@ -23,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
+import com.capgemini.webapp.common.utils.LoggingMessages;
 import com.capgemini.webapp.dao.api.UserDao;
 import com.capgemini.webapp.dao.api.entity.LdapUser;
 import com.capgemini.webapp.dao.api.entity.User;
@@ -33,6 +34,7 @@ import com.capgemini.webapp.ldap.repository.GroupRepository;
 import com.capgemini.webapp.ldap.repository.UserRepository;
 import com.capgemini.webapp.security.config.LdapGroup;
 import com.capgemini.webapp.security.config.LdapUserModel;
+
 @Repository("userDao")
 public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 
@@ -47,6 +49,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 	private GroupRepository groupRepository;
 
 	public User findById(int id) {
+		logger.info(LoggingMessages.getMessage("USER.FIND"), "ID",id);
 		User user = getByKey(id);
 		if (user != null) {
 			Hibernate.initialize(user.getUserProfiles());
@@ -55,7 +58,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 	}
 
 	public User findBySSO(String sso) {
-		logger.info("SSO : {}", sso);
+		logger.info(LoggingMessages.getMessage("USER.FIND"), "SSO",sso);
 		Criteria crit = createEntityCriteria();
 		crit.add(Restrictions.eq("ssoId", sso));
 		User user = (User) crit.uniqueResult();
@@ -69,6 +72,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 
 	@SuppressWarnings("unchecked")
 	public List<User> findAllUsers() {
+		logger.info(LoggingMessages.getMessage("USER.ALL"));
 		Criteria criteria = createEntityCriteria().addOrder(Order.asc("firstName"));
 		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);// To avoid duplicates.
 		List<User> users = (List<User>) criteria.list();
@@ -87,32 +91,36 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 	}
 
 	public User saveUser(User user) {
-		// User existinguser = findUserBySSOID(user.getSsoId());
+		logger.info(LoggingMessages.getMessage("USER.CREATE"),user.getSsoId());
 		getSession().save(user);
+		logger.info(LoggingMessages.getMessage("USER.SAVED"),user.getSsoId(),user.getId());
 		return user;
 	}
 
 	public User findUserBySSOID(String ssoId) {
 		// Query query =
 		// getSession().getNamedNativeQuery(User.QUERY_FIND_USER_BY_SSOID);
+		logger.info(LoggingMessages.getMessage("USER.FIND"), "SSO",ssoId);
 		EntityManager em = Persistence.createEntityManagerFactory("JPA").createEntityManager();
 		TypedQuery<User> namedQuery = em.createNamedQuery(User.QUERY_FIND_USER_BY_SSOID, User.class);
 		namedQuery.setParameter("ssoId", ssoId.toLowerCase());
 		User user = (User) namedQuery.getSingleResult();
-		System.out.println(user);
 		return user;
 	}
 
 	public void deleteBySSO(String sso) {
+		logger.info(LoggingMessages.getMessage("USER.DELETE"), "SSO",sso);
 		Criteria crit = createEntityCriteria();
 		crit.add(Restrictions.eq("ssoId", sso));
 		User user = (User) crit.uniqueResult();
 		delete(user);
+		logger.info(LoggingMessages.getMessage("USER.DELETED"),sso);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<User> UserProfileType() {
+		logger.info(LoggingMessages.getMessage("USER.PROFILE"));
 		org.hibernate.Session session = getSession();
 		SQLQuery query = session.createSQLQuery(
 				"SELECT s.sso_id , hp.user_profile_id, h.type FROM app_user s INNER JOIN app_user_user_profile hp on s.id = hp.user_id INNER JOIN user_profile h on hp.user_profile_id = h.id");
@@ -128,6 +136,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 	 */
 	private List<User> getListOfUsersWithRoles(List<Object[]> rows) {
 
+		logger.info(LoggingMessages.getMessage("USER.ROLES"));
 		Map<String, User> userRoleMap = new HashMap();
 		List<User> userList = new ArrayList();
 		for (Object[] row : rows) {
@@ -161,7 +170,6 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 	 */
 	private List<User> getListOfUsersFromMap(Map<String, User> userRoleMap, List<User> userList) {
 		for (Map.Entry<String, User> entry : userRoleMap.entrySet()) {
-			// System.out.println(entry.getKey() + "/" + entry.getValue());
 			userList.add(entry.getValue());
 		}
 		return userList;
@@ -179,6 +187,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 
 	@Override
 	public List<User> findAllLdapUsers() {
+		logger.info(LoggingMessages.getMessage("LDAP.USER.ALL"));
 		List<LdapUserModel> ldapUserList = userRepository.findAll();
 		List<User> userList = new ArrayList();
 		for (LdapUserModel ldapUser : ldapUserList) {
@@ -199,6 +208,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 		 * ldapTemplate.search(query().where("objectClass").is("groupOfUniqueNames"),
 		 * new GroupContextMapper());
 		 */
+		logger.info(LoggingMessages.getMessage("LDAP.USER.GROUP.ALL"));
 		List<LdapGroup> ldapGroups = groupRepository.findAll();
 		Map<String, User> userRoleMap = new HashMap();
 		List<User> userList = new ArrayList();
@@ -208,10 +218,8 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 			for (Name userName : memberSet) {
 				String uid = userName.toString();
 				String[] splittedString = uid.split(",");
-				System.out.println(" Splitted String " + splittedString[0]);
 				String uidKey = splittedString[0];
 				String[] uidSplit = uidKey.split("=");
-				System.out.println(" uidSplit[1] " + uidSplit[1]);
 				if (userRoleMap.containsKey(uidSplit[1])) {
 					User user = userRoleMap.get(uidSplit[1]);
 					UserProfile up = new UserProfile();
@@ -233,17 +241,17 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 	@Override
 	public User findLdapUserBySSO(String sso) {
 
+		logger.info(LoggingMessages.getMessage("LDAP.USER.FIND"), "SSO", sso);
 		User user = null;
-		/*LdapUserModel ldapUserModel = userRepository.findOne(sso);
-		if (ldapUserModel != null) {			
-			user = new User();
-			user.setFirstName(ldapUserModel.getFirstName());
-			user.setLastName(ldapUserModel.getLastName());
-			user.setSsoId(ldapUserModel.getUid());
-			user.setEmail(ldapUserModel.getEmail());
-			PasswordEncoder encoder = new BCryptPasswordEncoder();
-			user.setPassword(encoder.encode("admin"));
-		}*/
+		/*
+		 * LdapUserModel ldapUserModel = userRepository.findOne(sso); if (ldapUserModel
+		 * != null) { user = new User();
+		 * user.setFirstName(ldapUserModel.getFirstName());
+		 * user.setLastName(ldapUserModel.getLastName());
+		 * user.setSsoId(ldapUserModel.getUid());
+		 * user.setEmail(ldapUserModel.getEmail()); PasswordEncoder encoder = new
+		 * BCryptPasswordEncoder(); user.setPassword(encoder.encode("admin")); }
+		 */
 		List<LdapUserModel> ldapUserList = userRepository.findAll();
 		for (LdapUserModel ldapUser : ldapUserList) {
 
@@ -257,12 +265,10 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 				user.setPassword(encoder.encode("admin"));
 				List<LdapGroup> groups = groupRepository.findAll();
 				for (LdapGroup group : groups) {
-					System.out.println(" Gorup Name : " + group.getName());
 					Set<Name> memberSet = group.getMembers();
 					for (Name userName : memberSet) {
 						String uid = userName.toString();
 						String[] splittedString = uid.split(",");
-						System.out.println(" Splitted String " + splittedString[0]);
 						String uidKey = splittedString[0];
 						String[] uidSplit = uidKey.split("=");
 						if (user.getSsoId().equals(uidSplit[1])) {
@@ -276,29 +282,27 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 		}
 		return user;
 	}
-	
+
 	@Override
 	public void uploadUsers(List<User> p) {
-        if (p != null && p.size() > 0) {
-            for (User entity: p) {                
-                //session.persist(entity);
-            	saveUser(entity);
-            }
-        }
+		logger.info(LoggingMessages.getMessage("USER.UPLOAD"), p.size());
+		if (p != null && p.size() > 0) {
+			for (User entity : p) {
+				saveUser(entity);
+			}
+		}
 	}
 
 	@Override
 	public void saveLdapUser(LdapUser p) {
-		
+
+		logger.info(LoggingMessages.getMessage("LDAP.USER.ADD"),p.getFirstName());
 		userRepository.create(p);
-		/*for(UserProfile profile : p.getUserProfile()) {			
-			
-			groupRepository.addMemberToGroup(profile.getType(), p);
-		}*/
+		logger.info(LoggingMessages.getMessage("LDAP.USER.SAVED"),p.getUid());
 	}
-	
+
 	public User findBySSOEmail(String sso, String email) {
-		logger.info("SSO : {}", sso);
+		logger.info(LoggingMessages.getMessage("USER.FIND.EMAIL"),"sso/email", sso, email);
 		Criteria crit = createEntityCriteria();
 		crit.add(Restrictions.eq("ssoId", sso));
 		crit.add(Restrictions.eq("email", email));
@@ -309,7 +313,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 			Hibernate.initialize(user.getUserProfiles());
 		}
 		return user;
-		
+
 	}
-	
+
 }

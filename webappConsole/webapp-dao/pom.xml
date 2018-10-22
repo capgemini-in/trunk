@@ -17,7 +17,12 @@
 		<main.basedir>${project.basedir}</main.basedir>
 	</properties>
 	<dependencies>
-			<!-- Hibernate -->
+		<dependency>
+			<groupId>com.capgemini.webapp.common</groupId>
+			<artifactId>webapp-common</artifactId>
+			<version>${webapp.common.version}</version>
+		</dependency>
+		<!-- Hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>

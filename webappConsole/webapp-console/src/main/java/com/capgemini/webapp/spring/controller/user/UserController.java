@@ -17,9 +17,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -58,7 +58,6 @@ import com.google.gson.JsonParser;
 @RequestMapping("/")
 @SessionAttributes("roles")
 
-
 public class UserController extends BaseController {
 
 	@Autowired
@@ -72,26 +71,27 @@ public class UserController extends BaseController {
 
 	@Autowired
 	private Environment env;
-	
 
 	private static String UPLOAD_LOCATION = "D:\\log";
-	
+
+	public static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
 	/**
 	 * This method will list all existing users.
 	 */
 	@RequestMapping(value = { "/list" }, method = RequestMethod.GET)
 	public String listUsers(ModelMap model) {
 
-		String restPath = env.getRequiredProperty("authentication");		
+		logger.info(":: UserController : listUsers() method called ");
 		List<UserModel> users = new ArrayList();
 		try {
 
-			URI uri = new URI( env.getRequiredProperty("rest.apigateway.uri") + "/api/user/");
+			URI uri = new URI(env.getRequiredProperty(IApplicationConstants.REST_APIGATEWAY_URL) + "/api/user/");
 			RestTemplate restTemplate = new RestTemplate();
 			List<LinkedHashMap<String, Object>> usersMap = restTemplate.getForObject(uri, List.class);
 			if (usersMap != null) {
 				for (LinkedHashMap<String, Object> map : usersMap) {
-					
+
 					UserModel user = new UserModel();
 					user.setSsoId(map.get("ssoId").toString());
 					user.setFirstName(map.get("firstName").toString());
@@ -103,11 +103,10 @@ public class UserController extends BaseController {
 					users.add(user);
 				}
 			} else {
-				// System.out.println("No user exist----------");
+				logger.info(":: No users exist :: ");
 			}
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Exception Listing All User's "+e.getMessage());
 		}
 		model.addAttribute("users", users);
 		model.addAttribute("loggedinuser", super.getPrincipal());
@@ -126,70 +125,60 @@ public class UserController extends BaseController {
 		return "registration";
 	}
 
-	
-	
 	@RequestMapping(value = { "/newuser" }, method = RequestMethod.POST)
-	public String newUser( @ModelAttribute("user") @Valid UserModel user, BindingResult result, ModelMap model) 
-	{
+	public String newUser(@ModelAttribute("user") @Valid UserModel user, BindingResult result, ModelMap model) {
 
-		RestTemplate restTemplate=new RestTemplate();
-		
+		logger.info(":: UserController : newUser() method called ");
+		RestTemplate restTemplate = new RestTemplate();
+
 		if (result.hasErrors()) {
-			
+			logger.info(":: validation errors::");	
 			return "registration";
 		}
-		String status="";
-		
-		if(user!=null) {
-			
-			ResponseEntity<String> response=restTemplate.postForEntity(env.getRequiredProperty("rest.apigateway.uri")+ "/api/newUser/", user, String.class);
-			
-			//status=response.getBody();
+		String status = "";
+
+		if (user != null) {
+
+			ResponseEntity<String> response = restTemplate.postForEntity(
+					env.getRequiredProperty(IApplicationConstants.REST_APIGATEWAY_URL) + "/api/newUser/", user, String.class);
+
 			JsonParser parse = new JsonParser();
 			JsonObject jobj = (JsonObject) parse.parse(response.getBody());
-			if (jobj.get(IApplicationConstants.REST_STATUS) != null) {				
-			
-				 status = jobj.get(IApplicationConstants.REST_STATUS).getAsString();
-						
+			if (jobj.get(IApplicationConstants.REST_STATUS) != null) {
+				status = jobj.get(IApplicationConstants.REST_STATUS).getAsString();
 			}
-			
 		}
-		if(status.equals(IApplicationConstants.STATUS_SUCCESS_CODE)) {
-		model.addAttribute("success",
-				"User " +user.getFirstName() +" " + user.getLastName() + " registered successfully");
-		model.addAttribute("loggedinuser", super.getPrincipal());
-		//logger.info("MasterController::newProduct::Executed method successfully");
-		return "registrationsuccess";
-		
-		}else {
-			
-			
+		if (status.equals(IApplicationConstants.STATUS_SUCCESS_CODE)) {
+			model.addAttribute("success",
+					"User " + user.getFirstName() + " " + user.getLastName() + " registered successfully");
+			model.addAttribute("loggedinuser", super.getPrincipal());
+			logger.info("UserController::User Added successfully");
+			return "registrationsuccess";
+
+		} else {
 			model.addAttribute("user", user);
 			FieldError ssoError = new FieldError("user", "ssoId", "User already exist");
 			result.addError(ssoError);
-
-			//logger.info("MasterController::newProduct::Executed method");
-			
+			logger.info("UserController::User Already Exist "+user.getSsoId());
 			return "registration";
-		
-			
 		}
 	}
-	
+
 	/**
 	 * This method will provide the medium to update an existing user.
 	 */
 	@RequestMapping(value = { "/edit-user-{ssoId}" }, method = RequestMethod.GET)
 	public String editUser(@PathVariable String ssoId, ModelMap model) {
-		
-		
-		RestTemplate restTemplate = new RestTemplate(); 
-		
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(env.getRequiredProperty("rest.apigateway.uri")+"/api/getUser/")
-		       .queryParam("ssoId", ssoId);		
-		UserModel user = restTemplate.getForObject(builder.toUriString(), UserModel.class);	
-		
-		if(user != null) {
+
+		logger.info(":: UserController : editUser() method called as a GET Request");
+		RestTemplate restTemplate = new RestTemplate();
+
+		UriComponentsBuilder builder = UriComponentsBuilder
+				.fromUriString(env.getRequiredProperty(IApplicationConstants.REST_APIGATEWAY_URL) + "/api/getUser/")
+				.queryParam("ssoId", ssoId);
+		UserModel user = restTemplate.getForObject(builder.toUriString(), UserModel.class);
+
+		if (user != null) {
 			model.addAttribute("user", user);
 			model.addAttribute("edit", true);
 			model.addAttribute("loggedinuser", super.getPrincipal());
@@ -197,85 +186,81 @@ public class UserController extends BaseController {
 		return "registration";
 	}
 
-	
 	@RequestMapping(value = { "/edit-user-{ssoId}" }, method = RequestMethod.POST)
-	public String updateUser(@ModelAttribute("user") UserModel user, BindingResult result, ModelMap model,@PathVariable String ssoId)
-	{
-		
+	public String updateUser(@ModelAttribute("user") UserModel user, BindingResult result, ModelMap model,
+			@PathVariable String ssoId) {
+
+		logger.info(":: UserController : editUser() method called as a POST Request");
 		if (result.hasErrors()) {
-			
+			logger.info(":: validation errors::");	
 			return "registration";
 		}
 
 		RestTemplate restTemplate = new RestTemplate();
-		String status="";
-		if(user!=null) {
-			
-			ResponseEntity<String> response=restTemplate.postForEntity(env.getRequiredProperty("rest.apigateway.uri")+ "/api/editUser/", user, String.class);
+		String status = "";
+		if (user != null) {
+
+			ResponseEntity<String> response = restTemplate.postForEntity(
+					env.getRequiredProperty(IApplicationConstants.REST_APIGATEWAY_URL) + "/api/editUser/", user, String.class);
 			JsonParser parse = new JsonParser();
 			JsonObject jobj = (JsonObject) parse.parse(response.getBody());
-			if (jobj.get(IApplicationConstants.REST_STATUS) != null) {				
-			
-				 status = jobj.get(IApplicationConstants.REST_STATUS).getAsString();
-			//status=response.getBody();
-			
+			if (jobj.get(IApplicationConstants.REST_STATUS) != null) {
+
+				status = jobj.get(IApplicationConstants.REST_STATUS).getAsString();
+
 			}
-		
-		//if(status.equals("success")) {
-			if(status.equals(IApplicationConstants.STATUS_SUCCESS_CODE)) {
+			if (status.equals(IApplicationConstants.STATUS_SUCCESS_CODE)) {
+				logger.info("User "+ssoId+" updated successfully");
 				model.addAttribute("success",
-					"User  " + user.getFirstName() + " " + user.getLastName() + " updated successfully");
+						"User  " + user.getFirstName() + " " + user.getLastName() + " updated successfully");
 				model.addAttribute("loggedinuser", super.getPrincipal());
 				return "registrationsuccess";
-			
-		}else {
+
+			} else {
+				return "registration";
+
+			}
+		} else
 			return "registration";
-			
-		} 
-	} else  
-		return "registration";
 	}
-			
+
 	/**
 	 * This method will delete an user by it's SSOID value.
 	 */
-	@RequestMapping(value = {"/delete-user-{ssoId}"}, method = RequestMethod.GET)
+	@RequestMapping(value = { "/delete-user-{ssoId}" }, method = RequestMethod.GET)
 	public String deleteUser(@PathVariable String ssoId) {
-		
+
+		logger.info(":: UserController : deleteUser() method called");
+		logger.info(":: Deleting user with ssoId " + ssoId);
 		RestTemplate restTemplate = new RestTemplate();
-		String status="";
-		if(ssoId!=null) {
-			
+		
+		String status = "";
+		if (ssoId != null) {
+
 			HttpHeaders headers = new HttpHeaders();
 			headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(env.getRequiredProperty("rest.apigateway.uri")+"/api/deleteUser/")
-			        .queryParam("ssoId", ssoId);
-			        
+			UriComponentsBuilder builder = UriComponentsBuilder
+					.fromHttpUrl(env.getRequiredProperty(IApplicationConstants.REST_APIGATEWAY_URL) + "/api/deleteUser/")
+					.queryParam("ssoId", ssoId);
 
 			HttpEntity<?> entity = new HttpEntity<>(headers);
 
-			HttpEntity<String> response = restTemplate.exchange(
-			        builder.toUriString(), 
-			        HttpMethod.DELETE, 
-			        entity, 
-			        String.class);
-			
-			// status=response.getBody();
+			HttpEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.DELETE, entity,
+					String.class);
+
 			JsonParser parse = new JsonParser();
 			JsonObject jobj = (JsonObject) parse.parse(response.getBody());
-			if (jobj.get(IApplicationConstants.REST_STATUS) != null) {				
-			
-				 status = jobj.get(IApplicationConstants.REST_STATUS).getAsString();
+			if (jobj.get(IApplicationConstants.REST_STATUS) != null) {
+
+				status = jobj.get(IApplicationConstants.REST_STATUS).getAsString();
 			}
-			
-			if(status!=null && status.equals(IApplicationConstants.STATUS_SUCCESS_CODE))	{	
-				
+
+			if (status != null && status.equals(IApplicationConstants.STATUS_SUCCESS_CODE)) {
+				logger.info(":: User " + ssoId +" deleted Successfully");
 			}
-				return "redirect:/list";
-		}// end of IF
-		
-	
+			return "redirect:/list";
+		}
 		return "redirect:/list";
 	}
 
@@ -289,10 +274,11 @@ public class UserController extends BaseController {
 
 	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
 	public String home(ModelMap model, Principal principal) {
+		logger.info(":: UserController : home() method called");
+		
 		String name = principal.getName(); // get logged in username
 		model.addAttribute("name", name);
-
-		System.out.println("This is the username" + name);
+		logger.info(":: Logged in username" + name);
 		return "home";
 	}
 
@@ -301,7 +287,7 @@ public class UserController extends BaseController {
 	 */
 	@RequestMapping(value = { "/userpermission" }, method = RequestMethod.GET)
 	public String listRoles(ModelMap model) {
-
+		logger.info(":: UserController : listRoles() method called");		
 		List<UserModel> usrprofile = userService.getallProfile();
 		List<String[]> userP = new ArrayList<String[]>();
 		for (UserModel user : usrprofile) {
@@ -310,7 +296,6 @@ public class UserController extends BaseController {
 			permission[1] = user.getUserProfiles().toString();
 			userP.add(permission);
 		}
-		System.out.println(usrprofile);
 		model.addAttribute("users", userP);
 		model.addAttribute("loggedinuser", super.getPrincipal());
 		return "userScreenPermission";
@@ -333,17 +318,17 @@ public class UserController extends BaseController {
 		return "newRole";
 	}
 
-	//to open the CarModel page
-		@RequestMapping(value = { "/carModel" }, method = RequestMethod.GET)
-		public String carModel(ModelMap model) {
-			return "carModel";
-		}
-		
-	/* Gateway page*/
-		@RequestMapping(value = { "/gateway" }, method = RequestMethod.GET)
-		public String gateway(ModelMap model) {
-			return "gateway";
-		}
+	// to open the CarModel page
+	@RequestMapping(value = { "/carModel" }, method = RequestMethod.GET)
+	public String carModel(ModelMap model) {
+		return "carModel";
+	}
+
+	/* Gateway page */
+	@RequestMapping(value = { "/gateway" }, method = RequestMethod.GET)
+	public String gateway(ModelMap model) {
+		return "gateway";
+	}
 	// to open upload page
 
 	@RequestMapping(value = "/singleUpload", method = RequestMethod.GET)
@@ -360,9 +345,7 @@ public class UserController extends BaseController {
 		return "singleFileUploader";
 	}
 
-	
-	
-	@SuppressWarnings("resource")
+	/*@SuppressWarnings("resource")
 	@RequestMapping(value = "/singleUpload", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
 	public String singleFileUpload(@Valid FileBucket fileBucket, BindingResult result, ModelMap model)
@@ -378,7 +361,7 @@ public class UserController extends BaseController {
 		if (result.hasErrors()) {
 			System.out.println("validation errors");
 			return "redirect:/singleFileUploader";
-			/* return "singleFileUploader"; */
+			 return "singleFileUploader"; 
 		} else {
 			try {
 				System.out.println("Fetching file");
@@ -437,7 +420,7 @@ public class UserController extends BaseController {
 			}
 			return "home";
 		}
-	}
+	}*/
 
 	@SuppressWarnings("resource")
 	@RequestMapping(value = "/uploadUsers", method = RequestMethod.POST)
@@ -445,6 +428,7 @@ public class UserController extends BaseController {
 	public String uploadUsers(@Valid FileBucket fileBucket, BindingResult result, ModelMap model)
 
 	{
+		logger.info(":: UserController : uploadUsers() method called ::");		
 		List<UserModel> users = userService.findAllUsers();
 		List<String> ssoId = new ArrayList<>();
 		// getting ssoID
@@ -453,24 +437,24 @@ public class UserController extends BaseController {
 		}
 
 		if (result.hasErrors()) {
-			System.out.println("validation errors");
+			logger.info(":: validation errors::");	
 			return "redirect:/singleFileUploader";
 		} else {
 			try {
-				System.out.println("Fetching file");
+				logger.info("::Fetching file ::");
 				MultipartFile multipartFile = fileBucket.getFile();
 				// Now do something with file...
 				FileCopyUtils.copy(fileBucket.getFile().getBytes(),
 						new File(UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename()));
 				String fileName = multipartFile.getOriginalFilename();
 				model.addAttribute("fileName", fileName);
-				System.out.println("This is file name" + fileName);
+				logger.info(":: file name" + fileName);
 				// to save the file
 				InputStream inputStream = null;
 				OutputStream outputStream = null;
 				inputStream = multipartFile.getInputStream();
 				File newFile = new File(UPLOAD_LOCATION + "\\" + fileName);
-				System.out.println("This is the location" + newFile);
+				logger.info(":: Location of the file " + newFile);
 				if (!newFile.exists()) {
 					newFile.createNewFile();
 				}
@@ -516,13 +500,11 @@ public class UserController extends BaseController {
 						lstUser.add(user);
 					}
 				}
-				System.out.println(lstUser);
 				workbook.close();
 				userService.uploadUser(lstUser);
 				model.addAttribute("lstUser", lstUser);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(" Exception while adding Users via Bulk Upload "+e.getMessage());
 			}
 			return listUsers(model);
 		}

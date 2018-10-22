@@ -2,6 +2,8 @@ package com.capgemini.webapp.spring.controller.user;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,48 +30,55 @@ public class LdapRestController {
 	@Autowired
 	UserProfileService userProfileService;
 
+	private Log logger = LogFactory.getLog(LdapRestController.class.getName());
+
 	// -----------Retrieve All Users------------
 
 	@RequestMapping(value = "/user/", method = RequestMethod.GET)
 	public ResponseEntity<List<UserModel>> listAllUsers() {
+
+		logger.info(":: LdapRestController : listAllUsers() method called ");
 		List<UserModel> users = userService.findAllUsers();
 		if (users.isEmpty()) {
+
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<List<UserModel>>(users, HttpStatus.OK);
 	}
-	
-	//-------------------Create a UserModel--------------------------------------------------------
-    
-    @RequestMapping(value = "/user/", method = RequestMethod.POST)
-    public ResponseEntity<String> createUser(@RequestBody UserModel userModel,    UriComponentsBuilder ucBuilder) {
-        System.out.println("Creating UserModel " + userModel.getSsoId());
- 
-        //if (userService.isUserExist(userModel)) {
-        if(userService.isUserSSOUnique(userModel.getId(), userModel.getSsoId()))
-        {
-            System.out.println("A UserModel with name " + userModel.getSsoId() + " already exist");
-            return new ResponseEntity<String>("registration",HttpStatus.CONFLICT);
-        }
- 
-        userService.saveUser(userModel);
- 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/ldap/user/{id}").buildAndExpand(userModel.getId()).toUri());
-        return new ResponseEntity<String>("registrationsuccess", HttpStatus.CREATED);
-    }
-    
-  //-------------------Retrieve Single UserModel--------------------------------------------------------
-    
-    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserModel> getUser(@PathVariable("id") int id) {
-        System.out.println("Fetching UserModel with id " + id);
-        UserModel userModel = userService.findById(id);
-        if (userModel == null) {
-            System.out.println("UserModel with id " + id + " not found");
-            return new ResponseEntity<UserModel>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<UserModel>(userModel, HttpStatus.OK);
-    }
+
+	// -------------------Create a
+	// UserModel--------------------------------------------------------
+
+	@RequestMapping(value = "/user/", method = RequestMethod.POST)
+	public ResponseEntity<String> createUser(@RequestBody UserModel userModel, UriComponentsBuilder ucBuilder) {
+
+		logger.info(":: LdapRestController : createUser() method called ");
+		if (userService.isUserSSOUnique(userModel.getId(), userModel.getSsoId())) {
+			logger.info(":: A UserModel with name " + userModel.getSsoId() + " already exist");
+			return new ResponseEntity<String>("registration", HttpStatus.CONFLICT);
+		}
+
+		userService.saveUser(userModel);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setLocation(ucBuilder.path("/ldap/user/{id}").buildAndExpand(userModel.getId()).toUri());
+		return new ResponseEntity<String>("registrationsuccess", HttpStatus.CREATED);
+	}
+
+	// -------------------Retrieve Single
+	// UserModel--------------------------------------------------------
+
+	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<UserModel> getUser(@PathVariable("id") int id) {
+
+		logger.info(":: LdapRestController : getUser() method called ");
+		logger.info(":: Fetching UserModel with id " + id);
+		UserModel userModel = userService.findById(id);
+		if (userModel == null) {
+			logger.info(":: UserModel with id " + id + " not found");
+			return new ResponseEntity<UserModel>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<UserModel>(userModel, HttpStatus.OK);
+	}
 
 }

@@ -59,21 +59,19 @@ public class ModelDataController {
 	@Autowired
 	BookingService bookingService;
 
-	
 	@RequestMapping(value = "/country/", method = RequestMethod.GET)
 
 	public ResponseEntity<List<CountryModel>> listCountriesDetail() {
 
+		logger.info("::ModelDataController : listCountriesDetail() List all Countries Data::");
 		List<CountryModel> countryList = null;
 		JsonObject responseObj = new JsonObject();
-		// Gson gson = new Gson();
-		// jsonInString = gson.toJson(smsModel);
 		try {
 
 			countryList = locationService.getAllCountries();
 
 			if (countryList != null && countryList.isEmpty()) {
-
+				logger.info("::No Data Exist in Database::");
 				responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_NOCONTENT_CODE);
 				responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "No Data Exist");
 				return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -81,9 +79,9 @@ public class ModelDataController {
 				// You many decide to return HttpStatus.NOT_FOUND
 			}
 		} catch (Exception e) {
+			logger.error(":Exception in retreiving all Countries Data::", e.getMessage());
 			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
-			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error retrieving products");
-			logger.error("Error retrieving products:" + e.getMessage());
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error retrieving Countries");
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 
 		}
@@ -91,29 +89,24 @@ public class ModelDataController {
 	}
 
 	@RequestMapping(value = "/menus/", method = RequestMethod.GET)
-
 	public ResponseEntity<BusinessTypeModel> listAllMenus() {
-
+		logger.info("::ModelDataController : listAllMenus() List all Menus Data::");
 		BusinessTypeModel menuList = null;
 		JsonObject responseObj = new JsonObject();
-		// Gson gson = new Gson();
-		// jsonInString = gson.toJson(smsModel);
 		try {
 
 			menuList = menuService.getAllBusinessMenus();
 
 			if (menuList == null) {
-
+				logger.info("::No Data Exist in Database::");
 				responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_NOCONTENT_CODE);
 				responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "No Data Exist");
 				return new ResponseEntity(HttpStatus.NO_CONTENT);
-
-				// You many decide to return HttpStatus.NOT_FOUND
 			}
 		} catch (Exception e) {
+			logger.error("::Exception in retreiving Business Menus::" + e.getMessage());
 			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
 			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error retrieving Menus");
-			logger.error("Error retrieving Business Menus:" + e.getMessage());
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 
 		}
@@ -121,10 +114,9 @@ public class ModelDataController {
 	}
 
 	@RequestMapping(value = "/category/", method = RequestMethod.GET)
-
 	public ResponseEntity<List<CategoryModel>> getCategoryDetail(@RequestParam(value = "subMenuId") String subMenuId,
 			@RequestParam(value = "busiTypeId") String busiTypeId) {
-
+		logger.info("::ModelDataController : getCategoryDetail() List Category Data depending on Business Type::");
 		List<CategoryModel> catList = null;
 		JsonObject responseObj = new JsonObject();
 
@@ -133,14 +125,13 @@ public class ModelDataController {
 			catList = locationService.getCategoryDetail(subMenuId, busiTypeId);
 
 			if (catList != null && catList.isEmpty()) {
-
+				logger.info("::No Data Exist in Database::");
 				responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_NOCONTENT_CODE);
 				responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "No Data Exist");
 				return new ResponseEntity(HttpStatus.NO_CONTENT);
-
-				// You many decide to return HttpStatus.NOT_FOUND
 			}
 		} catch (Exception e) {
+			logger.error("::Exception in retreiving Business Menus::" + e.getMessage());
 			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
 			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error retrieving category");
 			logger.error("Error retrieving category:" + e.getMessage());
@@ -154,8 +145,7 @@ public class ModelDataController {
 
 	public ResponseEntity<List<CategoryVariantsModel>> getVariantsForCategory(
 			@RequestParam(value = "subMenuId") String subMenuId) {
-
-		// BusinessSubMenuModel subMenuModel=null;
+		logger.info("::ModelDataController : getVariantsForCategory() List all Variants base on Sub Menus:");
 		SubMenuCategoryModel subMenuModel = null;
 		JsonObject responseObj = new JsonObject();
 		List<CategoryVariantsModel> variantsList = new ArrayList<CategoryVariantsModel>();
@@ -174,7 +164,7 @@ public class ModelDataController {
 			}
 
 			if (subMenuModel == null) {
-
+				logger.info("::No Data Exist in Database For selected sub menu id::"+subMenuId);
 				responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_NOCONTENT_CODE);
 				responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "No Data Exist");
 				return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -182,6 +172,7 @@ public class ModelDataController {
 				// You many decide to return HttpStatus.NOT_FOUND
 			}
 		} catch (Exception e) {
+			logger.error("::Exception in retreiving Business Menus::" + e.getMessage());
 			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
 			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error retrieving Category Variant");
 			logger.error("Error retrieving category:" + e.getMessage());
@@ -197,7 +188,8 @@ public class ModelDataController {
 
 	public ResponseEntity<List<VariantDetailsModel>> getVariantDetails(
 			@RequestParam(value = "variantId") String variantId, @RequestParam(value = "fuelType") String fuelType) {
-
+		
+		logger.info("::ModelDataController : getVariantsForCategory() List all Variants");
 		List<VariantDetailsModel> detailsModel = null;
 		JsonObject responseObj = new JsonObject();
 		try {
@@ -205,7 +197,7 @@ public class ModelDataController {
 			detailsModel = variantDetailsService.getVariantDetails(variantId, fuelType);
 
 			if (detailsModel == null) {
-
+				logger.info("::No Data Exist in Database");
 				responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_NOCONTENT_CODE);
 				responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "No Data Exist");
 				return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -213,9 +205,9 @@ public class ModelDataController {
 				// You many decide to return HttpStatus.NOT_FOUND
 			}
 		} catch (Exception e) {
+			logger.error("::Exception in retreiving Variant details::" + e.getMessage());
 			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
 			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error retrieving Variant Details");
-			logger.error("Error retrieving category:" + e.getMessage());
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 
 		}
@@ -227,6 +219,7 @@ public class ModelDataController {
 	public ResponseEntity<List<DealerModel>> getDealerbyStateCity(@RequestParam(value = "stateID") String stateId,
 			@RequestParam(value = "cityId") String cityId) {
 
+		logger.info("::ModelDataController : getDealerbyStateCity() : Retreive Dealers of this City "+cityId);
 		List<DealerModel> dealerList = null;
 		JsonObject responseObj = new JsonObject();
 
@@ -235,7 +228,7 @@ public class ModelDataController {
 			dealerList = dealerService.getAllDealerforStateCity(stateId, cityId);
 
 			if (dealerList != null && dealerList.isEmpty()) {
-
+				logger.info("::No Data Exist in Database");
 				responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_NOCONTENT_CODE);
 				responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "No Data Exist");
 				return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -243,9 +236,9 @@ public class ModelDataController {
 				// You many decide to return HttpStatus.NOT_FOUND
 			}
 		} catch (Exception e) {
+			logger.error("::Exception in retreiving dealer::" + e.getMessage());
 			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
-			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error retrieving category");
-			logger.error("Error retrieving category:" + e.getMessage());
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error retrieving Dealer");
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 
 		}
@@ -256,46 +249,40 @@ public class ModelDataController {
 	@RequestMapping(value = "/quotationRequest/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> processQuotationRequest(@RequestBody QuotationModel quotationModel) {
 
-		logger.debug("processQuotationRequest");
-		String status="";
+		logger.info("::ModelDataController : processQuotationRequest() :");
+		String status = "";
 		if (quotationModel.getUser() != null) {
-			 quotationModel.getUser().setCity(quotationModel.getCity());
-			//boolean isNewUserCreated=userService.saveUser(quotationModel.getUser());			
-			 status=userService.getUserDetail(quotationModel.getUser());
-			 
+			quotationModel.getUser().setCity(quotationModel.getCity());
+			status = userService.getUserDetail(quotationModel.getUser());
 		}
-
 		JsonObject responseObj = new JsonObject();
-		if(status.equals(IApplicationConstants.USER_EXIST) || status.equals(IApplicationConstants.USER_CREATED)) {
-				boolean isQuotationCreated = dealerService.processQuotationRequest(quotationModel);
-				 responseObj = new JsonObject();
-				if (isQuotationCreated) {
-		
-					responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_SUCCESS_CODE);
-					responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Quotation Requested initiated successfully");
-					//return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
-					// You many decide to return HttpStatus.NOT_FOUND
-				} else {
-		
-					responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
-					responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error processing quotation request");
-					//return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
-				}
-		}else if (status.equals(IApplicationConstants.DUPLICATE_USER)){
+		if (status.equals(IApplicationConstants.USER_EXIST) || status.equals(IApplicationConstants.USER_CREATED)) {
+			boolean isQuotationCreated = dealerService.processQuotationRequest(quotationModel);
+			responseObj = new JsonObject();
+			if (isQuotationCreated) {
 
+				responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_SUCCESS_CODE);
+				responseObj.addProperty(IApplicationConstants.REST_MESSAGE,
+						"Quotation Requested initiated successfully");
+			} else {
+				logger.info(":Error Processing Quotation Request :");
+				responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
+				responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error processing quotation request");
+			}
+		} else if (status.equals(IApplicationConstants.DUPLICATE_USER)) {
+			logger.info("Quotation Request is Duplicate :");
 			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
 			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, status);
-			//return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
 		}
 		return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
 	}
 
-	
-
 	@RequestMapping(value = { "/getQuotationRequest/" }, method = RequestMethod.GET)
 	@CrossOrigin(origins = "*")
-	public ResponseEntity<List<QuotationModel>> getQuotationByDealer(@RequestParam(value = "dealerId") String dealerId) {
-
+	public ResponseEntity<List<QuotationModel>> getQuotationByDealer(
+			@RequestParam(value = "dealerId") String dealerId) {
+		
+		logger.info("::ModelDataController : getQuotationByDealer() Called :");
 		List<QuotationModel> quotationList = null;
 		quotationList = dealerService.getQuotationRequest(dealerId);
 		return new ResponseEntity<List<QuotationModel>>(quotationList, HttpStatus.OK);
@@ -306,6 +293,7 @@ public class ModelDataController {
 	@CrossOrigin(origins = "*")
 	public ResponseEntity<List<QuotationModel>> getQuotationForUser(@RequestParam(value = "userId") String userId) {
 
+		logger.info("::ModelDataController : getQuotationForUser() Called:");
 		List<QuotationModel> quotationList = null;
 		quotationList = dealerService.getQuotationforUser(userId);
 		return new ResponseEntity<List<QuotationModel>>(quotationList, HttpStatus.OK);
@@ -315,16 +303,19 @@ public class ModelDataController {
 	@CrossOrigin(origins = "*")
 	public ResponseEntity<String> geQuotationByDealer(@RequestBody QuotationModel quotationModel) {
 
-		boolean isUpdated = dealerService.updateQuotationRequest(quotationModel);		
+		logger.info("::ModelDataController : geQuotationByDealer() Called :");
+		boolean isUpdated = dealerService.updateQuotationRequest(quotationModel);
 		JsonObject responseObj = new JsonObject();
 		if (isUpdated) {
 
+			logger.info("::Quotation Request Updated Successfully for  :"+quotationModel.getQuotation_id());
 			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_SUCCESS_CODE);
 			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Quotation Requested Updated successfully");
 			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
 			// You many decide to return HttpStatus.NOT_FOUND
 		} else {
 
+			logger.info("::Error in updating Quotation Request :"+quotationModel.getQuotation_id());
 			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
 			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error Updating quotation request");
 			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
@@ -334,47 +325,45 @@ public class ModelDataController {
 	@RequestMapping(value = "/bookingRequest/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> processBookingRequest(@RequestBody CustomerBookingModel bookingModel) {
 
-		logger.debug("Process booking Request4");
-		
+		logger.info("::ModelDataController : processBookingRequest () Called :");
 		boolean isQuotationCreated = bookingService.processBookingRequest(bookingModel);
-		
-		
+
 		JsonObject responseObj = new JsonObject();
 		if (isQuotationCreated) {
-
+			
+			logger.info(":::Quotation Request Initiated Successfully:::");
 			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_SUCCESS_CODE);
 			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Quotation Requested initiated successfully");
 			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
 			// You many decide to return HttpStatus.NOT_FOUND
 		} else {
-
+			logger.info("::Error Processing Quotation Request ::");
 			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
 			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error processing quotation request");
 			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
 		}
 
 	}
-	
 
 	@RequestMapping(value = "/updateBookingRequest/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> updateBookingRequest(@RequestBody CustomerBookingModel bookingModel) {
 
-		logger.debug("process booking Request");
-		
+		logger.info("::ModelDataController : updateBookingRequest () Called :");
+
 		boolean isQuotationCreated = bookingService.updateBookingRequestWithTransactionDetails(bookingModel);
-		
-		
+
 		JsonObject responseObj = new JsonObject();
 		if (isQuotationCreated) {
 
+			logger.info(":::Quotation Update Request Initiated Successfully:::");
 			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_SUCCESS_CODE);
-			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Quotation Requested initiated successfully");
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Quotation Update Request initiated successfully");
 			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
 			// You many decide to return HttpStatus.NOT_FOUND
 		} else {
-
+			logger.info("::Error Processing Quotation Update Request ::");
 			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
-			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error processing quotation request");
+			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error processing quotation update request");
 			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
 		}
 

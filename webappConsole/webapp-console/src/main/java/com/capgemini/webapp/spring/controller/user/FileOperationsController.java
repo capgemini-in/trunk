@@ -14,8 +14,9 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -31,8 +32,6 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -62,19 +61,22 @@ public class FileOperationsController {
 
 	@Autowired
 	PasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	private Environment env;
+
+	private Log logger = LogFactory.getLog(FileOperationsController.class.getName());
 
 	@RequestMapping(value = "/fileupload/", headers = ("content-type=multipart/*"), method = RequestMethod.POST)
 	public ResponseEntity<FileInfo> upload(@RequestParam("file") MultipartFile inputFile) {
 
-		System.out.println(" Context :" + context.getContextPath());
+		logger.info("::FileOperationsController : upload() Called to Upload File");
 		FileInfo fileInfo = new FileInfo();
 		HttpHeaders headers = new HttpHeaders();
+		String originalFilename = "";
 		if (!inputFile.isEmpty()) {
 			try {
-				String originalFilename = inputFile.getOriginalFilename();
+				originalFilename = inputFile.getOriginalFilename();
 				File destinationFile = new File(context.getRealPath("/uploaded") + File.separator + originalFilename);
 				inputFile.transferTo(destinationFile);
 				fileInfo.setFileName("/uploaded" + File.separator + originalFilename);
@@ -82,10 +84,11 @@ public class FileOperationsController {
 				headers.add("File Uploaded Successfully - ", originalFilename);
 				return new ResponseEntity<FileInfo>(fileInfo, headers, HttpStatus.OK);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error("While uploading Document " + originalFilename + " Exception occured " + e.getMessage());
 				return new ResponseEntity<FileInfo>(HttpStatus.BAD_REQUEST);
 			}
 		} else {
+			logger.info("User uploaded file is not valid");
 			return new ResponseEntity<FileInfo>(HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -93,7 +96,7 @@ public class FileOperationsController {
 	@RequestMapping(value = "/bulkUpload/", headers = ("content-type=multipart/*"), method = RequestMethod.POST)
 	public ResponseEntity<String> bulkUpload(@RequestParam("userupload") MultipartFile inputFile) {
 
-		System.out.println(" Context :" + context.getContextPath());
+		logger.info("::FileOperationsController : bulkUpload() Called to add user's in Bulk");
 		JsonObject responseObj = new JsonObject();
 		List<UserModel> users = userService.findAllUsers();
 		List<String> ssoId = new ArrayList<>();
@@ -105,8 +108,9 @@ public class FileOperationsController {
 		boolean isUploaded = false;
 		if (!inputFile.isEmpty()) {
 			isUploaded = true;
+			String originalFilename = "";
 			try {
-				String originalFilename = inputFile.getOriginalFilename();
+				originalFilename = inputFile.getOriginalFilename();
 				File destinationFile = new File(context.getRealPath("/uploaded") + File.separator + originalFilename);
 				inputFile.transferTo(destinationFile);
 
@@ -142,14 +146,14 @@ public class FileOperationsController {
 					user.setFirstName(row.getCell(2).getStringCellValue());
 					user.setLastName(row.getCell(3).getStringCellValue());
 					user.setEmail(row.getCell(4).getStringCellValue());
-					
-					Double value = row.getCell(5).getNumericCellValue();					
+
+					Double value = row.getCell(5).getNumericCellValue();
 					Long longValue = value.longValue();
 					String mobileNumber = new String(longValue.toString());
-					System.out.println(" Mobile Number "+mobileNumber);		
-					
+					System.out.println(" Mobile Number " + mobileNumber);
+
 					user.setMobileNumber(mobileNumber);
-					
+
 					row.getCell(6).setCellType(Cell.CELL_TYPE_STRING);
 					city.setCityId(Integer.valueOf(row.getCell(6).getStringCellValue()));
 					user.setCity(city);
@@ -180,66 +184,68 @@ public class FileOperationsController {
 				userService.uploadUser(lstUser);
 				headers.add("File Uploaded Successfully - ", originalFilename);
 			} catch (Exception e) {
+				logger.error("While uploading Document " + originalFilename + " Exception occured " + e.getMessage());
 				isUploaded = false;
-				e.printStackTrace();
 			}
 		}
 
 		if (isUploaded) {
+			logger.info("Bulk Upload For Users Requested Uploaded successfully");
 			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_SUCCESS_CODE);
 			responseObj.addProperty(IApplicationConstants.REST_MESSAGE,
 					"Bulk Upload For Users Requested Uploaded successfully");
 			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
-			// You many decide to return HttpStatus.NOT_FOUND
 		} else {
-
+			logger.info("Error in Bulk Upload For Users request");
 			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
 			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, " Error in Bulk Uplod For Users request");
 			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
 		}
 	}
 
-/*	@RequestMapping(value = "/uploadData/", method = RequestMethod.POST, consumes = { "multipart/form-data" })
-	@ResponseBody
-	public boolean executeSampleService(@RequestPart("quot") @Valid QuotationModel quotation,
-			@RequestPart("file") @Valid MultipartFile file) {
-
-		System.out.println(quotation.getDiscountedPrice());
-		System.out.println(file.getOriginalFilename());
-
-		return false;
-	}*/
+	/*
+	 * @RequestMapping(value = "/uploadData/", method = RequestMethod.POST, consumes
+	 * = { "multipart/form-data" })
+	 * 
+	 * @ResponseBody public boolean executeSampleService(@RequestPart("quot") @Valid
+	 * QuotationModel quotation,
+	 * 
+	 * @RequestPart("file") @Valid MultipartFile file) {
+	 * 
+	 * System.out.println(quotation.getDiscountedPrice());
+	 * System.out.println(file.getOriginalFilename());
+	 * 
+	 * return false; }
+	 */
 
 	@RequestMapping(value = "/uploadQuotation/", method = RequestMethod.POST)
 	public ResponseEntity<String> uploadQuotation(@RequestParam("file") MultipartFile file,
 			@RequestParam("quot") String quotationJson) {
-		System.out.println("quotation:" + quotationJson);
 		ObjectMapper mapper = new ObjectMapper();
 		QuotationModel model = null;
-
+		logger.info("::FileOperationsController : uploadQuotation() Called to Upload Quotation");
 		String fileName = file.getOriginalFilename();
 		try {
 			model = mapper.readValue(quotationJson, QuotationModel.class);
-			//File destinationFile = new File(context.getRealPath("/uploaded") + File.separator + fileName);
+			// File destinationFile = new File(context.getRealPath("/uploaded") +
+			// File.separator + fileName);
 			File destinationFile = new File(env.getRequiredProperty("uploaded_quote_path") + File.separator + fileName);
 			file.transferTo(destinationFile);
-			System.out.println(" Model :-" + model.getDiscountedPrice());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("While uploading quotation " + fileName + " Exception occured " + e.getMessage());
 		}
 
 		JsonObject responseObj = new JsonObject();
 		model.setFilePath(fileName);
 		boolean isUpdated = dealerService.updateQuotationRequest(model);
 		if (isUpdated) {
-
+			logger.info("::FileOperationsController : uploadQuotation() Called to Upload Quotation");
 			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_SUCCESS_CODE);
 			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Quotation Requested Uploaded successfully");
 			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
 			// You many decide to return HttpStatus.NOT_FOUND
 		} else {
-
+			logger.info("::Exception occured while Uploading Quotation ");
 			responseObj.addProperty(IApplicationConstants.REST_STATUS, IApplicationConstants.STATUS_ERROR_CODE);
 			responseObj.addProperty(IApplicationConstants.REST_MESSAGE, "Error Uploaded quotation request");
 			return new ResponseEntity(responseObj.toString(), HttpStatus.OK);
@@ -250,14 +256,14 @@ public class FileOperationsController {
 	public void downloadFile(HttpServletResponse response, @RequestParam("fileName") String fileName)
 			throws IOException {
 
-		// File file = new File("D:\\dev\\test.pdf");
-
-		//File sourceFile = new File(context.getRealPath("/uploaded") + File.separator + fileName);
+		// File sourceFile = new File(context.getRealPath("/uploaded") + File.separator
+		// + fileName);
+		logger.info("::FileOperationsController : downloadFile() Called to Download Quotation");
 		File sourceFile = new File(env.getRequiredProperty("uploaded_quote_path") + File.separator + fileName);
 
 		if (!sourceFile.exists()) {
 			String errorMessage = "Sorry. The file you are looking for does not exist";
-			System.out.println(errorMessage);
+			logger.info(" Quotation does not exist ");
 			OutputStream outputStream = response.getOutputStream();
 			outputStream.write(errorMessage.getBytes(Charset.forName("UTF-8")));
 			outputStream.close();
@@ -266,14 +272,10 @@ public class FileOperationsController {
 
 		String mimeType = URLConnection.guessContentTypeFromName(sourceFile.getName());
 		if (mimeType == null) {
-			System.out.println("mimetype is not detectable, will take default");
 			mimeType = "application/octet-stream";
 		}
 
-		System.out.println("mimetype : " + mimeType);
-
 		response.setContentType(mimeType);
-
 		/*
 		 * "Content-Disposition : inline" will show viewable types [like
 		 * images/text/pdf/anything viewable by browser] right on browser while

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.capgemini.webapp.service.api.EmailService;
 import com.capgemini.webapp.service.api.SMSService;
 import com.capgemini.webapp.service.api.model.EmailModel;
-import com.capgemini.webapp.service.api.model.ProductModel;
 import com.capgemini.webapp.service.api.model.SMSModel;
 /**
  * Controller handles gateway operations related to email, sms and payment
@@ -36,10 +35,9 @@ public class GatewayController {
 		
 		
 	@RequestMapping(value = "/email/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> sendEmail( @RequestBody  EmailModel emailBean) {
-		String status ="";
+	public ResponseEntity<String> sendEmail( @RequestBody  EmailModel emailBean) {		
 		logger.info("GatewayController::sendEmail::Initiating email ");		
-		status=emailService.sendEmail(emailBean);		
+		String status = emailService.sendEmail(emailBean);		
 		logger.info("GatewayController::sendEmail::Executed");		
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
@@ -47,11 +45,10 @@ public class GatewayController {
 	
 	@RequestMapping(value = "/sms/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> sendSMS( @RequestBody  SMSModel smsBean) {
-		
-		String status ="";
+	
 		logger.info("GatewayController::sendSMS::Sending SMS ");
 		
-		status=smsService.sendSMS(smsBean);
+		String status = smsService.sendSMS(smsBean);
 		
 		logger.info("GatewayController::sendSMS::Executed");
 			
