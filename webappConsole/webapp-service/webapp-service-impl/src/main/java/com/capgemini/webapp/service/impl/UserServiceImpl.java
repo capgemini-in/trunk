@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
 	 * values within transaction. It will be updated in db once transaction ends.
 	 */
 	public boolean updateUser(UserModel userModel) {
-		
+		logger.debug("Updating User Details");
 		boolean status=false;
 		try {
 			
