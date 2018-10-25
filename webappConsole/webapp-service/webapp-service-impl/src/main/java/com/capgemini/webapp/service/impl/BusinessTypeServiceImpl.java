@@ -36,6 +36,7 @@ public class BusinessTypeServiceImpl implements BusinessTypeService{
 	@Override
 	public BusinessTypeModel getAllBusinessMenus() {
 		
+		logger.debug("BusinessTypeServiceImpl:getAllBusinessMenus: Initiated Execution");
 		BusinessTypeModel typeModel = null;
 		
 		String businessName = env.getRequiredProperty(IApplicationConstants.BUSINESS_NAME);
@@ -45,7 +46,9 @@ public class BusinessTypeServiceImpl implements BusinessTypeService{
 		btype = dao.getAllBusinessMenus(businessType);
 		if (btype != null) {
 			typeModel = new DozerBeanMapper().map(btype, BusinessTypeModel.class);
+			logger.debug("BusinessTypeServiceImpl:getAllBusinessMenus: Retrieved Business Menus List");
 		} 
+		logger.debug("BusinessTypeServiceImpl:getAllBusinessMenus: Completed Execution");
 		return typeModel;
 		//menuModelList=this.mapList(dao.getAllBusinessMenus(businessType), BusinessTypeModel.class); 
 		//return menuModelList;
@@ -58,7 +61,7 @@ public class BusinessTypeServiceImpl implements BusinessTypeService{
 	 * @return
 	 */
 	private List<BusinessTypeModel> mapList(List<BusinessType> allBusinessMenus, Class<BusinessTypeModel> toClass) {
-		// TODO Auto-generated method stub
+		logger.debug("BusinessTypeServiceImpl:mapList: Initiated Execution");
 		return allBusinessMenus.stream().map(from -> new DozerBeanMapper().map(from, toClass)).collect(Collectors.toList());
 	}
 

@@ -27,6 +27,7 @@ import com.capgemini.webapp.service.api.model.UserModel;
 @Transactional
 public class BookingServiceImpl implements BookingService {
 
+		
 	@Autowired
 	private BookingDao bookingDao;
 	
@@ -37,6 +38,7 @@ public class BookingServiceImpl implements BookingService {
 
 	public boolean processBookingRequest(CustomerBookingModel bookingModel) {
 
+		logger.info("BookingServiceImpl:processBookingRequest:Initiated");
 		boolean isCreated = false;
 		if (bookingModel.getQuotation()!=null && bookingModel.getQuotation().getQuotation_id()==0) {
 			bookingModel.setQuotation(null);
@@ -50,9 +52,11 @@ public class BookingServiceImpl implements BookingService {
 
 		} catch (Exception e) {
 
-			logger.error("Error updating quotation entity:" + e.getMessage());
+			logger.error("BookingServiceImpl:processBookingRequest:Error updating quotation entity:" + e.getMessage());
 			isCreated = false;
 		}
+
+		logger.info("BookingServiceImpl:processBookingRequest: Completed Processing");
 		return isCreated;
 
 	}
@@ -64,7 +68,7 @@ public class BookingServiceImpl implements BookingService {
 	 * @param bookingModel
 	 */
 	private void updateUserAddress(CustomerBookingModel bookingModel) {
-		
+		logger.debug(("BookingServiceImpl:updateUserAddress: Updating user address"));
 		UserModel userModel = bookingModel.getUser();
 		User userEntity = userDao.findById(userModel.getId());
 		if(userEntity != null) {
@@ -73,7 +77,9 @@ public class BookingServiceImpl implements BookingService {
 			userEntity.setCity(userModel.getCity() != null?userModel.getCity():null);*/
 			userEntity.setAddress(userModel.getAddress() != null?userModel.getAddress():null);
 			userEntity.setZipcode(userModel.getZipcode() != null?userModel.getZipcode():null);
+			logger.debug("BookingServiceImpl:updateUserAddress: Updated user address");
 		}
+		
 	}
 
 	/*
@@ -84,6 +90,7 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	public boolean updateBookingRequestWithTransactionDetails(CustomerBookingModel bookingModel) {
 		boolean isUpdated = false;
+		logger.debug(("BookingServiceImpl:updateBookingRequestWithTransactionDetails: Initiated"));
 		try {
 
 			CustomerBooking bookingEntity = new DozerBeanMapper().map(bookingModel, CustomerBooking.class);
@@ -94,13 +101,15 @@ public class BookingServiceImpl implements BookingService {
 				entity.setTransactionId(bookingModel.getTransactionId());
 				entity.setStatus(bookingModel.getStatus());
 				isUpdated = true;
+				logger.debug(("BookingServiceImpl:updateBookingRequestWithTransactionDetails: Updated Details"));
 			}
 
 		} catch (Exception e) {
 
-			logger.error("Error updating Booking entity:" + e.getMessage());
+			logger.error("BookingServiceImpl:updateBookingRequestWithTransactionDetails:Error updating Booking entity:" + e.getMessage());
 			isUpdated = false;
 		}
+		logger.debug("BookingServiceImpl:updateBookingRequestWithTransactionDetails: Completed");
 		return isUpdated;
 	}
 

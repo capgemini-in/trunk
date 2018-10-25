@@ -44,7 +44,7 @@ public class DealerServiceImpl implements DealerService {
 	@Override
 	public List<DealerModel> getAllDealerforStateCity(String stateId, String cityId) {
 
-		logger.debug("getAllDealerforStateCity+Retrieving dealer");
+		logger.debug("DealerServiceImpl:getAllDealerforStateCity:Initiated Execution");
 
 		List<DealerModel> dealerList = null;
 		try {
@@ -58,7 +58,7 @@ public class DealerServiceImpl implements DealerService {
 			logger.error("Error retrieving dealers:" + e.getMessage());
 			return null;
 		}
-		logger.debug("getAllProduct+Completed Retrieving products list");
+		logger.debug("DealerServiceImpl:getAllDealerforStateCity:Completed Execution");
 
 		return dealerList;
 
@@ -71,6 +71,7 @@ public class DealerServiceImpl implements DealerService {
 
 	@Override
 	public boolean processQuotationRequest(QuotationModel quotationModel) {
+		logger.debug("DealerServiceImpl:processQuotationRequest:Initiated Execution");
 		boolean isCeated = false;
 		try {
 
@@ -82,13 +83,14 @@ public class DealerServiceImpl implements DealerService {
 			logger.error("Error updating quotation entity:" + e.getMessage());
 			isCeated = false;
 		}
+		logger.debug("DealerServiceImpl:processQuotationRequest:Completed Execution");
 		return isCeated;
 	}
 
 	@Override
 	public List<QuotationModel> getQuotationRequest(String dealerId) {
 
-		logger.debug("getQuotationRequest+Retrieving quotation request");
+		logger.debug("DealerServiceImpl:getQuotationRequest:Initiated Execution");
 		List<QuotationModel> quotationList = null;
 		try {
 
@@ -100,7 +102,7 @@ public class DealerServiceImpl implements DealerService {
 			logger.error("Error retrieving dealers:" + e.getMessage());
 			return null;
 		}
-		logger.debug("getAllProduct+Completed Retrieving products list");
+		logger.debug("DealerServiceImpl:getQuotationRequest:Completed Execution");
 
 		return quotationList;
 
@@ -109,7 +111,7 @@ public class DealerServiceImpl implements DealerService {
 	@Override
 	public List<QuotationModel> getQuotationforUser(String userId) {
 
-		logger.debug("getQuotationRequest+Retrieving quotation request");
+		logger.debug("DealerServiceImpl:getQuotationRequest+Retrieving quotation request");
 		List<QuotationModel> quotationList = null;
 		try {
 
@@ -130,7 +132,7 @@ public class DealerServiceImpl implements DealerService {
 	@Override
 	public boolean updateQuotationRequest(QuotationModel quotationModel) {
 
-		logger.debug("Updating QuotationRequest");
+		logger.debug("DealerServiceImpl:updateQuotationRequest+Initiated Execution");
 		boolean isUpdate = false;
 		try {
 
@@ -148,7 +150,7 @@ public class DealerServiceImpl implements DealerService {
 			logger.error("Error retrieving dealers:" + e.getMessage());
 			return isUpdate;
 		}
-		logger.debug("getAllProduct+Completed Retrieving products list");
+		logger.debug("DealerServiceImpl:updateQuotationRequest:Completed Execution");
 
 		return isUpdate;
 
