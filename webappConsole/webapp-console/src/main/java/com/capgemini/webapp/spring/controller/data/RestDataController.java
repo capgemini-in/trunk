@@ -42,7 +42,7 @@ public class RestDataController {
 
 	public ResponseEntity<List<ProductModel>> listAllProducts() {
 		
-		logger.info("::RestDataController : listAllProducts() List all Products data:: Jenkins CICD Demo ");
+		logger.info("::RestDataController : listAllProducts() List all Products data:: Jenkins CICD  ");
 		List<ProductModel> prodList = null;
 		JsonObject responseObj = new JsonObject();
 		try {
