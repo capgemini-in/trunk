@@ -41,7 +41,8 @@ public class RestDataController {
 	@RequestMapping(value = "/products/", method = RequestMethod.GET)
 
 	public ResponseEntity<List<ProductModel>> listAllProducts() {
-		logger.info("::RestDataController : listAllProducts() List all Products data:: Jenkins CICD demo ");
+		
+		logger.info("::RestDataController : listAllProducts() List all Products data:: Jenkins CICD Demo ");
 		List<ProductModel> prodList = null;
 		JsonObject responseObj = new JsonObject();
 		try {
